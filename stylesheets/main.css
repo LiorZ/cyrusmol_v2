@@ -1,0 +1,188 @@
+/*
+ * Written by mtyka@google.com (Mike Tyka)
+ *
+ * Copyright 2012-2013 Google Inc.
+ *
+ * Dual license of MIT license or LGPL3 (the "Licenses")
+ * MIT license: http://opensource.org/licenses/MIT
+ * LGPL3: www.gnu.org/licences/lgpl.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licenses is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licenses for the specific language governing permissions and
+ * limitations under the Licenses.
+*/
+
+
+html,body {
+width:100%;
+height:100%;
+margin:0;
+}
+
+body {
+overflow:hidden;
+background:#444444;
+}
+
+input,select,textarea {
+border:1px solid #FFF;
+background-color:#222222;
+color:#FFF;
+}
+
+button {
+background-color:#222222;
+color:#FFF;
+}
+
+option {
+background-color:#000;
+color:#FFF;
+}
+
+a {
+color:#FFF;
+}
+
+#glmol01 {
+width:100%;
+height:100%;
+background-color:#444;
+position:absolute;
+}
+
+.settings {
+position:absolute;
+right:0;
+top:10%;
+background-color:grey;
+-moz-transform:rotate(-90deg);
+-webkit-transform:rotate(-90deg);
+-moz-transform-origin:110% 100%;
+-webkit-transform-origin:110% 100%;
+-webkit-border-radius:10px 10px 0 0;
+-moz-border-radius:10px 10px 0 0;
+margin:0;
+padding:10px;
+}
+
+.controller {
+position:absolute;
+width:0;
+right:0;
+top:10%;
+background-color:#000;
+color:#FFF;
+}
+
+.permabox{
+position:absolute; 
+color:#FFF;
+background-color:transparent;
+z-index:1 ;
+font: -webkit-small-control;
+}
+
+.userbar {
+  height: 30px;
+  top:0px;
+  right:325px;
+}
+
+.permabox_shader{
+width:100%; 
+height:100%;
+position:absolute; 
+background-color:#393939;
+opacity:0.80;
+z-index:1 ;
+  pointer-events: none; 
+}
+
+.floaterbox{
+  position:absolute;
+  pointer-events: none; 
+  background: transparent; 
+  color:white;
+  font: -webkit-small-control;
+}
+
+table {
+  font: -webkit-small-control;
+  color:white;
+}
+
+.permabox_contents{
+width:100%; 
+height:100%;
+position:absolute; 
+z-index:2 ;
+font: -webkit-small-control;
+}
+.tabBox {
+position:absolute;
+color:#FFF;
+bottom:-5;
+height:20px;
+width:60%;
+background-color:rgba(0,0,0,0);
+padding:0;
+z-index:0 ;
+font: -webkit-small-control;
+}
+
+.bottomTab {
+background-color:#222;
+border:1px solid #FFF;
+color:#FFF;
+margin:0;
+padding:10px 10px 0;
+z-index:10;
+}
+
+.insideTab {
+border:1px solid #FFF;
+width:100%;
+height:100%;
+background-color:#000;
+overflow:scroll;
+margin:0;
+}
+
+.tabBox p,.tabBox h1,.tabBox ul {
+margin-left:10px;
+font-size:90%;
+}
+
+.fullwidth {
+  width: 100%;
+}
+
+.floating_dialog {
+  z-index: 40;
+}
+
+
+.ui-widget-content{
+  background-color:#393939;
+  font: -webkit-small-control;
+  color:#FFF;
+}
+.ui-dialog{
+  background-color:#454545;
+  z-index: 40;
+}
+
+.jobdialog {
+  background-color:transparent;
+  z-index:1 ;
+  -webkit-box-shadow: 3px 3px 5px 0px black;
+}
+
+.options_div
+{
+  width: 90%;
+
+}

@@ -1,0 +1,18 @@
+{
+   "title":"Generic XML Script",
+   "jobname": "Job Name",
+   "command":"xmlscript",
+   "xmlscript":{
+      "default_choices":[
+         "/data/jobdefs/blank_script.xml",
+         "/data/jobdefs/fast_relax.xml",
+         "/data/jobdefs/design.xml",
+         "/data/jobdefs/misc_filters.xml"
+      ],
+      "content":"",
+      "load_content":"/data/jobdefs/blank_script.xml"
+   },
+   "user_files":[ ],
+   "forced_flags":[ ],
+   "user_flags":{ }
+}

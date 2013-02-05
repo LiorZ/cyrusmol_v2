@@ -1,0 +1,29 @@
+<dock_design>
+	<SCOREFXNS>
+	</SCOREFXNS>
+	<TASKOPERATIONS>
+		<InitializeFromCommandline name=init/>
+		<RestrictToRepacking name=rtr/>
+	</TASKOPERATIONS>
+	<FILTERS>
+		<Sasa name=hydrophobic_sasa hydrophobic=1 confidence=0/>
+		<Sasa name=sasa confidence=0/>
+		<Ddg name=ddg confidence=0 repeats=1/>
+		<ShapeComplementarity name=sc confidence=0/>
+		<ScoreType name=total_score threshold=20 confidence=0/>
+	</FILTERS>
+	<MOVERS>
+		<FastRelax name=relax task_operations=init,rtr repeats=2>
+			<MoveMap>
+				<Chain number=1 bb=0 chi=1/>
+				<Chain number=2 bb=1 chi=1/>
+				<Jump number=1 setting=1/>
+			</MoveMap>
+		</FastRelax>
+	</MOVERS>
+	<APPLY_TO_POSE>
+	</APPLY_TO_POSE>
+	<PROTOCOLS>
+		<Add mover=relax/>
+	</PROTOCOLS>
+</dock_design>

@@ -1,0 +1,266 @@
+<!-- 
+/**
+ *
+ * Written by mtyka@google.com (Mike Tyka)
+ *
+ * Copyright 2012-2013 Google Inc.
+ *
+ * Dual license of MIT license or LGPL3 (the "Licenses")
+ * MIT license: http://opensource.org/licenses/MIT
+ * LGPL3: www.gnu.org/licences/lgpl.txt
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licenses is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licenses for the specific language governing permissions and
+ * limitations under the Licenses.
+ */
+-->
+
+<html>
+<head>
+  <title>CyrusMol</title>
+  <link type="text/css" rel="stylesheet" href="/stylesheets/jquery-ui-1.9.2.custom.css" />
+  <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+  <script type="text/javascript" src="js/jquery-1.7.min.js"></script>
+  <script type="text/javascript" src="http://code.jquery.com/ui/1.9.0/jquery-ui.js"></script>
+  <script type="text/javascript" src="js/jquery.multi-accordion-1.5.3.js" ></script>
+  <script type="text/javascript" src="js/d3.v2.min.js"></script>
+  <script type="text/javascript" src="js/jquery.cookie.js"></script>
+  <script type="text/javascript" src="js/jquery.hotkeys.js"></script>
+  <script type="text/javascript" src="js/jquery.jstree.js"></script>
+  <script type="text/javascript" src="js/three.js"></script>
+  <script type="text/javascript" src="js/GLmol.js"></script>
+  <script type="text/javascript" src="js/jobdialog.js"></script>
+  <script type="text/javascript" src="js/application.js"></script>
+  <script type="text/javascript" src="js/glmol_control.js"></script>
+  <script type="text/javascript" src="js/graphing.js"></script>
+  <script type="text/javascript">
+    $(function() {
+        $( "#rightmenu" ).accordion({collapsible: true, heightStyle: "fill" });
+        $( "#leftmenu" ).multiAccordion({collapsible: true, heightStyle: "fill" });
+    });
+  </script>
+</head>
+
+
+<body>
+
+<div id="userbar" class="permabox userbar">
+Welcome, {{user}} &nbsp; <a href="{{logout_url}}">Logout</a> | <a href="/about">About CyrusMol</a>
+</div>
+
+<div id="glmol01"></div>
+
+<div class="tabBox" id="glmol01_srcbox" style="left: 30%; z-index:20;">
+  <span class="bottomTab">Load</span>
+  <div class="insideTab">
+    You can load PDB, SDF/MOL(MDL not SYBYL) or XYZ files <br>
+    -from local disk (don't worry. your file will not be uploaded),
+    <input id="glmol01_file" type="file" size=1><button onClick="loadFile()">Load from file</button><br>
+    -from RCSB PDB server,
+    PDBID: <input id="glmol01_pdbid" value="2POR" size=4><button onClick="download('pdb:' + $('#glmol01_pdbid').val())">Download</button><br>
+    -from PubChem server,
+    Compound ID(CID): <input id="glmol01_cid" value="2244" size=4><button onClick="download('cid:' + $('#glmol01_cid').val())">Download</button><br>
+    -or from the textarea below.<br>
+    <textarea wrap="off" id="glmol01_src" style="width: 100%; height:24em; overflow:scroll;"></textarea><br>
+    <button onClick="glmol01.loadMolecule(); $('#loading').hide();">Reload molecule from textarea</button>
+  </div>
+</div>
+
+<div class="permabox" id="glmol01_viewbox" style="width: 300px; height:  90%; top: 0px; right: 0px">
+  <div class="permabox_shader"></div>
+  <div class="permabox_contents" id="rightmenu" style="height:  90%"  >
+
+
+  <h3>View settings</h3>
+  <div>
+    <div style="display: inline; overflow: auto;">
+    Color by <select id="glmol01_color" onchange="updateRepresentation()" >
+     <option selected="selected" value="atomtype">element</option>
+     <option value="chainbow">spectrum</option>
+     <option value="chain">chain</option>
+     <option value="ss">secondary strcuture</option>
+     <option value="b">B factor</option>
+     <option value="polarity">polar/nonpolar</option>
+    </select><br>
+    <input id="glmol01_showMainchain" type="checkbox" onchange="updateRepresentation()"  checked>Main chain as 
+    <select id="glmol01_mainchain" onchange="updateRepresentation()" >
+     <option value="bonds">sticks<option>
+     <option selected="selected" value="tube">Tube</option>
+     <option value="thickRibbon">thick ribbon</option>
+     <option value="ribbon">thin ribbon(faster)</option>
+     <option value="strand">strand</option>
+     <option value="cylinderHelix">cylinder & plate</option>
+     <option value="chain">C alpha trace</option>
+     <option value="btube">B factor Tube</option>
+    </select><br>
+    <input id="glmol01_showBases" type="checkbox" onchange="updateRepresentation()"  checked>Nucleic acid bases as
+    <select id="glmol01_base" onchange="updateRepresentation()" >
+     <option value="nuclStick">sticks</option>
+     <option selected="selected" value="nuclLine">lines</option>
+     <option value="nuclPolygon">polygons</option>
+    </select><br>
+    
+    <input id="glmol01_showSidechains" type="checkbox" onchange="updateRepresentation()" checked>Sidechains
+    <select id="glmol01_sidechain" onchange="updateRepresentation()" >
+     <option selected="selected" value="stick">sticks</option>
+     <option value="ballAndStick">ball and stick</option>
+     <option value="ballAndStick2">ball and stick (multiple bond)</option>
+     <option value="sphere">spheres</option>
+     <option value="icosahedron">icosahedrons</option>
+     <option value="line">lines</option>
+    </select><br>
+   <!-- 
+    <input id="glmol01_line" type="checkbox" checked="yes"  onchange="updateRepresentation()" >Side chains as lines<br>
+    <input id="glmol01_sticks" type="checkbox" checked="no"  onchange="updateRepresentation()" >Side chains as sticks<br>
+    <input id="glmol01_spheres" type="checkbox" checked="no"  onchange="updateRepresentation()" >Side chains as spheres<br>
+-->
+    <input id="glmol01_showHydrogens" type="checkbox" onchange="updateRepresentation()" >Show Hydrogens<br>
+    <input id="glmol01_doNotSmoothen" type="checkbox" onchange="updateRepresentation()" >Smooth Sheets <br>
+    <input id="glmol01_showNonBonded" type="checkbox" onchange="updateRepresentation()" >Solvent/Ions
+    <select id="glmol01_nb" onchange="updateRepresentation()" >
+     <option value="nb_sphere">spheres</option>
+     <option selected="selected" value="nb_cross">stars</option>
+    </select>
+    <br>
+    <input id="glmol01_showHetatms" type="checkbox" onchange="updateRepresentation()" checked>Ligands
+    <select id="glmol01_hetatm" onchange="updateRepresentation()" >
+     <option value="stick">sticks</option>
+     <option value="ballAndStick">ball and stick</option>
+     <option value="ballAndStick2">ball and stick (multiple bond)</option>
+     <option selected="selected" value="sphere">spheres</option>
+     <option value="icosahedron">icosahedrons</option>
+     <option value="line">lines</option>
+    </select><br>
+    <input id="glmol01_cell" type="checkbox" onchange="updateRepresentation()" >Unit cell<br>
+    <input id="glmol01_biomt" type="checkbox" onchange="updateRepresentation()" >Biological assembly <br>
+    <input id="glmol01_packing" type="checkbox" onchange="updateRepresentation()" >Crystal packing<br>
+    <input id="glmol01_symopHetatms" type="checkbox" onchange="updateRepresentation()" >Show HETATMs in symmetry mates<br>
+    
+    <select style="display: none" id="glmol01_bgcolor" onchange="updateRepresentation()" >
+     <option value="0xffffff">white</option>
+     <option value="0x000000">#444444</option>
+     <option  selected="selected" value="0x444444">grey</option>
+    </select>
+    
+    <br>
+    Projection: <select id="glmol01_projection" onchange="updateRepresentation()" >
+     <option value="orthoscopic">orthoscopic</option>
+     <option selected="selected" value="perspective">perspective</option>
+    </select><br><br>
+    <button onClick="saveImage()">Screenshot</button>
+    <br>
+    <input type="radio" name="glmol01_mouseMode" value="0" checked>Rotate<br>
+    <input type="radio" name="glmol01_mouseMode" value="1">Translate<br>
+    <input type="radio" name="glmol01_mouseMode" value="2">Zoom<br>
+    <input type="radio" name="glmol01_mouseMode" value="3">Slab<br><br>
+    <button onClick="glmol01.doFunc(function(mol) {mol.zoomInto(mol.getAllAtoms());mol.show()});">Reset view</button>
+  </div>
+  </div>
+ 
+  <h3>Rosetta Backend Jobs</h3>
+  <div>
+  <fieldset>
+      <br><br> <button id="prep_score" >Run Score</button>
+      <br><br> <button id="prep_relax" >Run Relax</button>
+      <br><br> <button id="prep_loophash" >Run Loophash</button>
+      <br><br> <button id="prep_enzdes" >Launch Enzdes</button>
+      <br><br> <button id="prep_xmlscript" >Launch XML Script</button>
+      <br><br>
+  </fieldset>
+  </div>
+
+  <h3>Atom Selector</h3>
+  <div style="height: 100%; overflow: auto;">
+   <div id="selector">
+   </div>
+  <div>
+
+   </div>
+  </div>
+</div>
+</div>
+
+<div id="glmol01_pdbTitle" style="display: none; position:absolute; color: white; background-color: rgba(0, 0, 0, 0.65); font-size:80%"></div>
+
+<div class="tabBox" id="tasklist_box" style=" left: 42%; width:  40% ; z-index: 40; ">
+  <span class="bottomTab">Tasklist</span>
+  <div class="insideTab">
+  <div>
+  <button onClick="updateTaskList()" >Update List</button>
+  <button onClick="purgeQueue()">Purge All</button>
+  </div>
+  <div id="tasklist" style="overflow:scroll; height: 100%;" ></div>
+  </div>
+  </div>
+</div>
+
+<div class="tabBox" id="joblist_box" style="left: 35%; z-index: 30"> 
+  <!-- style="display: none; position:absolute;  background-color: white; font-size:80%; left: 0px; bottom: 0px; width: 40%; height: 25% "> -->
+  <span class="bottomTab">Structures</span>
+  <div class="insideTab">
+  <div>
+    <button onClick="updateJobList()" >Update List</button>
+    <button onClick="deleteAllJobs()">Purge All</button>
+  </div>
+  <div id="joblist" style="overflow:scroll; height: 100%;" ></div>
+  </div>
+</div>
+
+
+
+
+
+<div class="permabox" id="leftmenu" style="width: 25%; height:  90%; top: 0px; left: 0px">
+    
+    <h3>Jobs</h3>
+
+    <!-- <div id="treebox" class="permabox" style="top: 0px; left: 0px; width: 25%; height: 50%; " > -->
+    <div id="treebox">
+      <button onClick="updateOperationsView('')" >Update List</button>
+      <button onClick="deleteAllOperations()">Purge All</button>
+      <div id="treeCell" style="width:100%; height:30%;" ></div>
+    </div>
+
+    <h3>Energy/Data plot</h3>
+
+    <div id="graphbox_container"> 
+    </div>
+
+    <h3>Energies</h3>
+    <div id="energybox"></div> 
+
+</div>
+
+<script type="text/javascript">
+
+
+addTab('#glmol01_srcbox', '400px', 0);
+addTab('#joblist_box', '400px', 1);
+addTab('#tasklist_box', '400px', 2);
+addTab('#glmol01_infobox', '400px', 4);
+
+
+var glmol01 = new GLmol('glmol01', true);
+var query = window.location.search.substring(1);
+if (query == '') download('local:1fna.pdb');
+else download(query);
+
+
+glmol01.defineRepresentation = defineRepFromController;
+
+
+
+</script>
+
+
+<div id="loadingstructure" class="permabox" style="display: none; z-index: 1000; position:absolute; left: 50%; top: 50%; pointer-events:none;">Loading...</div>
+
+
+
+
+
+</body>
+</html>
+

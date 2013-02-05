@@ -1,0 +1,20 @@
+{% for structure in structures %}
+<div id="id{{ structure.key() }}">
+<div class="structure" id="{{structure.key() }}" >
+<br> 
+<button onClick="loadFromDatastoreIntoView('{{structure.key() }}')">View</button>
+<b><a href="/structure/get?key={{ structure.key() }}">(Raw View)</a> </b>
+<br>structure.created_time  :&nbsp;{{ structure.created_time }} 
+<br>structure.parental_hash :&nbsp; <button onClick="loadGraphByParent('{{structure.parental_hash}}')">Graph Children</button> {{ structure.parental_hash }} 
+<br>structure.parental_key  :&nbsp; <button onClick="loadFromDatastoreIntoView('{{structure.key() }}')">View</button>  <a href="/structure/get?key={{ structure.parental_key }}">{{ structure.parental_key }}</a> 
+<br>structure.hash          :&nbsp;{{ structure.hash         }} 
+<br>structure.user_id       :&nbsp;{{ structure.user_id      }} 
+<br>structure.taskname      :&nbsp;{{ structure.taskname     }} 
+<br>structure.queuename     :&nbsp;{{ structure.queuename    }} 
+<br>structure.author        :&nbsp;{{ structure.author       }} 
+<br>structure.eta           :&nbsp;{{ structure.eta          }} 
+<br>structure.workerinfo    :&nbsp;{{ structure.workerinfo   }} 
+<br>structure.energies      :&nbsp;{{ structure.energies     }} 
+<br>structure.stderr        :&nbsp;{{ structure.stderr       }} 
+</div>
+{% endfor %}

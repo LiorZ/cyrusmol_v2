@@ -1,0 +1,8 @@
+{
+   "title":"Relax Structure using FastRelax ",
+   "jobname": "Job Name",
+   "command":"relax",
+   "user_files":[ ],
+   "forced_flags":[ ],
+   "user_flags":{ }
+}

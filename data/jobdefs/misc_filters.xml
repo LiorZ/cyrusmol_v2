@@ -1,0 +1,22 @@
+<dock_design>
+	<SCOREFXNS>
+	</SCOREFXNS>
+	<FILTERS>
+		<Sasa name=hydrophobic_sasa hydrophobic=1 confidence=0/>
+		<Sasa name=sasa confidence=0/>
+		<Ddg name=ddg confidence=0 repeats=1/>
+		<ShapeComplementarity name=sc confidence=0/>
+		<ScoreType name=total_score threshold=20 confidence=0/>
+	</FILTERS>
+	<MOVERS>
+	</MOVERS>
+	<APPLY_TO_POSE>
+	</APPLY_TO_POSE>
+	<PROTOCOLS>
+		<Add filter_name=ddg/>
+		<Add filter_name=sasa/>
+		<Add filter_name=hydrophobic_sasa/>
+		<Add filter=sc/>
+		<Add filter=total_score/>
+	</PROTOCOLS>
+</dock_design>

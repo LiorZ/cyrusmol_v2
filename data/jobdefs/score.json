@@ -1,0 +1,8 @@
+{
+   "title":"Score Structure using Rosetta Energy Function",
+   "jobname": "Job Name",
+   "command":"score",
+   "user_files":[ ],
+   "forced_flags":[ ],
+   "user_flags":{ }
+}

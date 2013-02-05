@@ -1,0 +1,41 @@
+# Written by mtyka@google.com (Mike Tyka)
+#
+# Copyright 2012-2013 Google Inc.
+#
+# Dual license of MIT license or LGPL3 (the "Licenses")
+# MIT license: http://opensource.org/licenses/MIT
+# LGPL3: www.gnu.org/licences/lgpl.txt
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the Licenses is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the Licenses for the specific language governing permissions and
+# limitations under the Licenses.
+#
+
+application: cyrusmol 
+version: 3
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+- url: /stylesheets
+  static_dir: stylesheets
+- url: /images
+  static_dir: images
+- url: /data
+  static_dir: data
+- url: /js
+  static_dir: js
+- url: /task/get
+  script: cyrusmol.app
+- url: /structure/put
+  script: cyrusmol.app
+- url: /.*
+  login: required
+  script: cyrusmol.app
+
+libraries:
+- name: jinja2
+  version: latest
