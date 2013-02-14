@@ -107,13 +107,9 @@ class Register(webapp2.RequestHandler):
 
 def admin_required( func ):
   def check_auth( self, *args, **kwargs ):
-    user = users.get_current_user()
-
-    ## This is a temporary hack that's about to be
-    ## replaced with a more sensible user management scheme.
-
-    if user.email() != "mike.tyka@gmail.com":
+    if not users.is_current_user_admin():
       ## redirect to registration page !
+      user = users.get_current_user()
       logging.warning( "Not Admin!:" + str(user.email()) )
       self.response.set_status(403)
       self.response.out.write("Forbidden - admin only")
