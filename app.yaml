@@ -24,6 +24,8 @@ handlers:
   static_dir: stylesheets
 - url: /images
   static_dir: images
+- url: /nacl
+  static_dir: nacl 
 - url: /data
   static_dir: data
 - url: /js

@@ -35,6 +35,8 @@
   <script type="text/javascript" src="js/application.js"></script>
   <script type="text/javascript" src="js/glmol_control.js"></script>
   <script type="text/javascript" src="js/graphing.js"></script>
+  <script type="text/javascript" src="js/nacls_common.js"></script>
+  <script type="text/javascript" src="js/nacls_rosetta.js"></script>
   <script type="text/javascript">
     $(function() {
         $( "#rightmenu" ).accordion({collapsible: true, heightStyle: "fill" });
@@ -42,12 +44,16 @@
     });
   </script>
 </head>
-
+<style>
+  .ui-menu { width: 150px; }
+   #poseopmenu { position:absolute; display:none; }
+</style>
 
 <body>
 
 <div id="userbar" class="permabox userbar">
 Welcome, {{user}} &nbsp; <a href="{{logout_url}}">Logout</a> | <a href="/about">About CyrusMol</a>
+NACLS-Status: <code id="statusField">NO-STATUS</code>
 </div>
 
 <div id="glmol01"></div>
@@ -234,30 +240,25 @@ Welcome, {{user}} &nbsp; <a href="{{logout_url}}">Logout</a> | <a href="/about">
 </div>
 
 <script type="text/javascript">
-
-
 addTab('#glmol01_srcbox', '400px', 0);
 addTab('#joblist_box', '400px', 1);
 addTab('#tasklist_box', '400px', 2);
 addTab('#glmol01_infobox', '400px', 4);
-
-
 var glmol01 = new GLmol('glmol01', true);
 var query = window.location.search.substring(1);
 if (query == '') download('local:1fna.pdb');
 else download(query);
-
-
 glmol01.defineRepresentation = defineRepFromController;
-
-
-
 </script>
 
 
 <div id="loadingstructure" class="permabox" style="display: none; z-index: 1000; position:absolute; left: 50%; top: 50%; pointer-events:none;">Loading...</div>
 
+<!-- NACLS container -->
+<div id="listener"></div>
 
+
+<div id="contextmenudiv" style="width:300px" ></div>
 
 
 

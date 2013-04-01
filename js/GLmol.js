@@ -192,7 +192,7 @@ GLmol.prototype.parseXYZ = function(str) {
    for (var i = 1; i <= atomCount; i++) {
       var line = lines[offset++];
       var tokens = line.replace(/^\s+/, "").replace(/\s+/g," ").split(" ");
-      console.log(tokens);
+      //console.log(tokens);
       var atom = {};
       atom.serial = i;
       atom.atom = atom.elem = tokens[0];
@@ -220,97 +220,15 @@ GLmol.prototype.parsePDB2 = function(str) {
    var protein = this.protein;
    var molID;
    var atomname_map = { 
-"1H":  "H",
-"1HA":  "H",
-"1HB":  "H",
-"1HD":  "H",
-"1HD1":  "H",
-"1HD2":  "H",
-"1HE":  "H",
-"1HE2":  "H",
-"1HG":  "H",
-"1HG1":  "H",
-"1HG2":  "H",
-"1HH1":  "H",
-"1HH2":  "H",
-"2H":  "H",
-"2HA":  "H",
-"2HB":  "H",
-"2HD":  "H",
-"2HD1":  "H",
-"2HD2":  "H",
-"2HE":  "H",
-"2HE2":  "H",
-"2HG":  "H",
-"2HG1":  "H",
-"2HG2":  "H",
-"2HH1":  "H",
-"2HH2":  "H",
-"3H":  "H",
-"3HB":  "H",
-"3HD1":  "H",
-"3HD2":  "H",
-"3HE":  "H",
-"1HZ":  "H",
-"2HZ":  "H",
-"3HZ":  "H",
-"3HG1":  "H",
-"3HG2":  "H",
-"C":  "C",
-"CA":  "C",
-"CB":  "C",
-"CD":  "C",
-"CD1":  "C",
-"CD2":  "C",
-"CE":  "C",
-"CE1":  "C",
-"CE2":  "C",
-"CE3":  "C",
-"CG":  "C",
-"CG1":  "C",
-"CG2":  "C",
-"CH2":  "C",
-"CZ":  "C",
-"CZ2":  "C",
-"CZ3":  "C",
-"H":  "H",
-"HA":  "H",
-"HB":  "H",
-"HD1":  "H",
-"HD2":  "H",
-"HE":  "H",
-"HE1":  "H",
-"HE2":  "H",
-"HE3":  "H",
-"HG":  "H",
-"HG1":  "H",
-"HH":  "H",
-"HH2":  "H",
-"HZ":  "H",
-"HZ2":  "H",
-"HZ3":  "H",
-"N":  "N",
-"ND1":  "N",
-"NE":  "N",
-"NZ":  "N",
-"NE1":  "N",
-"NE2":  "N",
-"NH1":  "N",
-"NH2":  "N",
-"O":  "O",
-"OD1":  "O",
-"OD2":  "O",
-"OE1":  "O",
-"OE2":  "O",
-"OG":  "O",
-"OG1":  "O",
-"OH":  "O",
-"OXT":  "O",
-"SD":  "S",
-"SG":  "S" }
+     "1H":  "H", "1HA":  "H", "1HB":  "H", "1HD":  "H", "1HD1":  "H", "1HD2":  "H", "1HE":  "H", "1HE2":  "H", "1HG":  "H", "1HG1":  "H", "1HG2":  "H", "1HH1":  "H", "1HH2":  "H",
+     "2H":  "H", "2HA":  "H", "2HB":  "H", "2HD":  "H", "2HD1":  "H", "2HD2":  "H", "2HE":  "H", "2HE2":  "H", "2HG":  "H", "2HG1":  "H", "2HG2":  "H", "2HH1":  "H", "2HH2":  "H",
+     "3H":  "H", "3HB":  "H", "3HD1":  "H", "3HD2":  "H", "3HE":  "H", "1HZ":  "H", "2HZ":  "H", "3HZ":  "H", "3HG1":  "H", "3HG2":  "H",
+     "C":  "C", "CA":  "C", "CB":  "C", "CD":  "C", "CD1":  "C", "CD2":  "C", "CE":  "C", "CE1":  "C", "CE2":  "C", "CE3":  "C", "CG":  "C", "CG1":  "C", "CG2":  "C", "CH2":  "C", "CZ":  "C", "CZ2":  "C", "CZ3":  "C",
+     "H":  "H", "HA":  "H", "HB":  "H", "HD1":  "H", "HD2":  "H", "HE":  "H", "HE1":  "H", "HE2":  "H", "HE3":  "H", "HG":  "H", "HG1":  "H", "HH":  "H", "HH2":  "H", "HZ":  "H", "HZ2":  "H", "HZ3":  "H",
+     "N":  "N", "ND1":  "N", "NE":  "N", "NZ":  "N", "NE1":  "N", "NE2":  "N", "NH1":  "N", "NH2":  "N", 
+     "O":  "O", "OD1":  "O", "OD2":  "O", "OE1":  "O", "OE2":  "O", "OG":  "O", "OG1":  "O", "OH":  "O", "OXT":  "O", "SD":  "S", "SG":  "S" 
+   }
    
-
-
 
    var atoms_cnt = 0;
    lines = str.split("\n");
@@ -430,7 +348,7 @@ GLmol.prototype.parsePDB2 = function(str) {
       }
    }
 
-   console.log(atoms)
+   //console.log(atoms)
 
    // create a hierarchical view of the world
    data = []
@@ -442,6 +360,11 @@ GLmol.prototype.parsePDB2 = function(str) {
       if( !( atom.resi  in this.world[ atom.chain ]["residues"]  ) ) this.world[ atom.chain ]["residues"][ atom.resi ] = { "name": atom.resn, "index" : atom.resi, "atoms" : {} }
       if( !( atom.atom  in this.world[ atom.chain ]["residues"][ atom.resi ]["atoms"] ) ) this.world[ atom.chain ]["residues"][ atom.resi ]["atoms"][ atom.atom ] = atom
 
+//      chainname = atom.chain
+//      if(chainname == "" || chainname == " ") chainname = "_"
+//      if( !( chainname in this.world) ) this.world[ chainname ] = { "name":  chainname, "residues" : {} }
+//      if( !( atom.resi  in this.world[ chainname ]["residues"]  ) ) this.world[ chainname ]["residues"][ atom.resi ] = { "name": atom.resn, "index" : atom.resi, "atoms" : {} }
+//      if( !( atom.atom  in this.world[ chainname ]["residues"][ atom.resi ]["atoms"] ) ) this.world[ chainname ]["residues"][ atom.resi ]["atoms"][ atom.atom ] = atom
    }
 
   data = [] 
@@ -503,7 +426,7 @@ GLmol.prototype.parsePDB2 = function(str) {
           } 
         }else{
           if( serial !== undefined ){
-            console.log( serial )
+            //console.log( serial )
             atoms[ serial ].selected = true;     
           }
         }
@@ -514,6 +437,16 @@ GLmol.prototype.parsePDB2 = function(str) {
 
 };
 
+GLmol.prototype.get_selected_residue_numbers = function ( ){
+  selected_residues = {}; 
+  for (i = 0; i < this.atoms.length; i++) {
+    atom = this.atoms[i]; if (atom == undefined) continue;
+    if( atom.selected ) selected_residues[ atom.resi ] = true; 
+  }
+  return selected_residues;
+}
+
+
 GLmol.prototype.unselect_all = function( ){
   for (i = 0; i < this.atoms.length; i++) {
     atom = this.atoms[i]; if (atom == undefined) continue;
@@ -522,7 +455,7 @@ GLmol.prototype.unselect_all = function( ){
 }
 
 GLmol.prototype.select_residue_range = function( chain, resi_start, resi_end ){
-  console.log([chain, resi_start, resi_end ])
+  //console.log([chain, resi_start, resi_end ])
   for ( i=resi_start; i <= resi_end; i ++ ){
     this.select_atoms( chain, i );
   }
@@ -543,7 +476,7 @@ GLmol.prototype.select_atoms = function( chain, resi, serial ){
     } 
   }else{
     if( serial !== undefined ){
-      console.log( serial )
+      //console.log( serial )
         atoms[ serial ].selected = true;     
     }
   }
@@ -1489,7 +1422,7 @@ GLmol.prototype.getSelected = function(atomlist) {
 
 GLmol.prototype.getSidechains = function(atomlist) {
    var ret = [];
-   console.log( ["now:", atomlist.length ] )
+   //console.log( ["now:", atomlist.length ] )
    for (var i in atomlist) {
       var atom = this.atoms[atomlist[i]]; if (atom == undefined) continue;
       if (atom.hetflag) continue;
@@ -1830,7 +1763,7 @@ GLmol.prototype.rebuildScene = function() {
    this.defineRepresentation();
    this.setView(view);
 
-   console.log("built scene in " + (+new Date() - time) + "ms");
+   //console.log("built scene in " + (+new Date() - time) + "ms");
 };
 
 GLmol.prototype.loadMolecule = function(repressZoom) {
@@ -1846,7 +1779,7 @@ GLmol.prototype.loadMoleculeStr = function(repressZoom, source) {
    this.parsePDB2(source);
    this.parseSDF(source);
    this.parseXYZ(source);
-   console.log("parsed in " + (+new Date() - time) + "ms");
+   //console.log("parsed in " + (+new Date() - time) + "ms");
    
    var title = $('#' + this.id + '_pdbTitle');
    var titleStr = '';
@@ -1887,6 +1820,7 @@ GLmol.prototype.enableMouse = function() {
    // TODO: Better touch panel support. 
    // Contribution is needed as I don't own any iOS or Android device with WebGL support.
    glDOM.bind('mousedown touchstart', function(ev) {
+     $("#poseopmenu").hide();
       ev.preventDefault();
       if (!me.scene) return;
       var x = ev.pageX, y = ev.pageY;
@@ -1918,9 +1852,22 @@ GLmol.prototype.enableMouse = function() {
       console.log(ev.originalEvent.wheelDelta, ev.originalEvent.detail, me.rotationGroup.position.z);
       me.show();
    });
-   glDOM.bind("contextmenu", function(ev) {ev.preventDefault();});
-   $('body').bind('mouseup touchend', function(ev) {
+   glDOM.bind("contextmenu", function(ev) {
+      ev.preventDefault();
+   });
+   $("body").bind('mouseup touchend', function(ev) {
       me.isDragging = false;
+   });
+   glDOM.bind('mouseup touchend', function(ev) {
+      me.isDragging = false;
+      var x = ev.pageX, y = ev.pageY;
+      if(( me.mouseStartX == ev.pageX) &&
+         ( me.mouseStartY == ev.pageY) &&
+         ( me.mouseButton == 3 ) 
+        ){ 
+        $("#poseopmenu").css({position:"absolute",left:ev.pageX,top:ev.pageY});
+        $("#poseopmenu").show();
+      }
    });
 
    glDOM.click(function(ev ) {

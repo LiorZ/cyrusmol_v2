@@ -61,7 +61,7 @@ function updateTaskList() {
             $("#tasklist").html('');
             for (tasknum in tasks) {
                 var task = tasks[tasknum]
-                console.log(task)
+                //console.log(task)
                 payload = unescape(task.payload)
                 payload = payload.replace(/\\n/g, "\r");
                 $("#tasklist").append($("<div> " + '<button onClick="deleteTask(\'' + task.name + '\')" >delete</button>' +
@@ -121,18 +121,26 @@ function updateOperationsView(op_parent_key, childnode) {
                     alert("Not yet implemented")
                 }
             },
+            load_structure: {
+                label: "Load Input Structure into 3D view",
+                action: function () {
+                   var key = node.data("structure_key")
+                   loadFromDatastoreIntoView(key)
+                }
+            },
             inspect: {
                 label: "Inspect Job Details",
                 action: function () {
                     var job_data = jQuery.parseJSON(node.data("job_data"))
                     job_data["last_stderr"] = node.data("last_stderr")
-                    global_open_job_dialog(job_data)
+                    global_open_job_dialog(job_data,true)
                 }
             },
             submitmore: {
                 label: "Submit more jobs",
                 action: function () {
-                    alert("Not yet implemented")
+                    var job_data = jQuery.parseJSON(node.data("job_data"))
+                    global_open_job_dialog(job_data,false)
                 }
             },
             deleteitem: {
@@ -169,7 +177,7 @@ function updateOperationsView(op_parent_key, childnode) {
 
                         info_string += " Done: " + op.count_results + "/" + op.replication + " ERR: " + op.count_errors + " CPU-mins: " + op.count_cputime
                         tooltip_content = "<b>Rosetta STDERR</b>: " + op.last_stderr + "<br><i>Right click to open context menu</i>"
-                        console.log(op)
+                        //console.log(op)
                         node = {
                             "data": info_string,
                             "metadata": op,
@@ -252,37 +260,47 @@ function loadStructuresByParent(query, func_on_complete) {
 }
 
 
+function load_pdbdata_into_view( pdbdata ){
+  $('#glmol01_src').val(pdbdata);
+  glmol01.loadMolecule();
+}
 
-function loadFromDatastoreIntoView(key) {
+function loadFromDatastoreIntoView(key, hash) {
     $("#loadingstructure").show()
 
     $('#glmol01_src').val("");
     glmol01.loadMolecule();
 
+    url = "/structure/get?"
+    if( key ){
+      url += "key="+key
+    }else{
+      url += "hash="+hash
+    }
+
     $.ajax({
         type: "GET",
         dataType: 'json',
-        url: "/structure/get?key=" + key,
+        url: url, 
         success: function (json_reply) {
             // Ok, check contents of json reply and, if it contains a valid structure, load it into view
 
 
             $("#loadingstructure").hide()
             current_loaded_structure = json_reply
-            console.log(json_reply)
+            //console.log(json_reply)
 
             pdbdata = unescape(current_loaded_structure.pdbdata)
             pdbdata = pdbdata.replace(/\\n/g, "\r");
 
-            console.log(current_loaded_structure)
+            //console.log(current_loaded_structure)
 
             // Load up pdb data into view
-            $('#glmol01_src').val(pdbdata);
-            glmol01.loadMolecule();
+            load_pdbdata_into_view( pdbdata );
 
             // also load up energies into energy view
             obj = jQuery.parseJSON(current_loaded_structure.energies)
-            console.log(obj)
+            //console.log(obj)
             enehtml = "<table>"
             keylist = []
             for (var key in obj) {

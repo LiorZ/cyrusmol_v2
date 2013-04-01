@@ -16,6 +16,8 @@
 // GLmol - Molecular Viewer on WebGL/Javascript (0.46) - forked and modified by Mike Tyka @ Google
 //  (C) Copyright 2011-2012, biochem_fan
 //      License: dual license of MIT or LGPL3
+
+
 function download(query) {
     var baseURL = '';
     if (query.substr(0, 4) == 'pdb:') {
@@ -28,7 +30,7 @@ function download(query) {
     } else if (query.substr(0, 6) == 'local:') {
         query = query.substr(6);
         uri = "data/pdbs/" + query
-        console.log("URI:" + uri);
+        //console.log("URI:" + uri);
     } else if (query.substr(0, 4) == 'cid:') {
         query = query.substr(4);
         if (!query.match(/^[1-9]+$/)) {
@@ -126,7 +128,7 @@ function defineRepFromController() {
     var allHet = this.getHetatms(all);
     var hetatm = this.removeSolvents(allHet);
 
-    console.log("selection " + (+new Date() - time));
+    //console.log("selection " + (+new Date() - time));
     time = new Date();
 
     this.colorByAtom(all, {});
@@ -144,7 +146,7 @@ function defineRepFromController() {
     } else if (colorMode == 'polarity') {
         this.colorByPolarity(all, 0xcc0000, 0xcccccc);
     }
-    console.log("color " + (+new Date() - time));
+    //console.log("color " + (+new Date() - time));
     time = new Date();
 
     var asu = new THREE.Object3D();
@@ -246,7 +248,7 @@ function defineRepFromController() {
         }
 
     }
-    console.log("hetatms " + (+new Date() - time));
+    //console.log("hetatms " + (+new Date() - time));
     time = new Date();
 
     var projectionMode = $(idHeader + 'projection').val();
