@@ -133,14 +133,14 @@ function updateOperationsView(op_parent_key, childnode) {
                 action: function () {
                     var job_data = jQuery.parseJSON(node.data("job_data"))
                     job_data["last_stderr"] = node.data("last_stderr")
-                    global_open_job_dialog(job_data,true)
+                    JobDialogManager.open_job_dialog(job_data,true)
                 }
             },
             submitmore: {
                 label: "Submit more jobs",
                 action: function () {
                     var job_data = jQuery.parseJSON(node.data("job_data"))
-                    global_open_job_dialog(job_data,false)
+                    JobDialogManager.open_job_dialog(job_data,false)
                 }
             },
             deleteitem: {
