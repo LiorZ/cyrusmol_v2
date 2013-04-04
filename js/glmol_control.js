@@ -1,5 +1,3 @@
-// Written by mtyka@google.com (Mike Tyka)
-//
 // Copyright 2012-2013 Google Inc.
 //
 // Dual license of MIT license or LGPL3 (the "Licenses")
@@ -17,6 +15,11 @@
 //  (C) Copyright 2011-2012, biochem_fan
 //      License: dual license of MIT or LGPL3
 
+
+function load_pdbdata_into_view( pdbdata ){
+  $('#glmol01_src').val(pdbdata);
+  glmol01.loadMolecule();
+}
 
 function download(query) {
     var baseURL = '';

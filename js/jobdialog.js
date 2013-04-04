@@ -307,7 +307,7 @@ var JobDialogManager = (function ($) {
     console.log(data_pack)
 
     if( destination == "backend" || destination === undefined ){
-      launch_tasks(data_pack, replication)
+      ServerRequests.launch_tasks(data_pack, replication)
     } else if( destination == "nacls" ){
       //console.log( JSON.stringify( data_pack ) )
       common.naclModule.postMessage(  JSON.stringify( data_pack ) )

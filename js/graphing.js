@@ -15,17 +15,17 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-// This module implements graph window manipulation
+// This module implements graph window manipulation. Data is plotted using D3. Right now any change in the graph necessitates
+// complete redrawing. That's easier and cleaner to implement but also less smooth. 
 (function ($) {
 
-  // private vars - these should really move into the DOM object since there should be one per independent graph.
-  var graph_puller;
-  var last_parental_hash = ""
-  var last_graph_data = undefined
-
+    // private vars - these should really move into the DOM object since there should be one per independent graph.
+    var graph_puller;
+    var last_parental_hash = ""
+    var last_graph_data = undefined
 
     function create_graph(jqobj, dataPoints) {
-      console.log(dataPoints)
+      
       // ok, load up a D3 scatter plot
 
       // Variables that define properties of the visualization.  `margin` is the
@@ -182,8 +182,7 @@
       var highlightElement = null;
 
       function mouseclick(d) {
-        console.log(d.key);
-        loadFromDatastoreIntoView(d.key)
+        ServerRequests.loadFromDatastoreIntoView(d.key)
 
         var element = d3.select(this);
         element.transition().duration(30)
@@ -200,14 +199,13 @@
         highlightElement = element;
       }
 
-
     }
 
 
-
+    // now actually extract the plot data and create the graphing object which will then be passed to D3 to draw the graph 
     function draw_graph(me, default_axes) {
       obj = $(me)
-      // Clear the Div - so we can put new stuff in it
+      // Clear the div - so we can put new stuff in it
       obj.empty()
 
       // retrieve the data from the DOM (through jQuery) 
@@ -222,12 +220,10 @@
       for (var key in energies) {
         keylist.push(key)
       }
-      console.log(keylist)
 
       // ok, now go through all the axes and create a selector to pick what energy value to plot 
       axes = ["y", "x"]
       axes.forEach(function (axis) {
-        console.log(axis)
         selector = $("<select></select>", {
           id: "select_" + axis + "axis"
         })
@@ -266,48 +262,39 @@
 
       // append it and also draw some axis labels
       obj.append(chartCell)
-      //obj.append( $( "<div></div>", { "id":"xaxislabel", "style":" position:relative; bottom: 20px; left: 50%; margin-left: -20%; z-index: 20; width: 40% " } ).append( $("<center>" + default_axes["x"] + "<center>") ) ) 
-      //obj.append( $( "<div></div>", { "id":"yaxislabel", "style":" position:relative; bottom: 50%; left:  7px; z-index: 20;" } ).html(  default_axes["y"] ) ) 
 
       // now construct the graph_data according to which data we should plot on which axis.
       graph_data = [];
       for (i in jsondata) {
         var struct = jsondata[i]
         var energies = $.parseJSON(struct.energies)
-        console.log(energies);
+        
         graph_data.push({
           "x": energies[default_axes["x"]],
           "y": energies[default_axes["y"]],
           "key": struct.key,
           "hash": struct.hash,
-          "name": "lala",
-          "structure": "Check",
-          "donor": "Donor field",
           "color": "#ffffff"
         })
       }
-
-      console.log(graph_data)
-
       create_graph("#chartCell", graph_data);
-
     }
 
-
-
-
-    // create a jquery function to manage graphs
+      
+    // create a jquery function to manage graphs - this function can be called on any jquery object (though typically a <div> ) and will
+    // draw a graph inside of it. 
     $.fn.r_energy_graph = function (parental_hash, axes) {
       me = this;
       // empty out html container
       obj = $(this)
 
-      loadStructuresByParent("parental_hash=" + parental_hash, function (jsondata) {
+      // load data using AJAX request to server. Second argument is the success function
+      ServerRequests.loadStructuresByParent( parental_hash, function (jsondata) {
         // store the raw data locally
         $.data(me, "graphdata", jsondata)
-        console.log($.data(me, "graphdata"))
+        
         draw_graph(me, axes)
-        console.log("Updated graph...");
+        
         //    if( (parental_hash != last_parental_hash) ||  // is it a different dataset ?
         //        graph_data.length != last_graph_data.length ) // or is there new data ?
         //    {

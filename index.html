@@ -195,8 +195,8 @@ NACLS-Status: <code id="statusField">NO-STATUS</code>
   <span class="bottomTab">Tasklist</span>
   <div class="insideTab">
   <div>
-  <button onClick="updateTaskList()" >Update List</button>
-  <button onClick="purgeQueue()">Purge All</button>
+  <button id="updateTaskList">Update List</button>
+  <button id="purgeQueue">Purge All</button>
   </div>
   <div id="tasklist" style="overflow:scroll; height: 100%;" ></div>
   </div>
@@ -204,12 +204,11 @@ NACLS-Status: <code id="statusField">NO-STATUS</code>
 </div>
 
 <div class="tabBox" id="joblist_box" style="left: 35%; z-index: 30"> 
-  <!-- style="display: none; position:absolute;  background-color: white; font-size:80%; left: 0px; bottom: 0px; width: 40%; height: 25% "> -->
   <span class="bottomTab">Structures</span>
   <div class="insideTab">
   <div>
-    <button onClick="updateJobList()" >Update List</button>
-    <button onClick="deleteAllJobs()">Purge All</button>
+    <button id="updateStructureList">Update List</button>
+    <button id="deleteAllStructures">Purge All</button>
   </div>
   <div id="joblist" style="overflow:scroll; height: 100%;" ></div>
   </div>
@@ -223,10 +222,9 @@ NACLS-Status: <code id="statusField">NO-STATUS</code>
     
     <h3>Jobs</h3>
 
-    <!-- <div id="treebox" class="permabox" style="top: 0px; left: 0px; width: 25%; height: 50%; " > -->
     <div id="treebox">
-      <button onClick="updateOperationsView('')" >Update List</button>
-      <button onClick="deleteAllOperations()">Purge All</button>
+      <button id="updateOperationsView" >Update List</button>
+      <button id="deleteAllOperations">Purge All</button>
       <div id="treeCell" style="width:100%; height:30%;" ></div>
     </div>
 
