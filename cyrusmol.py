@@ -327,7 +327,7 @@ class Structure_List(webapp2.RequestHandler):
     structures_query.order('created_time')
     structures       = structures_query.fetch(1000)
 
-    #logging.info( structures )
+    logging.info( structures )
 
     template  = jinja_environment.get_template('structurelist.html')
     template_values = {
@@ -451,8 +451,9 @@ class Structure_DeleteAll(webapp2.RequestHandler):
   @login_required
   def post(self):
     user = users.get_current_user()
-    structures_query = Structure.all().ancestor( structure_key( structure_list_name ))
-    structures_query.filter( "user_id = ", user.user_id)
+    structures_query =  Structure.all()
+    structures_query.ancestor( structure_key( structure_list_name ))
+    structures_query.filter("user_id =", user.user_id() )
     #delete them in blocks of 1000
     while True:
       structures       = structures_query.fetch(1000)
