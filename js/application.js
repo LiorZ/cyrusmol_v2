@@ -23,10 +23,10 @@ var ServerRequests = (function($) {
 
   my.launch_tasks = function(data_pack, replication) {
       // add the parent operation as a variable if it is known.
-      if (typeof my.current_loaded_structure !== 'undefined') {
-          data_pack["parent_operation"] = my.current_loaded_structure.operation;
-      } else {
+      if ( my.current_loaded_structure ) {
           data_pack["parent_operation"] = ""
+      } else {
+          data_pack["parent_operation"] = my.current_loaded_structure.operation;
       }
 
       // At least 1 replication has to be requested.  
@@ -34,14 +34,15 @@ var ServerRequests = (function($) {
       
       // limit task replication to 10 for now. This is actually enforced on the server, but it's polite to 
       // alert the user.
-      if (replication > 10) {
-          alert("Note: This trial version limits job to a size of 10 tasks. Thus only 10 tasks will be submitted.")
-          replication = 10;
+      replication_limit = 100
+      if (replication > replication_limit) {
+          alert("Note: This trial version limits job to a size of " + replication_limit + " tasks. Thus only " + replication_limit + " tasks will be submitted.")
+          replication = replication_limit;
       }
-
+      
       // Turn data_pack into json string
       var json_data_pack = JSON.stringify(data_pack)
-      
+       
       // and POST it to the server
       $.ajax({
           type: "POST",

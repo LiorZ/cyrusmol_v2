@@ -20,9 +20,6 @@
 (function ($) {
 
     // private vars - these should really move into the DOM object since there should be one per independent graph.
-    var graph_puller;
-    var last_parental_hash = ""
-    var last_graph_data = undefined
 
     function create_graph(jqobj, dataPoints) {
       
@@ -280,6 +277,9 @@
       create_graph("#chartCell", graph_data);
     }
 
+    var graph_puller;
+    var last_parental_hash = ""
+    var last_graph_data = undefined
       
     // create a jquery function to manage graphs - this function can be called on any jquery object (though typically a <div> ) and will
     // draw a graph inside of it. 
@@ -292,18 +292,18 @@
       ServerRequests.loadStructuresByParent( parental_hash, function (jsondata) {
         // store the raw data locally
         $.data(me, "graphdata", jsondata)
-        
+        console.log([ "plotting:", jsondata ]) 
         draw_graph(me, axes)
         
-        //    if( (parental_hash != last_parental_hash) ||  // is it a different dataset ?
-        //        graph_data.length != last_graph_data.length ) // or is there new data ?
-        //    {
-        //      last_parental_hash = parental_hash;
-        //      last_graph_data = graph_data ;
-        //    }
-        //
-        //    clearTimeout( graph_puller );
-        //    graph_puller = setTimeout( function(){ loadGraphByParent( parental_hash )} , 10000 )
+        if( (parental_hash != last_parental_hash) ||  // is it a different dataset ?
+            graph_data.length != last_graph_data.length ) // or is there new data ?
+        {
+          last_parental_hash = parental_hash;
+          last_graph_data = graph_data ;
+        }
+        
+        clearTimeout( graph_puller );
+        graph_puller = setTimeout( function(){ obj.r_energy_graph( parental_hash, axes )} , 10000 )
       })
 
       return obj

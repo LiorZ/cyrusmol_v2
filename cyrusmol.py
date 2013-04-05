@@ -37,7 +37,7 @@ from google.appengine.ext import db
 from google.appengine.api import users
 from google.appengine.api import taskqueue
 
-replication_limit = 10
+replication_limit = 100
 account_list_name = "db_allowe_account_list"
 structure_list_name = "db_structures"
 operation_list_name = "db_operations"
@@ -327,7 +327,7 @@ class Structure_List(webapp2.RequestHandler):
     structures_query.order('created_time')
     structures       = structures_query.fetch(1000)
 
-    logging.info( structures )
+    #logging.info( structures )
 
     template  = jinja_environment.get_template('structurelist.html')
     template_values = {
@@ -349,7 +349,7 @@ class Structure_Put(webapp2.RequestHandler):
 
     payload = self.request.get('output')
     payload_json = urllib.unquote_plus( payload )
-    #logging.info("Payload json is: !!!%s!!!", str(payload_json))
+    
     payload_data = json.loads( payload_json )
 
     ## First make sure the taskname is in the payload data
@@ -374,8 +374,17 @@ class Structure_Put(webapp2.RequestHandler):
     newstructure.parental_key   = str(payload_data["parental_key"])
     newstructure.parental_hash  = str(payload_data["parental_hash"])
     newstructure.operation      = str(payload_data["operation"])
-    newstructure.energies       = json.dumps(payload_data["energies"])
+    
+    if "energies" in payload_data:
+      newstructure.energies       = json.dumps(payload_data["energies"])
+    else:
+      newstructure.energies       = "[]"
+
     newstructure.stderr         = str( payload_data["stderr"] )
+    
+    #logging.info("STDERR: <<" + newstructure.stderr + ">>")
+
+
 
     if users.get_current_user():
       newstructure.author = users.get_current_user().nickname()
