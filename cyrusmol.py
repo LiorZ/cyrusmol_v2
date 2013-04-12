@@ -330,8 +330,7 @@ class Task_List(webapp2.RequestHandler):
     #show all the unleased task this way.
     tasks = q.lease_tasks(0, 100)
 
-    tasktemplate  = jinja_environment.get_template('task_list.html')
-    tasktemplate_values = [
+    tasklist = [
      {
       "method":         str(t.method),
       "name":           str(t.name),
@@ -345,7 +344,7 @@ class Task_List(webapp2.RequestHandler):
      }
      for t in tasks]
 
-    self.response.out.write( json.dumps(tasktemplate_values) )
+    self.response.out.write( json.dumps(tasklist) )
 
 
 class Structure_List(webapp2.RequestHandler):
