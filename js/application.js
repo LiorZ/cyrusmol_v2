@@ -236,8 +236,33 @@ var ServerRequests = (function($) {
       $.ajax({
           type: "GET",
           url: "/structure/list",
-          success: function (msg) {
-              $("#joblist").html(msg);
+          success: function (json_reply) {
+            structures = JSON.parse( json_reply )
+            // clear the current div
+            $("#joblist").html();
+            for(var i in structures){
+               var structure = structures[i]
+
+               sdiv = $("<div></div>", { "id":"id" + structure.id } )
+               idiv = $("<div></div>", { "id":"id" + structure.id, "class": "structure"} )
+               idiv.append("<br>")
+               idiv.append( $("<a></a>", { "href":"/structure/get?key=" + structure.key } ).html( "(Raw View)" ) )
+               
+               idiv.append( $( "<div></div>" ).html( "created_time  : " + structure.created_time   )
+               idiv.append( $( "<div></div>" ).html( "parental_hash : " + structure.parental_hash  ) 
+               idiv.append( $( "<div></div>" ).html( "parental_key  : " + structure.parental_key   ) 
+               idiv.append( $( "<div></div>" ).html( "hash          : " + structure.hash           ) 
+               idiv.append( $( "<div></div>" ).html( "user_id       : " + structure.user_id        ) 
+               idiv.append( $( "<div></div>" ).html( "taskname      : " + structure.taskname       ) 
+               idiv.append( $( "<div></div>" ).html( "queuename     : " + structure.queuename      ) 
+               idiv.append( $( "<div></div>" ).html( "author        : " + structure.author         ) 
+               idiv.append( $( "<div></div>" ).html( "eta           : " + structure.eta            ) 
+               idiv.append( $( "<div></div>" ).html( "workerinfo    : " + structure.workerinfo     ) 
+               idiv.append( $( "<div></div>" ).html( "energies      : " + structure.energies       ) 
+               idiv.append( $( "<div></div>" ).html( "stderr        : " + structure.stderr         ) 
+               sdiv.append(idiv)
+               $("#joblist").append( sdiv )
+             }
           }
       });
   }

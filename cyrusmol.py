@@ -359,12 +359,25 @@ class Structure_List(webapp2.RequestHandler):
     structure_query.ancestor( structure_key( structure_list_name ))
     structure_query.filter("user_id =", user.user_id() )
     structure_query.order('created_time')
+    
+    structures=[] 
     for structure in structure_query.run():
-      template  = jinja_environment.get_template('structurelist.html')
-      template_values = {
-        'structure': structure
-      }
-      self.response.out.write(template.render(template_values))
+      structures.append( { 
+        "key":str(structure.key()),
+        "created_time":str(structure.created_time),
+        "parental_hash":str(structure.parental_hash),
+        "parental_key":str(structure.parental_key),
+        "hash":str(structure.hash),
+        "user_id":str(structure.user_id),
+        "taskname":str(structure.taskname),
+        "queuename":str(structure.queuename),
+        "workerinfo":str(structure.workerinfo),
+        "energies":str(structure.energies),
+        "stderr":str(structure.stderr)
+      } ) 
+
+    logging.info( structures ) 
+    self.response.out.write(json.dumps(structures) )
 
 
 class Structure_Put(webapp2.RequestHandler):
