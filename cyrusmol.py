@@ -37,78 +37,105 @@ from google.appengine.ext import db
 from google.appengine.api import users
 from google.appengine.api import taskqueue
 
+# this test project allows a maximal number of 100 jobs per operation
 replication_limit = 100
-account_list_name = "db_allowe_account_list"
+
+# data stores and a task queue
 structure_list_name = "db_structures"
 operation_list_name = "db_operations"
 slow_tasks_queue_name = "slow-tasks"
 
-class Account(db.Model):
-  name = db.StringProperty()
-
-def account_key(account_name=None):
-  """Constructs a Datastore key for a Account entity with account_name."""
-  return db.Key.from_path('Account', account_name or 'default_account')
-
+# An operation is defined as any block of replicated jobs. It has a starting structure and
+# often has a parent operation
+# and a json structure (job_data) 
 class Operation(db.Model):
   """Models an operation"""
-  user_id          = db.StringProperty()
-  created_time     = db.DateTimeProperty(auto_now_add=True)
-
+  # user_id to keep track of the owner
+  user_id = db.StringProperty()      
+  # keep track of creation time
+  created_time = db.DateTimeProperty(auto_now_add=True)
+ 
+  # dbkey of parent operation that was last applied to the starting structure of this operation 
   parentkey = db.StringProperty()
-  structure_key    = db.StringProperty()
-  structure_hash   = db.StringProperty()
-  replication      = db.StringProperty()
-  job_data         = db.BlobProperty()
-  info             = db.StringProperty()
-  count_results    = db.IntegerProperty()
-  count_errors     = db.IntegerProperty()
-  count_cputime    = db.IntegerProperty()
-  last_stderr      = db.TextProperty()
+  
+  # dbkey of starting structure for this operation 
+  structure_key = db.StringProperty()
+  
+  # hash of starting structure for this operation 
+  structure_hash = db.StringProperty()
 
+  # how many jobs to be executed
+  replication = db.StringProperty()
+  
+  # JSON structure of input paramenters 
+  job_data = db.BlobProperty()
 
+  # Human readable description of operation (ignored by computers)
+  info = db.StringProperty()
 
+  # results statistics:
+  # how many jobs have returned
+  count_results = db.IntegerProperty()
+  
+  # how many jobs failed
+  count_errors = db.IntegerProperty()
+  
+  # how much CPU time in seconds has accumulated
+  count_cputime = db.IntegerProperty()
+  
+  # last error that came in
+  last_stderr = db.TextProperty()
 
 def operation_key(operation_name=None):
   """Constructs a Datastore key for a Operation entity with operation_name."""
   return db.Key.from_path('Operation', operation_name or 'default_operation')
 
 
+
+
+# The "Structure" class holds a molecular system, molecule or other complete simulation environment
 class Structure(db.Model):
   """Models an individual structure"""
-  user_id        = db.StringProperty()
-  created_time   = db.DateTimeProperty(auto_now_add=True)
+  # user_id to keep track of the owner
+  user_id = db.StringProperty()
+  # keep track of when this was created
+  created_time = db.DateTimeProperty(auto_now_add=True)
 
-  hash           = db.StringProperty()
-  parental_key   = db.StringProperty()
-  parental_hash  = db.StringProperty()
-  operation      = db.StringProperty()
-  taskname       = db.StringProperty()
-  queuename      = db.StringProperty()
-  author         = db.StringProperty()
-  eta            = db.StringProperty()
-  cpuseconds     = db.IntegerProperty()
-  workerinfo     = db.TextProperty()
-  pdbdata        = db.BlobProperty()
-  error          = db.IntegerProperty()
-  stderr         = db.TextProperty()
-  energies       = db.BlobProperty()
+  # SHA1 hash of the pdbdata - used to verify and compare structures
+  hash = db.StringProperty()
+  # Database key of the parent structure (if in database)
+  parental_key = db.StringProperty()
+  # SHA1 hash of the parent structure (if knwon)
+  parental_hash = db.StringProperty()
+  # Database key of the operation that created this structure
+  operation = db.StringProperty()
+  
+  # Taskname of the individual job that created this structure. THis and the
+  taskname = db.StringProperty()
+  # And the queue name name
+  queuename = db.StringProperty()
+
+  # Wallclock time of worker to create this structure
+  cpuseconds = db.IntegerProperty()
+  # information about the worker node
+  workerinfo = db.TextProperty()
+  # the molecular coordinate data of this structure in PDB format (text)
+  pdbdata = db.BlobProperty()
+  # 0 if no error, !=0 otherwise. This is returned by the worker nodes
+  error = db.IntegerProperty()
+  # Any error messages fromt the worker
+  stderr = db.TextProperty()
+  # JSON structure of energies and other data from the worker nodes about the structure
+  energies = db.BlobProperty()
 
 def structure_key(structure_name=None):
   """Constructs a Datastore key for a Structure entity with structure_name."""
   return db.Key.from_path('Structure', structure_name or 'default_structure')
 
-class Register(webapp2.RequestHandler):
-  def get(self):
-    user = users.get_current_user()
-    template = jinja_environment.get_template('noaccount.html')
-    template_values = [ ( "user", user.email() ), ( "logout_url", users.create_logout_url("/") ) ]
-    self.response.out.write(template.render(template_values))
-
 def admin_required( func ):
+  """Decorator function - checks if current user is admin"""
   def check_auth( self, *args, **kwargs ):
     if not users.is_current_user_admin():
-      ## redirect to registration page !
       user = users.get_current_user()
       logging.warning( "Not Admin!:" + str(user.email()) )
       self.response.set_status(403)
@@ -119,20 +146,24 @@ def admin_required( func ):
   return check_auth
 
 def login_required( func ):
+  """Decorator function stub - can be used to check if current user is registered""" 
   def check_auth( self, *args, **kwargs ):
-    ## Figure out if this user is registered
+    # Figure out if this user is registered
     user = users.get_current_user()
     # does this user already have an account?
     logging.info( "<" + user.email() + ">" )
     try:
-      accounts = Account.all()
-      accounts.filter("name =", user.email().lower() )
-      result = accounts.fetch(10)
+      # for now allow all users
+      result = True
+
+      # check userdatabase here. 
+      # If this throws an exception or
+      # sets result to false user will be redirected to registration page
       if not result:
         raise Exception('Unknown user')
 
     except:
-      ## redirect to registration page !
+      # redirect to registration page !
       self.redirect("/register")
       return
 
@@ -140,71 +171,58 @@ def login_required( func ):
     return func( self, *args, **kwargs )
   return check_auth
 
+def return_server_error(self):
+  self.response.set_status(500)
+  self.response.out.write("")
+  return
+  
 
 class MainPage(webapp2.RequestHandler):
 
   @login_required
   def get(self):
-    ## Figure out if this user is registered
+    """Delivers main page content (index.html)"""
     user = users.get_current_user()
-    #logging.info( [ user.auth_domain(), user.email(), user.federated_identity(), user.federated_provider(), user.nickname() , user.user_id() ] )
+    # grab template file and a few basic values and send out response
     template = jinja_environment.get_template('index.html')
-    template_values = [ ("log", str(dir( taskqueue ))), ( "logout_url", users.create_logout_url("/") ), ("user", user.email() ), ( "user_id", user.user_id() )  ]
+    template_values = [("log",str(dir( taskqueue ))), 
+                       ("logout_url",users.create_logout_url("/")), 
+                       ("user",user.email()), 
+                       ("user_id",user.user_id())]
     self.response.out.write(template.render(template_values))
-
-class User_Add(webapp2.RequestHandler):
-  @admin_required
-  def get(self):
-    template = jinja_environment.get_template('adduser.html')
-    accountsquery = Account.all().order('name')
-    accounts       = accountsquery.fetch(1000)
-
-    template_values = {
-        'accounts': accounts
-    }
-    self.response.out.write(template.render(template_values))
-
-  @admin_required
-  def post(self):
-    username = self.request.get('email')
-    account= Account(parent=account_key( account_list_name ))
-    #Lowercase the user email address so later comparisons can be case independent
-    account.name=username.lower()
-    account.put()
-    self.redirect( "/user/add" )
-
-class User_Delete(webapp2.RequestHandler):
-  @admin_required
-  def post(self):
-    account = db.get( self.request.get('key') )
-    account.delete()
 
 class Task_Add(webapp2.RequestHandler):
   @login_required
   def post(self):
-    tasks = []
+    """Deal with request to queue up a new operation"""
+    
     user = users.get_current_user()
+    
+    # get replication parameter from URL
     replication = int( self.request.get('replication') )
 
-    ## right now replication is limited to a maximum of replication_limit jobs.
+    # right now replication is limited to a maximum of replication_limit jobs.
     if replication > replication_limit: replication = replication_limit;
-    ## less then 1 jobs no maky any sensy
+    # less then 1 jobs no maky any sensy
     if replication < 1: replication = 1;
 
+    # get parental_key and hash from URL also
     parental_key  = self.request.get('parental_key')
     parental_hash = self.request.get('parental_hash')
 
+    # the actual job data is sent by the client in the body of the POST as a JSON string
     job_data = self.request.body
-
+    
+    # interpret the JSON structure
     job_data_json = json.loads( job_data )
-    #logging.info( str( job_data ) )
 
+    # calculate a SHA1 hash of the pdb data. This is for tracking and comparison
     pdbhash =  hashlib.sha1(job_data).hexdigest()
 
-    ## set up operation
+    # set up a new operation data block and set some reasonable initial values
     new_operation                = Operation(parent=operation_key( operation_list_name ))
     new_operation.user_id        = user.user_id()
-    new_operation.structure_key  = ""
+    new_operation.structure_key  = "" 
     new_operation.structure_hash = pdbhash
     new_operation.replication    = str(replication)
     new_operation.parentkey      = job_data_json["parent_operation"]
@@ -214,12 +232,11 @@ class Task_Add(webapp2.RequestHandler):
     new_operation.count_errors   = 0
     new_operation.count_cputime  = 0
     new_operation.last_stderr    = ""
+    
+    # Add the operation to the GAE data store
     new_operation.put()
-
-
-    ## make the task queue for these jobs
-    q = taskqueue.Queue(slow_tasks_queue_name)
-
+    
+    # Also create a data entry for the structure itself
     newstructure            = Structure(parent=structure_key( structure_list_name ))
     newstructure.user_id    = user.user_id()
     newstructure.workerinfo = ""
@@ -227,20 +244,25 @@ class Task_Add(webapp2.RequestHandler):
     newstructure.hash       = pdbhash
     newstructure.operation  = str( new_operation.key() )
 
-    if users.get_current_user():
-      newstructure.author = users.get_current_user().nickname()
+    # Add the structure to the GAE data store
     newstructure.put()
 
+    # finally create all the compute tasks. We're highjacking the task queue
+    # system the GAE provides but we're not actually letting GAE *execute* these.
+    # instead we let worker clients take jobs off the top of the queue and return data
+    # via HTTP
     taskdata = { "key"     : str(newstructure.key()),
                  "hash"    : newstructure.hash,
                  "user_id" : user.user_id(),
                  "operation" : newstructure.operation,
                  "job_data" : job_data }
-
+    tasks = []
     for r in range(replication):
       newtask = taskqueue.Task(payload=json.dumps(taskdata), method='PULL')
       tasks.append( newtask )
 
+    # make the task queue for these jobs
+    q = taskqueue.Queue(slow_tasks_queue_name)
     # Now add all the tasks
     q.add(tasks)
 
@@ -248,16 +270,20 @@ class Task_Add(webapp2.RequestHandler):
 
 class Task_Get(webapp2.RequestHandler):
   def post(self):
+    """Takes a task off the top of the queue and leases it"""
     q = taskqueue.Queue(slow_tasks_queue_name)
 
     lease_time = self.request.get('lease_time')
 
+    # for now only let 1 task be taken at a time.
     tasks = q.lease_tasks(int(lease_time), 1)
+
+    # check if there are any tasks to be done, otherwise
+    # hand back a JSON structure with all the necessary job information
     if len(tasks) == 0:
       self.response.out.write( "[]" )
     else:
       t = {
-        "eta":            str(tasks[0].eta),
         "method":         str(tasks[0].method),
         "name":           str(tasks[0].name),
         "payload":        str(tasks[0].payload),
@@ -269,10 +295,12 @@ class Task_Get(webapp2.RequestHandler):
         "was_enqueued":   str(tasks[0].was_enqueued)
        }
 
+      #finally reply ot the request
       self.response.out.write( json.dumps(t) )
 
 
 def delete_task_by_name( taskname, queuename = slow_tasks_queue_name):
+    """Helper function that deletes a task given  taskname""" 
     q = taskqueue.Queue( queuename )
     faketask = type('faketask', (object,),  {"name": taskname, "was_deleted": False } )()
     q.delete_tasks( faketask )
@@ -280,27 +308,31 @@ def delete_task_by_name( taskname, queuename = slow_tasks_queue_name):
 class Task_Delete(webapp2.RequestHandler):
   @login_required
   def post(self):
+    """Delete a particular task"""
     taskname = self.request.get('taskname')
     delete_task_by_name( taskname )
 
 class Task_Purgeall(webapp2.RequestHandler):
   @login_required
   def post(self):
+     """Deletes all the tasks"""
      q = taskqueue.Queue(slow_tasks_queue_name)
      q.purge()
 
 class Task_List(webapp2.RequestHandler):
   @login_required
   def get(self):
+    """Mainly for diagnostics: Lists up to 100 next tasks"""
     q = taskqueue.Queue(slow_tasks_queue_name)
 
-    #there is no pythonic way to get a list of tasks, this can only be done via REST API (wtf google ? ) so we have to cheat - just lease the tasks for 1 second. At least show all the unleased task this way.
+    #there is no pythonic way to get a list of tasks, this can only be done via 
+    #REST API so we have to cheat - just lease the tasks for 0 second. At least 
+    #show all the unleased task this way.
     tasks = q.lease_tasks(0, 100)
 
     tasktemplate  = jinja_environment.get_template('task_list.html')
     tasktemplate_values = [
      {
-      "eta":            str(t.eta),
       "method":         str(t.method),
       "name":           str(t.name),
       "payload":        str(t.payload),
@@ -319,53 +351,46 @@ class Task_List(webapp2.RequestHandler):
 class Structure_List(webapp2.RequestHandler):
   @login_required
   def get(self):
+    """Obtain a list of structures"""
+
     user = users.get_current_user()
 
-    structures_query =  Structure.all()
-    structures_query.ancestor( structure_key( structure_list_name ))
-    structures_query.filter("user_id =", user.user_id() )
-    structures_query.order('created_time')
-    structures       = structures_query.fetch(1000)
+    structure_query =  Structure.all()
+    structure_query.ancestor( structure_key( structure_list_name ))
+    structure_query.filter("user_id =", user.user_id() )
+    structure_query.order('created_time')
+    for structure in structure_query.run():
+      template  = jinja_environment.get_template('structurelist.html')
+      template_values = {
+        'structure': structure
+      }
+      self.response.out.write(template.render(template_values))
 
-    #logging.info( structures )
-
-    template  = jinja_environment.get_template('structurelist.html')
-    template_values = {
-        'structures': structures
-    }
-    self.response.out.write(template.render(template_values))
 
 class Structure_Put(webapp2.RequestHandler):
   # no login required here because the workers are anonymous. However we
-  # do do a check to make sure this task actually existed. If not we
-  # simply ignore the request.
-  def return_error(self):
-    pass
+  # do do a check to make sure this task actually existed by comparing hashes. 
+  # If not we simply ignore the request.
+  # TODO: Actualy token authentication for the workers.
 
   def post(self):
-
+    """Add a structure to the database. This is called by the workers"""
     # get the task queue so we can delete the relevant task
     q = taskqueue.Queue(slow_tasks_queue_name)
-
     payload = self.request.get('output')
     payload_json = urllib.unquote_plus( payload )
-    
     payload_data = json.loads( payload_json )
 
-    ## First make sure the taskname is in the payload data
+    # First make sure the taskname is in the payload data
     if not "taskname" in payload_data:
-      return return_error()
+      return return_server_error(self)
 
-    ## First delete the task that has been completed
-    #logging.info("Deleting completed task: <%s>" % payload_data["taskname"] )
-
+    # First delete the task that has been completed
     delete_task_by_name(payload_data["taskname"])
 
     self.response.out.write("Success" );
 
     newstructure = Structure(parent=structure_key( structure_list_name ))
-
-    #logging.info( payload_data.keys() )
 
     newstructure.user_id        = str(payload_data["user_id"])
     newstructure.error          = int(payload_data["error"])
@@ -374,25 +399,15 @@ class Structure_Put(webapp2.RequestHandler):
     newstructure.parental_key   = str(payload_data["parental_key"])
     newstructure.parental_hash  = str(payload_data["parental_hash"])
     newstructure.operation      = str(payload_data["operation"])
-    
     if "energies" in payload_data:
       newstructure.energies       = json.dumps(payload_data["energies"])
     else:
       newstructure.energies       = "[]"
-
     newstructure.stderr         = str( payload_data["stderr"] )
-    
-    #logging.info("STDERR: <<" + newstructure.stderr + ">>")
-
-
-
-    if users.get_current_user():
-      newstructure.author = users.get_current_user().nickname()
     newstructure.hash = hashlib.sha1(newstructure.pdbdata).hexdigest()
-
     newstructure.put()
 
-    ## now update the operation (we could cache here and update only every so often if we wanted to minimize db access)
+    # now update the operation (we could cache here and update only every so often if we wanted to minimize db access)
 
     operation = db.get( str(payload_data["operation"] ) )
     operation.count_results   = (operation.count_results or 0) + 1
@@ -406,199 +421,180 @@ class Structure_Put(webapp2.RequestHandler):
 class Structure_Get(webapp2.RequestHandler):
   @login_required
   def get(self):
+    """Obtain a particular structure based on a key"""
 
     key = self.request.get('key')
-    structure = db.get( key )
+    try:
+      structure = db.get( key )
+      # Check that this user matches the owner of the object
+      user = users.get_current_user()
+      if user.user_id() != structure.user_id:
+        self.response.set_status(403)
+        return
+      structure_dict = {
+        "key" : str(structure.key()) ,
+        "user_id" :str(structure.user_id) ,
+        "created_time" :str(structure.created_time) ,
+        "parental_hash" :str(structure.parental_hash),
+        "parental_key" :str(structure.parental_key) ,
+        "operation" :str(structure.operation) ,
+        "hash" :str(structure.hash) ,
+        "taskname" :str(structure.taskname) ,
+        "queuename" :str(structure.queuename) ,
+        "pdbdata" :str(structure.pdbdata) ,
+        "stderr" :str(structure.stderr) ,
+        "energies" :str(structure.energies) ,
+        "workerinfo" :str(structure.workerinfo)
+      }
+      # reply with JSON object
+      self.response.out.write( json.dumps( structure_dict ) )
+      return
 
-    ## Check that this user matches the owner of the object
-    user = users.get_current_user()
-    if user.user_id() != structure.user_id:
-      self.response.set_status(403)
+    except:
+      self.response.set_status(500)
+      self.response.out.write("")
       return
 
 
-    structure_dict = {
-    "key" :          str(structure.key())        ,
-    "user_id"       :str(structure.user_id)      ,
-    "created_time"  :str(structure.created_time) ,
-    "parental_hash" :str(structure.parental_hash),
-    "parental_key"  :str(structure.parental_key) ,
-    "operation"     :str(structure.operation)    ,
-    "hash"          :str(structure.hash)         ,
-    "taskname"      :str(structure.taskname)     ,
-    "queuename"     :str(structure.queuename)    ,
-    "author"        :str(structure.author)       ,
-    "eta"           :str(structure.eta)          ,
-    "pdbdata"       :str(structure.pdbdata)      ,
-    "stderr"        :str(structure.stderr)       ,
-    "energies"      :str(structure.energies)     ,
-    "workerinfo"    :str(structure.workerinfo)
-    }
-
-    ## TODO Need error handlign code here
-
-    #logging.info("Got Structure: %s"%str( structure_dict ) )
-
-    # reply with JSON object
-    self.response.out.write( json.dumps( structure_dict ) )
-
+# delete a particular structure 
 class Structure_Delete(webapp2.RequestHandler):
   @login_required
   def post(self):
+    """Deletes a structure with a particular database key"""
     structure = db.get( self.request.get('key') )
 
-    ## Check that this user matches the owner of the object
+    # Check that this user matches the owner of the object
     user = users.get_current_user()
     if user.user_id != structure.user_id:
       self.response.set_status(403)
       return
 
-    ## or else continue to deleteing this structure
+    # or else continue to deleteing this structure
     structure.delete()
 
+# deletes all structures of the current user  flat out or flat out or  
 class Structure_DeleteAll(webapp2.RequestHandler):
   @login_required
   def post(self):
+    """Delete all structures derived from a parental_hash or parental_key"""
+    #grab url parameters
+    parental_hash = self.request.get('parental_hash')
+    parental_key  = self.request.get('parental_key')
     user = users.get_current_user()
-    structures_query =  Structure.all()
-    structures_query.ancestor( structure_key( structure_list_name ))
-    structures_query.filter("user_id =", user.user_id() )
-    #delete them in blocks of 1000
-    while True:
-      structures       = structures_query.fetch(1000)
-      if not structures:
-        break
-      for structure in structures:
-        structure.delete()
+    structure_query =  Structure.all()
+    structure_query.ancestor( structure_key( structure_list_name ))
+    #if client wants only a particular parental hash - make it so
+    if parental_hash:  
+      structure_query.filter("parental_hash =", parental_hash )
+    
+    #if client wants only a particular parental_key - make it so
+    if parental_key:   
+      structure_query.filter("parental_key =", parental_key )
+    
+    #always filter by user of course
+    structure_query.filter("user_id =", user.user_id() )
+    
+    for structure in structure_query.run():
+      structure.delete()
 
+# returns a json object with all the structures that match a particular query. 
+# this could be a lot of data - need to implement a way to get chunks of it. For now return it all 
 class Structure_Query(webapp2.RequestHandler):
   @login_required
   def get(self):
-    ### returns a json object with all the structures that match a particular query.
+    """Get a list of structures derived from a parental_hash or parental_key"""
 
     user = users.get_current_user()
     parental_hash = self.request.get('parental_hash')
     parental_key  = self.request.get('parental_key')
-
-    structures = []
-    try:
-      structures = Structure.all()
-
-      if parental_hash:  structures.filter("parental_hash =", parental_hash )
-      if parental_key:   structures.filter("parental_key =", parental_key )
-      structures.filter("user_id =", user.user_id() )
-      structures.fetch(1000)
-    except:
-      structures = []
-
     structure_data = []
-    for structure in structures:
-      structure_dict = {
-      "key" :          str(structure.key()),
-      "created_time"  :str(structure.created_time)  ,
-      "parental_hash" :str(structure.parental_hash) ,
-      "parental_key"  :str(structure.parental_key)  ,
-      "hash"          :str(structure.hash)          ,
-      "operation"     :str(structure.operation)          ,
-      "taskname"      :str(structure.taskname)      ,
-      "queuename"     :str(structure.queuename)     ,
-      "author"        :str(structure.author)        ,
-      "eta"           :str(structure.eta)           ,
-      ##"pdbdata"      :str(structure.pdbdata)      ,
-      "stderr"        :str(structure.stderr)        ,
-      "energies"      :str(structure.energies)      ,
-      "workerinfo"    :str(structure.workerinfo)
-      }
-      structure_data.append( structure_dict )
 
-    self.response.out.write( json.dumps( structure_data ) )
-
-
-def UpdateComplettionTasks( operation_key ):
-    operation = db.get( operationkey )
-
-    structures = Structure.all()
-    structures.filter("operation =", operation_key )
-    total_results = structures.count( read_policy= EVENTUAL_CONSISTENCY, deadline=5 )
-    structures.filter("error_status =", 0)
-    good_results = structures.count( read_policy= EVENTUAL_CONSISTENCY, deadline=5 )
-
-
-
-    self.response.out.write( json.dumps( structure_data ) )
-
-
-
-class Operation_GetStats(webapp2.RequestHandler):
-  @login_required
-  def post(self):
-    user = users.get_current_user()
-    operationkey = self.request.get('key')
-
-    operation = db.get( operationkey )
-
-    ## Check that this user matches the owner of the object
-    user = users.get_current_user()
-    if user.user_id != operation.user_id:
-      self.response.set_status(403)
-      return
-
+    try:
+      structure_query = Structure.all()
+      structure_query.ancestor( structure_key( structure_list_name ))
+      
+      #if client wants only a particular parental hash - make it so
+      if parental_hash:  
+        structure_query.filter("parental_hash =", parental_hash )
+      
+      #if client wants only a particular parental_key - make it so
+      if parental_key:   
+        structure_query.filter("parental_key =", parental_key )
+      
+      #always filter by user of course
+      structure_query.filter("user_id =", user.user_id() )
+     
+      for structure in structure_query.run():
+        structure_dict = {
+          "key" : str(structure.key()),
+          "created_time" :str(structure.created_time) ,
+          "parental_hash" :str(structure.parental_hash) ,
+          "parental_key" :str(structure.parental_key) ,
+          "hash" :str(structure.hash) ,
+          "operation" :str(structure.operation) ,
+          "taskname" :str(structure.taskname) ,
+          "queuename" :str(structure.queuename) ,
+          #do not pass pack the pdb data - that's way to much data - client must retrieve
+          #that one by one
+          #"pdbdata" :str(structure.pdbdata) ,
+          "stderr" :str(structure.stderr) ,
+          "energies" :str(structure.energies) ,
+          "workerinfo" :str(structure.workerinfo)
+        }
+        structure_data.append( structure_dict )
+  
+      # finally return a json version of our data structure
+      self.response.out.write( json.dumps( structure_data ) )
+    except:
+      return return_server_error( self )
 
 
 
 class Operation_List(webapp2.RequestHandler):
   @login_required
   def get(self):
+    """Obtains a JSON list of all the operations in the database (of this user)"""
     user = users.get_current_user()
     parentkey = self.request.get('parentkey')
-    operations = []
-    try:
-      operations = Operation.all()
-      operations.filter("parentkey =", parentkey )
-      operations.filter("user_id =", user.user_id() )
-      operations.fetch(1000)
-    except:
-      operations = []
-
     operation_data = []
-    for operation in operations:
-      operation_dict = {
-      "key"               : str(operation.key()),
-      "parentkey"         : str(operation.parentkey)  ,
-      "structure_key"     : str(operation.structure_key   )  ,
-      "structure_hash"    : str(operation.structure_hash  )  ,
-      "replication"       : str(operation.replication     )  ,
-      "count_results"     : str(operation.count_results   )  ,
-      "count_errors"      : str(operation.count_errors    )  ,
-      "count_cputime"     : str(operation.count_cputime  )  ,
-      "last_stderr"       : str(operation.last_stderr     )  ,
-      "job_data"          : str(operation.job_data     )  ,
-      "info"              : operation.info   ,
-      }
-      operation_data.append( operation_dict )
+    
+    try:
+      operations_query = Operation.all()
+      operations_query.filter("parentkey =",parentkey)
+      operations_query.filter("user_id =",user.user_id())
+      for operation in operations_query.run():
+        operation_dict = {
+          "key": str(operation.key()),
+          "parentkey": str(operation.parentkey),
+          "structure_key": str(operation.structure_key),
+          "structure_hash": str(operation.structure_hash),
+          "replication": str(operation.replication),
+          "count_results": str(operation.count_results),
+          "count_errors": str(operation.count_errors),
+          "count_cputime": str(operation.count_cputime),
+          "last_stderr": str(operation.last_stderr),
+          "job_data": str(operation.job_data),
+          "info": operation.info,
+        }
+        operation_data.append( operation_dict )
+      self.response.out.write( json.dumps( operation_data ) )
+    except: 
+      return return_server_error( self )
 
-    self.response.out.write( json.dumps( operation_data ) )
 
 class Operation_DeleteAll(webapp2.RequestHandler):
   @login_required
   def post(self):
+    """Delete all the operations entries in the database (of this user)"""
     user = users.get_current_user()
 
     operations_query = Operation.all().ancestor( operation_key( operation_list_name ))
     operations_query.filter("user_id =", user.user_id() )
-    #delete them in blocks of 1000
-    while True:
-      operations       = operations_query.fetch(1000)
-      if not operations:
-        break
-      for operation in operations:
-        operation.delete()
+    for operation in operations_query.run(): 
+      operation.delete()
 
 app = webapp2.WSGIApplication([
   ('/',                      MainPage ),
-  ('/register',              Register ),
-  ('/user/add',              User_Add ),
-  ('/user/delete',           User_Delete ),
   ('/task/add',              Task_Add ),
   ('/task/get',              Task_Get ),
   ('/task/delete',           Task_Delete ),
@@ -610,7 +606,6 @@ app = webapp2.WSGIApplication([
   ('/structure/query',       Structure_Query ),
   ('/structure/delete',      Structure_Delete ),
   ('/structure/deleteall',   Structure_DeleteAll ),
-  ('/operation/getstats',    Operation_GetStats ),
   ('/operation/list',        Operation_List ),
   ('/operation/deleteall',   Operation_DeleteAll ),
 
