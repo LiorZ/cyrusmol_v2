@@ -359,9 +359,7 @@ class Structure_List(webapp2.RequestHandler):
     structure_query.filter("user_id =", user.user_id() )
     structure_query.order('created_time')
     
-    structures=[] 
-    for structure in structure_query.run():
-      structures.append( { 
+    structures=[ { 
         "key":str(structure.key()),
         "created_time":str(structure.created_time),
         "parental_hash":str(structure.parental_hash),
@@ -373,9 +371,8 @@ class Structure_List(webapp2.RequestHandler):
         "workerinfo":str(structure.workerinfo),
         "energies":str(structure.energies),
         "stderr":str(structure.stderr)
-      } ) 
+      } for structure in structure_query.run() ]
 
-    logging.info( structures ) 
     self.response.out.write(json.dumps(structures) )
 
 
@@ -536,8 +533,7 @@ class Structure_Query(webapp2.RequestHandler):
       #always filter by user of course
       structure_query.filter("user_id =", user.user_id() )
      
-      for structure in structure_query.run():
-        structure_dict = {
+      structure_data = [ {
           "key" : str(structure.key()),
           "created_time" :str(structure.created_time) ,
           "parental_hash" :str(structure.parental_hash) ,
@@ -552,8 +548,7 @@ class Structure_Query(webapp2.RequestHandler):
           "stderr" :str(structure.stderr) ,
           "energies" :str(structure.energies) ,
           "workerinfo" :str(structure.workerinfo)
-        }
-        structure_data.append( structure_dict )
+        } for structure in structure_query.run() ]
   
       # finally return a json version of our data structure
       self.response.out.write( json.dumps( structure_data ) )
@@ -574,8 +569,9 @@ class Operation_List(webapp2.RequestHandler):
       operations_query = Operation.all()
       operations_query.filter("parentkey =",parentkey)
       operations_query.filter("user_id =",user.user_id())
-      for operation in operations_query.run():
-        operation_dict = {
+      
+      
+      operation_data = [ {
           "key": str(operation.key()),
           "parentkey": str(operation.parentkey),
           "structure_key": str(operation.structure_key),
@@ -587,8 +583,7 @@ class Operation_List(webapp2.RequestHandler):
           "last_stderr": str(operation.last_stderr),
           "job_data": str(operation.job_data),
           "info": operation.info,
-        }
-        operation_data.append( operation_dict )
+        } for operation in operations_query.run() ]
       self.response.out.write( json.dumps( operation_data ) )
     except: 
       return return_server_error( self )
