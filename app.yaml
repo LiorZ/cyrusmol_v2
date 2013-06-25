@@ -30,7 +30,7 @@ handlers:
   static_dir: data
 - url: /js
   static_dir: js
-- url: /task/get
+- url: /task/lease
   script: cyrusmol.app
 - url: /structure/put
   script: cyrusmol.app

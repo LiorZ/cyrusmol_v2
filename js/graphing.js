@@ -36,6 +36,8 @@
       // the margin size.
       var w = $(jqobj).width() - margin;
       var h = $(jqobj).height() - margin;
+      if( h < 300 ) h = 300;
+      if( w < 400 ) w = 400;
 
       // `x` and `y` convert expresion values to pixel position. The domains of these
       // scales (the range of expression values) will be computed dynamically later.
@@ -206,7 +208,7 @@
       obj.empty()
 
       // retrieve the data from the DOM (through jQuery) 
-      var jsondata = $.data(me, "graphdata")
+      var jsondata = $.parseJSON( $.data(me, "graphdata") )
 
       // grab the energylist from the first structure (assume they're all the same.. hmm ., not great)
       // TODO: mtyka add code to parse through all structures and get all energy types ?? 
@@ -265,7 +267,6 @@
       for (i in jsondata) {
         var struct = jsondata[i]
         var energies = $.parseJSON(struct.energies)
-        
         graph_data.push({
           "x": energies[default_axes["x"]],
           "y": energies[default_axes["y"]],
@@ -277,9 +278,6 @@
       create_graph("#chartCell", graph_data);
     }
 
-    var graph_puller;
-    var last_parental_hash = ""
-    var last_graph_data = undefined
       
     // create a jquery function to manage graphs - this function can be called on any jquery object (though typically a <div> ) and will
     // draw a graph inside of it. 
@@ -291,19 +289,9 @@
       // load data using AJAX request to server. Second argument is the success function
       ServerRequests.loadStructuresByParent( parental_hash, function (jsondata) {
         // store the raw data locally
-        $.data(me, "graphdata", jsondata)
-        console.log([ "plotting:", jsondata ]) 
+        
+        $.data(me, "graphdata", JSON.stringify( jsondata) )
         draw_graph(me, axes)
-        
-        if( (parental_hash != last_parental_hash) ||  // is it a different dataset ?
-            graph_data.length != last_graph_data.length ) // or is there new data ?
-        {
-          last_parental_hash = parental_hash;
-          last_graph_data = graph_data ;
-        }
-        
-        clearTimeout( graph_puller );
-        graph_puller = setTimeout( function(){ obj.r_energy_graph( parental_hash, axes )} , 10000 )
       })
 
       return obj

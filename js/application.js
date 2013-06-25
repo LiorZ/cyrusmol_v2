@@ -31,7 +31,6 @@ var ServerRequests = (function($) {
 
       // At least 1 replication has to be requested.  
       if (replication < 1) replication = 1;
-      
       // limit task replication to 10 for now. This is actually enforced on the server, but it's polite to 
       // alert the user.
       replication_limit = 100
@@ -39,15 +38,13 @@ var ServerRequests = (function($) {
           alert("Note: This trial version limits job to a size of " + replication_limit + " tasks. Thus only " + replication_limit + " tasks will be submitted.")
           replication = replication_limit;
       }
+      data_pack["replication"] = replication
       
-      // Turn data_pack into json string
-      var json_data_pack = JSON.stringify(data_pack)
-       
-      // and POST it to the server
+      // Turn data_pack into json string and POST it to the server
       $.ajax({
           type: "POST",
-          url: "/task/add?replication=" + replication,
-          data: json_data_pack,
+          url: "/operation/add",
+          data: JSON.stringify(data_pack),
           dataType: 'json',
           success: function (msg) {
               // If we succeeded update the two debug tabs.
@@ -65,10 +62,9 @@ var ServerRequests = (function($) {
 
   function updateTaskList() {
       $.ajax({
-          type: "GET",
-          url: "/task/list",
-          success: function (msg) {
-              var tasks = jQuery.parseJSON(msg)
+          type: "POST",
+          url: "/task/lease?lease_time=0&max_tasks=100",
+          success: function (tasks) {
               $("#tasklist").empty()
               for (tasknum in tasks) {
                   // put this in a closure so each delete/toggle function will refer to the correct element
@@ -79,7 +75,7 @@ var ServerRequests = (function($) {
                     var taskdiv = $("<div></div>")
                     var delete_button = $("<button>Delete</button>").click( function(){ var mytaskname = task.name; deleteTask(mytaskname); } ) 
                     var payload_button = $("<button>Show/Hide Payload</button>").click( function(){ $(this).parent().find("#payload").toggle() } )
-                    var taskinfo = $("<span></span>").html( " " + task.name + " " + task.eta + " " + task.queue_name + " " + task.size )
+                    var taskinfo = $("<span></span>").html( " " + task.name + " " + task.queue_name )
                     var payload_div = $("<div></div>", { "style":"display:none", id:"payload" } ).html( "<pre>" + payload + "</pre>" )
                     taskdiv.append(delete_button).append(payload_button).append(taskinfo).append(payload_div)
                     $("#tasklist").append(taskdiv)
@@ -102,7 +98,7 @@ var ServerRequests = (function($) {
   function purgeQueue() {
       $.ajax({
           type: "POST",
-          url: "/task/purgeall",
+          url: "/task/deleteall",
           success: function (msg) {
               updateTaskList();
           }
@@ -236,10 +232,9 @@ var ServerRequests = (function($) {
       $.ajax({
           type: "GET",
           url: "/structure/list",
-          success: function (json_reply) {
-            structures = JSON.parse( json_reply )
+          success: function (structures) {
             // clear the current div
-            $("#joblist").html();
+            $("#joblist").empty();
             for(var i in structures){
                var structure = structures[i]
 
@@ -247,19 +242,20 @@ var ServerRequests = (function($) {
                idiv = $("<div></div>", { "id":"id" + structure.id, "class": "structure"} )
                idiv.append("<br>")
                idiv.append( $("<a></a>", { "href":"/structure/get?key=" + structure.key } ).html( "(Raw View)" ) )
-               
-               idiv.append( $( "<div></div>" ).html( "created_time  : " + structure.created_time   ))
-               idiv.append( $( "<div></div>" ).html( "parental_hash : " + structure.parental_hash  )) 
-               idiv.append( $( "<div></div>" ).html( "parental_key  : " + structure.parental_key   )) 
-               idiv.append( $( "<div></div>" ).html( "hash          : " + structure.hash           )) 
-               idiv.append( $( "<div></div>" ).html( "user_id       : " + structure.user_id        )) 
-               idiv.append( $( "<div></div>" ).html( "taskname      : " + structure.taskname       )) 
-               idiv.append( $( "<div></div>" ).html( "queuename     : " + structure.queuename      )) 
-               idiv.append( $( "<div></div>" ).html( "author        : " + structure.author         )) 
-               idiv.append( $( "<div></div>" ).html( "eta           : " + structure.eta            )) 
-               idiv.append( $( "<div></div>" ).html( "workerinfo    : " + structure.workerinfo     )) 
-               idiv.append( $( "<div></div>" ).html( "energies      : " + structure.energies       )) 
-               idiv.append( $( "<div></div>" ).html( "stderr        : " + structure.stderr         )) 
+
+               idiv.append( $( "<div></div>" ).html( "cpuseconds   : " + structure.cpuseconds    ))
+               idiv.append( $( "<div></div>" ).html( "created_time : " + structure.created_time  )) 
+               idiv.append( $( "<div></div>" ).html( "energies     : " + structure.energies      )) 
+               idiv.append( $( "<div></div>" ).html( "hash_sha1    : " + structure.hash_sha1     )) 
+               idiv.append( $( "<div></div>" ).html( "key          : " + structure.key           )) 
+               idiv.append( $( "<div></div>" ).html( "operation    : " + structure.operation     )) 
+               idiv.append( $( "<div></div>" ).html( "parental_hash: " + structure.parental_hash )) 
+               idiv.append( $( "<div></div>" ).html( "parental_key : " + structure.parental_key  )) 
+               idiv.append( $( "<div></div>" ).html( "queuename    : " + structure.queuename     )) 
+               idiv.append( $( "<div></div>" ).html( "stderr       : " + structure.stderr        )) 
+               idiv.append( $( "<div></div>" ).html( "taskname     : " + structure.taskname      )) 
+               idiv.append( $( "<div></div>" ).html( "user_id      : " + structure.user_id       )) 
+               idiv.append( $( "<div></div>" ).html( "workerinfo   : " + structure.workerinfo    )) 
                sdiv.append(idiv)
                $("#joblist").append( sdiv )
              }
