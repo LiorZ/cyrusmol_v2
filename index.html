@@ -31,7 +31,6 @@
   <script type="text/javascript" src="http://static.jstree.com/v.1.0pre/jquery.jstree.js"></script>
   <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/three.js/r52/three.min.js"></script>
   <script type="text/javascript" src="https://cyrusmol.googlecode.com/git/js/GLmol.js"></script>
-
   <!-- custom libraries -->
   <script type="text/javascript" src="js/jobdialog.js"></script>
   <script type="text/javascript" src="js/context.js"></script>
@@ -43,6 +42,12 @@
     $(function() {
         $( "#rightmenu" ).accordion({collapsible: true, heightStyle: "fill" });
         $( "#leftmenu" ).accordion({collapsible: false, heightStyle: "fill",  alwaysOpen: true });
+        $('#diagram_container').dialog({ 
+        	autoOpen:false,
+        	width:1200,
+        	height:600  
+        });
+  		$('#btn_open_diagram').click(function() { $('#diagram_container').dialog('open'); });
     });
  
     
@@ -294,10 +299,6 @@
         this.modelGroup.add(asu);
     };
   
-  
-  
-  
-  
   </script>
 </head>
 <style>
@@ -441,6 +442,11 @@ NACLS-Status: <code id="statusField">NO-STATUS</code>
 
    </div>
   </div>
+  
+  <h3>Rosetta Diagram</h3>
+  <div>
+  		<button id='btn_open_diagram'>Open Diagram</button>
+  </div>
 </div>
 </div>
 
@@ -468,8 +474,6 @@ NACLS-Status: <code id="statusField">NO-STATUS</code>
   <div id="joblist" style="overflow:scroll; height: 100%;" ></div>
   </div>
 </div>
-
-
 
 
 
@@ -516,6 +520,11 @@ glmol01.defineRepresentation = defineRepFromController;
 
 <div id="contextmenudiv" style="width:300px" ></div>
 
+<div id='diagram_container' style="background-color: white;">
+	
+	<iframe src="/js/rosetta_diagrams/editor.html" style="width: 100%; height:100%; border-width: 0px;" ></iframe>
+	
+</div>
 
 
 </body>
