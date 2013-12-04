@@ -31,6 +31,8 @@ import common
 import task
 import operation
 
+import zipfile
+import StringIO
 structure_list_name = 'db_structures'
 
 
@@ -85,10 +87,10 @@ class Structure(db.Model):
         'user_id': str(self.user_id),
         'taskname': str(self.taskname),
         'queuename': str(self.queuename),
-        'cpuseconds': se    lf.cpuseconds,
+        'cpuseconds': self.cpuseconds,
         'workerinfo': str(self.workerinfo),
         'energies': str(self.energies),
-        'stderr': str(self.stderr)
+        'stderr': str(self.stderr),
         }
 
     if include_pdbdata: dform['pdbdata'] = str(self.pdbdata)
@@ -111,9 +113,9 @@ class List(common.RequestHandler):
     structure_query.ancestor(Structure.Key(structure_list_name))
     structure_query.filter('user_id =', user.user_id())
     structure_query.order('created_time')
-
+    structure_arr = structure_query.run()
     structures = [structure.AsDict() for structure
-                  in structure_query.run()]
+                  in structure_arr]
 
     self.response.headers['Content-Type'] = 'application/json; charset=utf-8'
     self.response.headers['Content-Disposition'] = 'attachment'
@@ -147,8 +149,35 @@ class Get(common.RequestHandler):
     self.response.out.write(json.dumps(structure_dict))
     return
 
+class StructureQuery:
+    
+    def get_structures_for_user(self,asDict=True,include_pdbdata=False):
+        user = users.get_current_user()
+        parental_hash = self.request.get('parental_hash')
+        parental_key = self.request.get('parental_key')
+    
+        structure_query = Structure.all()
+        structure_query.ancestor(Structure.Key(structure_list_name))
+    
+        # if client wants only a particular parental hash - make it so
+        if parental_hash:
+          structure_query.filter('parental_hash =', parental_hash)
+    
+        # if client wants only a particular parental_key - make it so
+        if parental_key:
+          structure_query.filter('parental_key =', parental_key)
+    
+        # always filter by user of course
+        structure_query.filter('user_id =', user.user_id())
+        structure_arr = structure_query.run()
+        
+        if asDict:
+            return [structure.AsDict(include_pdbdata) for structure in structure_arr]
+        
+        return structure_arr
+            
 
-class Query(common.RequestHandler):
+class Query(common.RequestHandler,StructureQuery):
   ROUTE = '/structure/query'
 
   @classmethod
@@ -159,31 +188,43 @@ class Query(common.RequestHandler):
   def get(self):  # pylint: disable=g-bad-name
     """Get a list of structures derived from a parental_hash or parental_key."""
 
-    user = users.get_current_user()
-    parental_hash = self.request.get('parental_hash')
-    parental_key = self.request.get('parental_key')
-
-    structure_query = Structure.all()
-    structure_query.ancestor(Structure.Key(structure_list_name))
-
-    # if client wants only a particular parental hash - make it so
-    if parental_hash:
-      structure_query.filter('parental_hash =', parental_hash)
-
-    # if client wants only a particular parental_key - make it so
-    if parental_key:
-      structure_query.filter('parental_key =', parental_key)
-
-    # always filter by user of course
-    structure_query.filter('user_id =', user.user_id())
-
-    structures = [structure.AsDict() for structure
-                  in structure_query.run()]
+    structures = self.get_structures_for_user()
 
     # finally return a json version of our data structure
     self.response.headers['Content-Type'] = 'application/json; charset=utf-8'
     self.response.headers['Content-Disposition'] = 'attachment'
     self.response.out.write(json.dumps(structures))
+
+
+#Get a zip of all structures that match the query.
+class GetPDBs(common.RequestHandler,StructureQuery):
+  ROUTE = '/structure/get_pdbs'
+
+  @classmethod
+  def Routes(cls):
+    return [webapp2.Route(cls.ROUTE, cls, methods=['GET'])]
+
+  @common.RequestHandler.LoginRequired
+  def get(self):  # pylint: disable=g-bad-name
+    """Get a list of structures derived from a parental_hash or parental_key."""
+    structures = self.get_structures_for_user(True, True)
+
+    structures_pdbs = [s.get('pdbdata') for s in structures]
+
+    #Create a zip file from all the pdbs
+    zip_stream = StringIO.StringIO()
+    zip_file = zipfile.ZipFile(zip_stream, "w")
+    
+    for i in range(0,len(structures_pdbs)):
+        zip_file.writestr("out"+str(i)+".pdb", structures_pdbs[i])
+        
+    zip_file.close()
+    zip_bytes = zip_stream.getvalue()
+    zip_stream.close()
+    
+    self.response.headers['Content-Type'] = '"application/zip"'
+    self.response.headers['Content-Disposition'] = 'attachment; filename=output_pdbs.zip'
+    self.response.out.write(zip_bytes)
 
 class Put(common.RequestHandler):
   ROUTE = '/structure/put'
@@ -209,7 +250,8 @@ class Put(common.RequestHandler):
     self.response.out.write("Success" );
 
     newstructure = Structure(Structure.Key(structure_list_name))
-
+    
+    
     newstructure.user_id        = str(payload_data["user_id"])
     newstructure.error          = int(payload_data["error"])
     newstructure.workerinfo     = str(payload_data["workerinfo"])
@@ -292,7 +334,7 @@ class Delete(common.RequestHandler):
     structure.delete()
 
 
-all_routes = [List.Routes(), Get.Routes(), Put.Routes(), Query.Routes(),
+all_routes = [List.Routes(), Get.Routes(), Put.Routes(), Query.Routes(), GetPDBs.Routes(),
               DeleteAll.Routes(), Delete.Routes()]
 
 

@@ -150,6 +150,13 @@ var ServerRequests = (function($) {
                       JobDialogManager.open_job_dialog(job_data,false)
                   }
               },
+              download_pdbs: {
+            	  label:"Download output PDBs",
+            	  action: function() {
+            		  var key = node.data("structure_key");
+            		  window.location = "/structure/get_pdbs?parental_key=" + key;
+            	  }
+              }
           };
 
           return items;

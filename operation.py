@@ -128,6 +128,9 @@ class Add(webapp2.RequestHandler):
     newstructure.operation = str(new_operation.key())
     newstructure.put()
 
+    new_operation.structure_key = str(newstructure.key())
+    new_operation.put()
+
     taskdata = {
         'key': str(newstructure.key()),
         'hash_sha1': newstructure.hash_sha1,
