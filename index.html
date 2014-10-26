@@ -26,11 +26,11 @@
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
   <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.0.8/d3.min.js"></script>
-  <script type="text/javascript" src="http://static.jstree.com/v.1.0pre/jquery.cookie.js"></script>
-  <script type="text/javascript" src="http://static.jstree.com/v.1.0pre/jquery.hotkeys.js"></script>
-  <script type="text/javascript" src="http://static.jstree.com/v.1.0pre/jquery.jstree.js"></script>
+  <script type="text/javascript" src="http://old.static.jstree.com/v.1.0pre/jquery.cookie.js"></script>
+  <script type="text/javascript" src="http://old.static.jstree.com/v.1.0pre/jquery.hotkeys.js"></script>
+  <script type="text/javascript" src="http://old.static.jstree.com/v.1.0pre/jquery.jstree.js"></script>
   <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/three.js/r52/three.min.js"></script>
-  <script type="text/javascript" src="https://cyrusmol.googlecode.com/git/js/GLmol.js"></script>
+  <script type="text/javascript" src="js/GLmol.js"></script>
   <!-- custom libraries -->
   <script type="text/javascript" src="js/jobdialog.js"></script>
   <script type="text/javascript" src="js/context.js"></script>
@@ -39,17 +39,6 @@
   <script type="text/javascript" src="js/nacls_common.js"></script>
   <script type="text/javascript" src="js/nacls_rosetta.js"></script>
   <script type="text/javascript">
-    $(function() {
-        $( "#rightmenu" ).accordion({collapsible: true, heightStyle: "fill" });
-        $( "#leftmenu" ).accordion({collapsible: false, heightStyle: "fill",  alwaysOpen: true });
-        $('#diagram_container').dialog({ 
-        	autoOpen:false,
-        	width:1200,
-        	height:600  
-        });
-  		$('#btn_open_diagram').click(function() { $('#diagram_container').dialog('open'); });
-    });
- 
     
     // Deal with image elements and interaction with GLmol 
 
