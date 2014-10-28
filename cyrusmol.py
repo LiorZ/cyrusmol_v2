@@ -41,17 +41,37 @@ class MainPageHandler(common.RequestHandler):
     user = users.get_current_user()
     # grab template file and a few basic values and send out response
     template = self.JinjaEnv().get_template('index.html')
-    template_values = [("logout_url",users.create_logout_url("/")), 
-                       ("user",user.email()), 
+    template_values = [("logout_url",users.create_logout_url("/")),
+                       ("user",user.email()),
+                       ("user_id",user.user_id())]
+    self.response.out.write(template.render(template_values))
+
+class TempBootstrapHandler(common.RequestHandler):
+  ROUTE = '/bootstrap'
+
+  @classmethod
+  def Routes(cls):
+    return [webapp2.Route(cls.ROUTE, cls, methods=['GET'])]
+
+  @common.RequestHandler.LoginRequired
+  def get(self):  # pylint:disable=g-bad-name
+    """Delivers main page content (index.html)"""
+    user = users.get_current_user()
+    # grab template file and a few basic values and send out response
+    template = self.JinjaEnv().get_template('index_bootstrap.html')
+    template_values = [("logout_url",users.create_logout_url("/")),
+                       ("user",user.email()),
                        ("user_id",user.user_id())]
     self.response.out.write(template.render(template_values))
 
 
+
+
 # Main WSGI app as specified in app.yaml
 app = webapp2.WSGIApplication(sum([MainPageHandler.Routes(),
+                                   TempBootstrapHandler.Routes(),
                                    operation.Routes(),
                                    task.Routes(),
                                    structure.Routes(),
                                   ],
                                   []), debug=True)
-

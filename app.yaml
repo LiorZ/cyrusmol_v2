@@ -13,7 +13,7 @@
 # limitations under the Licenses.
 #
 
-application: cyrusmol 
+application: cyrusmol
 version: 3
 runtime: python27
 api_version: 1
@@ -22,10 +22,12 @@ threadsafe: true
 handlers:
 - url: /stylesheets
   static_dir: stylesheets
+- url: /template
+  static_dir: template
 - url: /images
   static_dir: images
 - url: /nacl
-  static_dir: nacl 
+  static_dir: nacl
 - url: /data
   static_dir: data
 - url: /js

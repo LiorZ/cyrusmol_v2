@@ -1,4 +1,4 @@
-<!-- 
+<!--
 /**
  *
  * Written by mtyka@google.com (Mike Tyka)
@@ -39,8 +39,8 @@
   <script type="text/javascript" src="js/nacls_common.js"></script>
   <script type="text/javascript" src="js/nacls_rosetta.js"></script>
   <script type="text/javascript">
-    
-    // Deal with image elements and interaction with GLmol 
+
+    // Deal with image elements and interaction with GLmol
 
     function load_pdbdata_into_view( pdbdata ){
       $('#glmol01_src').val(pdbdata);
@@ -287,7 +287,7 @@
         }
         this.modelGroup.add(asu);
     };
-  
+
   </script>
 </head>
 <style>
@@ -336,7 +336,7 @@ NACLS-Status: <code id="statusField">NO-STATUS</code>
      <option value="b">B factor</option>
      <option value="polarity">polar/nonpolar</option>
     </select><br>
-    <input id="glmol01_showMainchain" type="checkbox" onchange="updateRepresentation()"  checked>Main chain as 
+    <input id="glmol01_showMainchain" type="checkbox" onchange="updateRepresentation()"  checked>Main chain as
     <select id="glmol01_mainchain" onchange="updateRepresentation()" >
      <option value="bonds">sticks<option>
      <option selected="selected" value="tube">Tube</option>
@@ -353,7 +353,7 @@ NACLS-Status: <code id="statusField">NO-STATUS</code>
      <option selected="selected" value="nuclLine">lines</option>
      <option value="nuclPolygon">polygons</option>
     </select><br>
-    
+
     <input id="glmol01_showSidechains" type="checkbox" onchange="updateRepresentation()" checked>Sidechains
     <select id="glmol01_sidechain" onchange="updateRepresentation()" >
      <option selected="selected" value="stick">sticks</option>
@@ -363,7 +363,7 @@ NACLS-Status: <code id="statusField">NO-STATUS</code>
      <option value="icosahedron">icosahedrons</option>
      <option value="line">lines</option>
     </select><br>
-   <!-- 
+   <!--
     <input id="glmol01_line" type="checkbox" checked="yes"  onchange="updateRepresentation()" >Side chains as lines<br>
     <input id="glmol01_sticks" type="checkbox" checked="no"  onchange="updateRepresentation()" >Side chains as sticks<br>
     <input id="glmol01_spheres" type="checkbox" checked="no"  onchange="updateRepresentation()" >Side chains as spheres<br>
@@ -389,13 +389,13 @@ NACLS-Status: <code id="statusField">NO-STATUS</code>
     <input id="glmol01_biomt" type="checkbox" onchange="updateRepresentation()" >Biological assembly <br>
     <input id="glmol01_packing" type="checkbox" onchange="updateRepresentation()" >Crystal packing<br>
     <input id="glmol01_symopHetatms" type="checkbox" onchange="updateRepresentation()" >Show HETATMs in symmetry mates<br>
-    
+
     <select style="display: none" id="glmol01_bgcolor" onchange="updateRepresentation()" >
      <option value="0xffffff">white</option>
      <option value="0x000000">#444444</option>
      <option  selected="selected" value="0x444444">grey</option>
     </select>
-    
+
     <br>
     Projection: <select id="glmol01_projection" onchange="updateRepresentation()" >
      <option value="orthoscopic">orthoscopic</option>
@@ -410,7 +410,7 @@ NACLS-Status: <code id="statusField">NO-STATUS</code>
     <button onClick="glmol01.doFunc(function(mol) {mol.zoomInto(mol.getAllAtoms());mol.show()});">Reset view</button>
   </div>
   </div>
- 
+
   <h3>Rosetta Backend Jobs</h3>
   <div>
   <fieldset>
@@ -431,7 +431,7 @@ NACLS-Status: <code id="statusField">NO-STATUS</code>
 
    </div>
   </div>
-  
+
   <h3>Rosetta Diagram</h3>
   <div>
   		<button id='btn_open_diagram'>Open Diagram</button>
@@ -453,7 +453,7 @@ NACLS-Status: <code id="statusField">NO-STATUS</code>
   </div>
 </div>
 
-<div class="tabBox" id="joblist_box" style="left: 35%; z-index: 30"> 
+<div class="tabBox" id="joblist_box" style="left: 35%; z-index: 30">
   <span class="bottomTab">Structures</span>
   <div class="insideTab">
   <div>
@@ -467,7 +467,7 @@ NACLS-Status: <code id="statusField">NO-STATUS</code>
 
 
 <div class="permabox" id="leftmenu" style="width: 25%; height:  90%; top: 0px; left: 0px">
-    
+
     <h3>Jobs</h3>
 
     <div id="treebox">
@@ -478,13 +478,13 @@ NACLS-Status: <code id="statusField">NO-STATUS</code>
 
     <h3>Energy/Data plot</h3>
 
-    <div style="height: 400px;"> 
-    <div id="graphbox_container" > 
+    <div style="height: 400px;">
+    <div id="graphbox_container" >
     </div>
     </div>
 
     <h3>Energies</h3>
-    <div id="energybox"></div> 
+    <div id="energybox"></div>
 
 </div>
 
@@ -510,12 +510,11 @@ glmol01.defineRepresentation = defineRepFromController;
 <div id="contextmenudiv" style="width:300px" ></div>
 
 <div id='diagram_container' style="background-color: white;">
-	
+
 	<iframe src="/js/rosetta_diagrams/editor.html" style="width: 100%; height:100%; border-width: 0px;" ></iframe>
-	
+
 </div>
 
 
 </body>
 </html>
-
