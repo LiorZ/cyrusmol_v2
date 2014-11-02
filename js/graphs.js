@@ -1,6 +1,7 @@
 var GraphPlotting = (function($) {
 
   var ENERGIES = [];
+  var DATA = [];
   var get_points = function(ax1, ax2) {
     var arr = [];
     for (var i = 0; i < ENERGIES.length; i++) {
@@ -35,7 +36,11 @@ var GraphPlotting = (function($) {
           fill: true,
           fillColor: "#058DC7"
         },
-        color: "#058DC7"
+        color: "#058DC7",
+      },
+      grid: {
+        clickable:true,
+        hoverable:true
       },
       xaxis: {
         axisLabel: x_ax,
@@ -53,18 +58,34 @@ var GraphPlotting = (function($) {
       }
     });
 
+  $("#graph_body").bind("plotclick", function (event, pos, item) {
+    var struct_key = DATA[item.seriesIndex].key;
+    $.get('/structure/get?key='+struct_key)
+    .done(function(data) {
+      $("#glmol01_src").val(data.pdbdata).trigger("change");
+    })
+    .fail(function(){
+      alert("Fetching structure failed");
+    })
+  });
+
+$("#graph_body").bind("plothover", function (event, pos, item) {
+    
+});
+
   }
 
   var plot_graph = function(structure_key) {
 
-    $.get('http://localhost:8000/structure/query?parental_hash=' + structure_key)
+    $.get('/structure/query?parental_hash=' + structure_key)
       .done(function(data) {
         ENERGIES = [];
+        DATA = data;
         for (var i = 0; i < data.length; ++i) {
           ENERGIES.push(JSON.parse(data[i].energies));
         }
 
-        draw_graph('fa_rep', 'fa_sol', data);
+        draw_graph('irms', 'score', data);
         populateAxisSelectBoxes();
 
       });

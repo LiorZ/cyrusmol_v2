@@ -26,7 +26,7 @@ import hashlib
 import httplib
 import json
 import webapp2
-import logging 
+import logging
 
 from google.appengine.api import users
 from google.appengine.ext import db
@@ -90,9 +90,9 @@ class Add(webapp2.RequestHandler):
 
     user = users.get_current_user()
     job_data = json.loads(self.request.body)
-   
+
     # clean up request data
-    if 'replication' not in job_data: job_data['replication'] = 1 
+    if 'replication' not in job_data: job_data['replication'] = 1
     job_data['replication'] = int( job_data['replication'] )
     if job_data['replication'] > REPLICATION_LIMIT:
       job_data['replication'] = REPLICATION_LIMIT
@@ -158,7 +158,7 @@ class List(common.RequestHandler):
 
     try:
       operations_query = Operation.all()
-      if parentkey: 
+      if parentkey:
         operations_query.filter('parentkey =', parentkey)
       operations_query.filter('user_id =', user.user_id())
 
@@ -224,4 +224,3 @@ all_routes = [Add.Routes(), List.Routes(),
 
 def Routes():
   return sum(all_routes, [])
-

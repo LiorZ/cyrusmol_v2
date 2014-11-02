@@ -14,20 +14,14 @@
   <!-- Bootstrap Core CSS -->
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
 
-  <!-- MetisMenu CSS -->
-  <link href="/template/css/plugins/metisMenu/metisMenu.min.css" rel="stylesheet">
-
   <!-- TreeView CSS -->
   <link href="/template/css/plugins/bootstrap-treeview.min.css" rel="stylesheet">
-
-  <!-- Timeline CSS -->
-  <link href="/template/css/plugins/timeline.css" rel="stylesheet">
 
   <!-- Custom CSS -->
   <link href="/template/css/sb-admin-2.css" rel="stylesheet">
 
-  <!-- Morris Charts CSS -->
-  <link href="/template/css/plugins/morris.css" rel="stylesheet">
+  <!-- Bootstrap wizard CSS -->
+  <link rel="stylesheet" href="/template/css/plugins/bootstrap-wizard.css">
 
   <!-- Custom Fonts -->
   <link href="/template/font-awesome-4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -43,6 +37,12 @@
       margin: 0px;
       border-size: 0px;
     }
+    .radio {
+      margin-bottom: 1em !important;
+    }
+    .protocol-configuration-card {
+      display: none;
+    }
   </style>
 
 </head>
@@ -57,9 +57,17 @@
         <!-- /.col-lg-12 -->
       </div>
       <!-- /.row -->
+      <div class='row'>
+        <div class='col-lg-12' style="margin-bottom:0.5em;">
+          <button type="button" class="btn btn-default btn-lg btn-primary pull-right" id="btn_new_job">
+            <span class="glyphicon glyphicon-upload"></span> Submit New Job
+          </button>
+        </div>
+      </div>
+
       <div class="row">
         <div class="col-lg-3">
-          <div class="panel panel-default">
+          <div class="panel panel-primary">
             <div class="panel-heading">
               <i class="fa fa-list-alt fa-fw"></i> List of jobs
 
@@ -79,7 +87,7 @@
               </div>
             </div>
             <!-- /.panel-heading -->
-            <div class="panel-body">
+            <div class="panel-body" style="min-height:300px;">
               <div id="job_tree">
 
               </div>
@@ -88,18 +96,19 @@
           </div>
         </div>
         <div class="col-lg-6">
-          <div class="panel panel-default">
+          <div class="panel panel-yellow">
             <div class="panel-heading">
               <i class="fa fa-cube fa-fw"></i> Molecular view
             </div>
             <!-- /.panel-heading -->
-            <div class="panel-body">
+            <div class="panel-body" style="min-height:300px;">
+              <div id="glmol01" style="height:300px;"></div>
             </div>
             <!-- /.panel-body -->
           </div>
         </div>
         <div class="col-lg-3">
-          <div class="panel panel-default">
+          <div class="panel panel-green">
             <div class="panel-heading">
               <i class="fa fa-sliders fa-fw"></i> View Settings
             </div>
@@ -116,16 +125,18 @@
       <!-- /.row -->
       <div class="row">
         <div class="col-lg-8">
-          <div class="panel panel-default">
+          <div class="panel panel-red">
             <div class="panel-heading">
               <i class="fa fa-bar-chart-o fa-fw"></i> Energy plot
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
               <div id="select_axes" style="text-align:center; display:none;">
-                X: <select id="select_x_axis" style="width:auto; display:inline;" class="form-control selectWidth">
+                X:
+                <select id="select_x_axis" style="width:auto; display:inline;" class="form-control selectWidth">
                 </select>
-                Y: <select id="select_y_axis" style="width:auto; display:inline;" class="form-control selectWidth">
+                Y:
+                <select id="select_y_axis" style="width:auto; display:inline;" class="form-control selectWidth">
                 </select>
               </div>
               <div id="graph_body" style="min-height:500px;"></div>
@@ -153,6 +164,93 @@
   </div>
   <!-- wrapper -->
 
+  <div class="wizard" id="new_job_wizard" data-title="Submit a New Job">
+
+    <h1>Wizard Title</h1>
+
+    <div class="wizard-card" data-cardname="card_pdb_file">
+      <h3>Upload a pdb</h3>
+      <div class="form-group">
+        <div class="radio">
+          <label>
+            <input type="radio" name="upload_options" id="radio_upload_local" value="upload_local"> From a local disk:
+            <input id="pdb_local_file" type="file" size=1 disabled />
+          </label>
+        </div>
+
+        <div class="radio">
+          <label>
+            <input type="radio" name="upload_options" id="radio_upload_pdborg" value="upload_pdborg"> From <a href="http://www.pdb.org/">PDB.org</a>
+            <form class="form-inline" role="form">
+              <input type="text" class="form-control form-inline" id="text_pdb_id" placeholder="Enter PDB id" style="width:10em;" disabled>
+            </form>
+          </label>
+
+        </div>
+        <div class="collapse error_container" id="pdb_file_error_container">
+          <div class="alert alert-danger" id="pdb_file_error">
+            Please upload a PDB
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wizard-card" data-cardname="card_protocol">
+      <h3>Choose a Protocol</h3>
+      <div id="protocol_selection">
+        <div class="list-group panel">
+          <a href="#demo3" class="list-group-item" data-toggle="collapse" data-parent="#MainMenu">Rosetta Backend Job <i class="fa fa-caret-down"></i></a>
+          <div class="collapse" id="demo3">
+            <a href="#SubMenu1" class="list-group-item" data-protocol="#backend_relax" data-protocol-data="/data/jobdefs/relax.json">Relax</a>
+            <a href="javascript:;" class="list-group-item" data-protocol="#backend_score">Score</a>
+            <a href="javascript:;" class="list-group-item" data-protocol="#backend_loophash">Loophash</a>
+            <a href="javascript:;" class="list-group-item" data-protocol="#backend_enzdes">Enzdes</a>
+          </div>
+          <a href="#demo4" class="list-group-item" data-parent="#MainMenu" data-protocol="#rosetta_scripts">Rosetta XML Script</a>
+          <a href="#demo4" class="list-group-item" data-parent="#MainMenu" data-protocol="#rosetta_diagrams">Rosetta Diagram</a>
+        </div>
+      </div>
+      <div class="collapse error_container" id="protocol_selection_error_container">
+        <div class="alert alert-danger" id="protocol_selection_error">
+          Please select a protocol to submit
+        </div>
+      </div>
+    </div>
+
+    <div class="wizard-card" data-cardname="protocol_configuration">
+      <h3>Protocol Configuration</h3>
+      <div class="protocol-configuration-card" id="backend_relax">
+        <div id="jobdialog">
+          <div class="well">
+            <h4>Additional Input Data</h4>
+            <button class="btn btn-primary">Add file</button>
+          </div>
+          <div class="well">
+            <h4>Additional flags</h4>
+            <textarea id="flags_file_field" style="width: 100%;"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wizard-card" data-cardname="finalize_submit">
+      <h3>Finalize Job</h3>
+      <input type="text" class="form-control" placeholder="Job Name" id="job_name"/>
+      <div style="margin-top:1em;">
+        <label for="numjobs">Number of Jobs:</label>
+        <input type="text" class="form-control" name="numjobs" id="numjobs" style="width:4em; display:inline;">
+      </div>
+      <div class="well" style="margin-top:1em;">
+        <h4>Job Details Overview</h4>
+      </div>
+      <input type="hidden" id="protocol_data_url"/>
+    </div>
+
+  </div>
+
+
+  <textarea id="pdb_src" style="display:none;"></textarea>
+  <textarea id="glmol01_src" style="display:none;"></textarea>
 
   <!-- jQuery Version 1.11.0 -->
   <script src="/template/js/jquery-1.11.0.js"></script>
@@ -160,14 +258,10 @@
   <!-- Bootstrap Core JavaScript -->
   <script src="/template/js/bootstrap.min.js"></script>
 
-  <!-- Metis Menu Plugin JavaScript -->
-  <script src="/template/js/plugins/metisMenu/metisMenu.min.js"></script>
-
   <!-- FLOT lib !-->
 
   <script src="/template/js/plugins/flot/excanvas.min.js"></script>
   <script src="/template/js/plugins/flot/jquery.flot.js"></script>
-  <script src="/template/js/plugins/flot/jquery.flot.pie.js"></script>
   <script src="/template/js/plugins/flot/jquery.flot.resize.js"></script>
   <script src="/template/js/plugins/flot/jquery.flot.tooltip.min.js"></script>
   <script src="/template/js/plugins/flot/jquery.flot.axislabels.js"></script>
@@ -175,19 +269,22 @@
   <!-- TreeView CSS -->
   <script src="/template/js/plugins/treeview/bootstrap-treeview.min.js"></script>
 
-  <!-- Morris Charts JavaScript -->
-  <script src="/template/js/plugins/morris/raphael.min.js"></script>
-  <script src="/template/js/plugins/morris/morris.min.js"></script>
-  <script src="/template/js/plugins/morris/morris-data.js"></script>
-
   <!-- Custom Theme JavaScript -->
   <script src="/template/js/sb-admin-2.js"></script>
 
 
+  <!-- Bootstrap wizard Javascript -->
+  <script src="/template/js/plugins/bootstrap-wizard/bootstrap-wizard.min.js" type="text/javascript"></script>
+
+  <!-- GLMol -->
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/three.js/r52/three.min.js"></script>
+  <script type="text/javascript" src="/js/GLmol.js"></script>
+
   <!-- CyrusMol JS -->
   <script type="text/javascript" src="/js/graphs.js"></script>
   <script type="text/javascript" src="/js/jobs.js"></script>
-
+  <script type="text/javascript" src="/js/new_job_wizard.js"></script>
+  <script type="text/javascript" src="/js/glmol_bootstrap.js"></script>
 </body>
 
 </html>
