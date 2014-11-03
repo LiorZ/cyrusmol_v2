@@ -12,6 +12,35 @@ var GraphPlotting = (function($) {
 
   }
 
+  function showTooltip(x, y, contents) {
+    $('<div id="tooltip">' + contents + '</div>').css({
+      position: 'absolute',
+      display: 'none',
+      top: y + 5,
+      left: x + 5,
+      border: '1px solid #fdd',
+      padding: '2px',
+      'background-color': '#fee',
+      opacity: 0.80
+    }).appendTo("body").fadeIn(200);
+  }
+
+  function loadStructure(data) {
+    $("#glmol01_src").val(data.pdbdata).trigger("change");
+  }
+
+  function updateEnergyTable(data){
+
+    $(".table_energy_term").remove();
+    var json_energies = JSON.parse(data.energies);
+    for (var key in json_energies) {
+      var row = "<tr class='table_energy_term'><td>"+key+"</td><td>"+Math.round(json_energies[key]*1000)/1000+"</td></tr>";
+      $("#energy_table_header").after(row);
+    }
+
+  }
+
+
   function populateAxisSelectBoxes() {
     var energies = ENERGIES[0];
     if (energies == null || energies == undefined) {
@@ -39,8 +68,8 @@ var GraphPlotting = (function($) {
         color: "#058DC7",
       },
       grid: {
-        clickable:true,
-        hoverable:true
+        clickable: true,
+        hoverable: true
       },
       xaxis: {
         axisLabel: x_ax,
@@ -58,20 +87,27 @@ var GraphPlotting = (function($) {
       }
     });
 
-  $("#graph_body").bind("plotclick", function (event, pos, item) {
-    var struct_key = DATA[item.seriesIndex].key;
-    $.get('/structure/get?key='+struct_key)
-    .done(function(data) {
-      $("#glmol01_src").val(data.pdbdata).trigger("change");
-    })
-    .fail(function(){
-      alert("Fetching structure failed");
-    })
-  });
+    $("#graph_body").bind("plotclick", function(event, pos, item) {
+      var struct_key = DATA[item.dataIndex].key;
+      $.get('/structure/get?key=' + struct_key)
+        .done(function(data) {
+          loadStructure(data);
+          updateEnergyTable(data);
+        })
+        .fail(function() {
+          alert("Fetching structure failed");
+        })
+    });
 
-$("#graph_body").bind("plothover", function (event, pos, item) {
-    
-});
+    $("#graph_body").bind("plothover", function(event, pos, item) {
+      $("#tooltip").remove();
+      if (item) {
+        console.log(item);
+        var x = item.datapoint[0].toFixed(2),
+          y = item.datapoint[1].toFixed(2);
+        showTooltip(item.pageX, item.pageY, "Decoy " + item.dataIndex + " " + x + " , " + y);
+      }
+    });
 
   }
 

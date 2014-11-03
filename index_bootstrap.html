@@ -43,121 +43,179 @@
     .protocol-configuration-card {
       display: none;
     }
+    .equal-row {} .equal-col {} @media (min-width: 992px) {
+      .equal-row {
+        display: table;
+        width: 100%;
+      }
+      .equal-col {
+        float: none;
+        display: table-cell;
+        vertical-align: top;
+      }
+    }
+    #glmol01 {
+      height: 600px;
+    }
+    .dropdown-submenu {
+      position: relative;
+    }
+    .dropdown-submenu>.dropdown-menu {
+      top: 0;
+      left: 100%;
+      margin-top: -6px;
+      margin-left: -1px;
+      -webkit-border-radius: 0 6px 6px 6px;
+      -moz-border-radius: 0 6px 6px 6px;
+      border-radius: 0 6px 6px 6px;
+    }
+    .dropdown-submenu:hover>.dropdown-menu {
+      display: block;
+    }
+    .dropdown-submenu>a:after {
+      display: block;
+      content: " ";
+      float: right;
+      width: 0;
+      height: 0;
+      border-color: transparent;
+      border-style: solid;
+      border-width: 5px 0 5px 5px;
+      border-left-color: #cccccc;
+      margin-top: 5px;
+      margin-right: -10px;
+    }
+    .dropdown-submenu:hover>a:after {
+      border-left-color: #ffffff;
+    }
+    .dropdown-submenu.pull-left {
+      float: none;
+    }
+    .dropdown-submenu.pull-left>.dropdown-menu {
+      left: -100%;
+      margin-left: 10px;
+      -webkit-border-radius: 6px 0 6px 6px;
+      -moz-border-radius: 6px 0 6px 6px;
+      border-radius: 6px 0 6px 6px;
+    }
   </style>
 
 </head>
 
 <body>
   <div id="wrapper">
+
     <div id="page-wrapper" style="min-height: 887px;">
       <div class="row">
-        <div class="col-lg-12">
+        <div class="col-md-12">
           <h1 class="page-header" style="text-align:center;">Dashboard</h1>
         </div>
-        <!-- /.col-lg-12 -->
+        <!-- /.col-md-12 -->
+      </div>
+      <div class="row" style="display:none;" id="notifications">
+        <div class="col-md-12">
+          <div class="alert alert-warning alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+            <span class="glyphicon glyphicon-warning-sign"></span>
+            <span id="warning-message"></span>
+          </div>
+        </div>
       </div>
       <!-- /.row -->
-      <div class='row'>
-        <div class='col-lg-12' style="margin-bottom:0.5em;">
+      <div class='row' style="margin-bottom:0.5em;">
+        <div class='col-md-12'>
           <button type="button" class="btn btn-default btn-lg btn-primary pull-right" id="btn_new_job">
             <span class="glyphicon glyphicon-upload"></span> Submit New Job
           </button>
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-lg-3">
-          <div class="panel panel-primary">
-            <div class="panel-heading">
-              <i class="fa fa-list-alt fa-fw"></i> List of jobs
+      <div class="row equal-row">
+        <div style="display:table-row;">
+          <div class="col-md-3 equal-col">
+            <div class="row">
+              <div class="col-xs-12">
+                <div class="panel panel-primary" style="height:300px;">
+                  <div class="panel-heading">
+                    <i class="fa fa-list-alt fa-fw"></i> List of jobs
 
-              <div class="pull-right">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                    Actions
-                    <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu pull-right" role="menu">
-                    <li><a href="#" id="btn_update_op_list">Update List</a>
-                    </li>
-                    <li><a href="#">Purge All</a>
-                    </li>
-                  </ul>
+                    <div class="pull-right">
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                          Actions
+                          <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu pull-right" role="menu">
+                          <li><a href="#" id="btn_update_op_list">Update List</a>
+                          </li>
+                          <li><a href="#">Purge All</a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- /.panel-heading -->
+                  <div class="panel-body">
+                    <div id="job_tree">
+
+                    </div>
+                  </div>
+                  <!-- /.panel-body -->
+                </div>
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col-xs-12">
+                <div class="panel panel-red">
+                  <div class="panel-heading">
+                    <i class="fa fa-bar-chart-o fa-fw"></i> Energy plot
+                  </div>
+                  <!-- /.panel-heading -->
+                  <div class="panel-body">
+                    <div>
+                      <div id="select_axes" style="text-align:center; display:none;">
+                        X:
+                        <select id="select_x_axis" style="width:auto; display:inline;" class="form-control selectWidth">
+                        </select>
+                        Y:
+                        <select id="select_y_axis" style="width:auto; display:inline;" class="form-control selectWidth">
+                        </select>
+                      </div>
+                      <div id="graph_body" style="height:300px;"></div>
+                    </div>
+                  </div>
+                  <!-- /.panel-body -->
                 </div>
               </div>
             </div>
-            <!-- /.panel-heading -->
-            <div class="panel-body" style="min-height:300px;">
-              <div id="job_tree">
+          </div>
 
+          <div class="col-md-6 equal-col">
+            <div id="glmol01"></div>
+            <!-- /.panel-body -->
+          </div>
+
+          <div class="col-md-3 equal-col">
+            <div class="panel panel-default" style="min-height:300px;">
+              <div class="panel-heading">
+                <i class="fa fa-list fa-fw"></i> List of energies
               </div>
-            </div>
-            <!-- /.panel-body -->
-          </div>
-        </div>
-        <div class="col-lg-6">
-          <div class="panel panel-yellow">
-            <div class="panel-heading">
-              <i class="fa fa-cube fa-fw"></i> Molecular view
-            </div>
-            <!-- /.panel-heading -->
-            <div class="panel-body" style="min-height:300px;">
-              <div id="glmol01" style="height:300px;"></div>
-            </div>
-            <!-- /.panel-body -->
-          </div>
-        </div>
-        <div class="col-lg-3">
-          <div class="panel panel-green">
-            <div class="panel-heading">
-              <i class="fa fa-sliders fa-fw"></i> View Settings
-            </div>
-            <!-- /.panel-heading -->
-            <div class="panel-body">
-
-            </div>
-            <!-- /.panel-body -->
-          </div>
-        </div>
-
-
-      </div>
-      <!-- /.row -->
-      <div class="row">
-        <div class="col-lg-8">
-          <div class="panel panel-red">
-            <div class="panel-heading">
-              <i class="fa fa-bar-chart-o fa-fw"></i> Energy plot
-            </div>
-            <!-- /.panel-heading -->
-            <div class="panel-body">
-              <div id="select_axes" style="text-align:center; display:none;">
-                X:
-                <select id="select_x_axis" style="width:auto; display:inline;" class="form-control selectWidth">
-                </select>
-                Y:
-                <select id="select_y_axis" style="width:auto; display:inline;" class="form-control selectWidth">
-                </select>
+              <!-- /.panel-heading -->
+              <div class="panel-body">
+                <table class="table" id="energy_table">
+                  <tr id="energy_table_header">
+                    <th>Energy Term</th>
+                    <th>Value</th>
+                  </tr>
+                </table>
               </div>
-              <div id="graph_body" style="min-height:500px;"></div>
+              <!-- /.panel-body -->
             </div>
-            <!-- /.panel-body -->
           </div>
         </div>
-        <!-- /.col-lg-8 -->
-        <div class="col-lg-4">
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <i class="fa fa-list fa-fw"></i> List of energies
-            </div>
-            <!-- /.panel-heading -->
-            <div class="panel-body">
 
-            </div>
-            <!-- /.panel-body -->
-          </div>
-        </div>
-        <!-- /.col-lg-4 -->
+
       </div>
       <!-- /.row -->
     </div>
@@ -235,7 +293,7 @@
 
     <div class="wizard-card" data-cardname="finalize_submit">
       <h3>Finalize Job</h3>
-      <input type="text" class="form-control" placeholder="Job Name" id="job_name"/>
+      <input type="text" class="form-control" placeholder="Job Name" id="job_name" />
       <div style="margin-top:1em;">
         <label for="numjobs">Number of Jobs:</label>
         <input type="text" class="form-control" name="numjobs" id="numjobs" style="width:4em; display:inline;">
@@ -243,7 +301,7 @@
       <div class="well" style="margin-top:1em;">
         <h4>Job Details Overview</h4>
       </div>
-      <input type="hidden" id="protocol_data_url"/>
+      <input type="hidden" id="protocol_data_url" />
     </div>
 
   </div>
@@ -251,6 +309,28 @@
 
   <textarea id="pdb_src" style="display:none;"></textarea>
   <textarea id="glmol01_src" style="display:none;"></textarea>
+
+  <div id="glmol-context">
+    <ul class="dropdown-menu" role="menu">
+      <li class="dropdown-submenu"><a role="menuitem" tabindex="-1" href="#">Color by ...</a>
+        <ul class="dropdown-menu">
+          <li> <a role="menuitem" tabindex="-1" href="#">Element</a> </li>
+          <li> <a role="menuitem" tabindex="-1" href="#">Spectrum</a> </li>
+          <li> <a role="menuitem" tabindex="-1" href="#">Chain</a> </li>
+          <li> <a role="menuitem" tabindex="-1" href="#">Secondary Structure</a> </li>
+          <li> <a role="menuitem" tabindex="-1" href="#">B Factor</a> </li>
+          <li> <a role="menuitem" tabindex="-1" href="#">Polar/Non-Polar</a> </li>
+        </ul>
+      </li>
+      <li><a role="menuitem" tabindex="-1" href="#">Main Chain as ...</a>
+      </li>
+      <li><a role="menuitem" tabindex="-1" href="#">Something else here</a>
+      </li>
+      <li class="divider"></li>
+      <li><a role="menuitem" tabindex="-1" href="#">Separated link</a>
+      </li>
+    </ul>
+  </div>
 
   <!-- jQuery Version 1.11.0 -->
   <script src="/template/js/jquery-1.11.0.js"></script>
@@ -276,6 +356,10 @@
   <!-- Bootstrap wizard Javascript -->
   <script src="/template/js/plugins/bootstrap-wizard/bootstrap-wizard.min.js" type="text/javascript"></script>
 
+
+  <!-- Bootstrap context menu -->
+
+  <script type="text/javascript" src="/template/js/plugins/context_menu/bootstrap-contextmenu.js"></script>
   <!-- GLMol -->
   <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/three.js/r52/three.min.js"></script>
   <script type="text/javascript" src="/js/GLmol.js"></script>
