@@ -17,7 +17,7 @@
 var ServerRequests = (function($) {
   var my = {}
 
-  
+
   my.current_loaded_structure = {};
 
 
@@ -29,9 +29,9 @@ var ServerRequests = (function($) {
           data_pack["parent_operation"] = my.current_loaded_structure.operation;
       }
 
-      // At least 1 replication has to be requested.  
+      // At least 1 replication has to be requested.
       if (replication < 1) replication = 1;
-      // limit task replication to 10 for now. This is actually enforced on the server, but it's polite to 
+      // limit task replication to 10 for now. This is actually enforced on the server, but it's polite to
       // alert the user.
       replication_limit = 100
       if (replication > replication_limit) {
@@ -39,7 +39,7 @@ var ServerRequests = (function($) {
           replication = replication_limit;
       }
       data_pack["replication"] = replication
-      
+
       // Turn data_pack into json string and POST it to the server
       $.ajax({
           type: "POST",
@@ -73,7 +73,7 @@ var ServerRequests = (function($) {
                     var payload = unescape(task.payload)
                     payload = payload.replace(/\\n/g, "\r");
                     var taskdiv = $("<div></div>")
-                    var delete_button = $("<button>Delete</button>").click( function(){ var mytaskname = task.name; deleteTask(mytaskname); } ) 
+                    var delete_button = $("<button>Delete</button>").click( function(){ var mytaskname = task.name; deleteTask(mytaskname); } )
                     var payload_button = $("<button>Show/Hide Payload</button>").click( function(){ $(this).parent().find("#payload").toggle() } )
                     var taskinfo = $("<span></span>").html( " " + task.name + " " + task.queue_name )
                     var payload_div = $("<div></div>", { "style":"display:none", id:"payload" } ).html( "<pre>" + payload + "</pre>" )
@@ -109,14 +109,14 @@ var ServerRequests = (function($) {
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /// Operations manipulation
 
-  // send an AJAX request to delete all the operations currently on the server. 
+  // send an AJAX request to delete all the operations currently on the server.
   function deleteAllOperations(key) {
       $.ajax({
           type: "POST",
           url: "/operation/deleteall",
           success: function (msg) {
-              // On success empty the tree container to update the client view of the data. 
-              $("#treeCell").empty(); 
+              // On success empty the tree container to update the client view of the data.
+              $("#treeCell").empty();
           }
       });
   }
@@ -164,7 +164,7 @@ var ServerRequests = (function($) {
 
       tree_ajax_success = function (ops) {
         // ops is the data the server returns when asked for a list of nodes. Each is basically a json object
-        // with information about the respective operation 
+        // with information about the respective operation
         var new_node_list = []
         for (opnum in ops) {
           var op = ops[opnum]
@@ -197,7 +197,7 @@ var ServerRequests = (function($) {
                       }
                   },
                   "type": "get",
-                  "success": tree_ajax_success 
+                  "success": tree_ajax_success
               },
           },
 
@@ -217,11 +217,11 @@ var ServerRequests = (function($) {
       // clicking a node loads a graph with the structure data of this node.
       $("#treeCell").bind("select_node.jstree", function (event, data) {
           // `data.rslt.obj` is the jquery extended node that was clicked
-          
-          // extract the structure hash which identifies the parent structure and call the graphbox_container's plotting function to 
+
+          // extract the structure hash which identifies the parent structure and call the graphbox_container's plotting function to
           // get all the structures with this parental hash and plot the energies.
           structure_hash = data.rslt.obj.data("structure_hash");
-          
+
           // call the custom jquery function r_energy_graph (defined in graphing.js) to create the graph inside of #graphbox_container
           $("#graphbox_container").r_energy_graph(structure_hash, {
               x: "irms",  // by default plot irms vs score
@@ -251,18 +251,18 @@ var ServerRequests = (function($) {
                idiv.append( $("<a></a>", { "href":"/structure/get?key=" + structure.key } ).html( "(Raw View)" ) )
 
                idiv.append( $( "<div></div>" ).html( "cpuseconds   : " + structure.cpuseconds    ))
-               idiv.append( $( "<div></div>" ).html( "created_time : " + structure.created_time  )) 
-               idiv.append( $( "<div></div>" ).html( "energies     : " + structure.energies      )) 
-               idiv.append( $( "<div></div>" ).html( "hash_sha1    : " + structure.hash_sha1     )) 
-               idiv.append( $( "<div></div>" ).html( "key          : " + structure.key           )) 
-               idiv.append( $( "<div></div>" ).html( "operation    : " + structure.operation     )) 
-               idiv.append( $( "<div></div>" ).html( "parental_hash: " + structure.parental_hash )) 
-               idiv.append( $( "<div></div>" ).html( "parental_key : " + structure.parental_key  )) 
-               idiv.append( $( "<div></div>" ).html( "queuename    : " + structure.queuename     )) 
-               idiv.append( $( "<div></div>" ).html( "stderr       : " + structure.stderr        )) 
-               idiv.append( $( "<div></div>" ).html( "taskname     : " + structure.taskname      )) 
-               idiv.append( $( "<div></div>" ).html( "user_id      : " + structure.user_id       )) 
-               idiv.append( $( "<div></div>" ).html( "workerinfo   : " + structure.workerinfo    )) 
+               idiv.append( $( "<div></div>" ).html( "created_time : " + structure.created_time  ))
+               idiv.append( $( "<div></div>" ).html( "energies     : " + structure.energies      ))
+               idiv.append( $( "<div></div>" ).html( "hash_sha1    : " + structure.hash_sha1     ))
+               idiv.append( $( "<div></div>" ).html( "key          : " + structure.key           ))
+               idiv.append( $( "<div></div>" ).html( "operation    : " + structure.operation     ))
+               idiv.append( $( "<div></div>" ).html( "parental_hash: " + structure.parental_hash ))
+               idiv.append( $( "<div></div>" ).html( "parental_key : " + structure.parental_key  ))
+               idiv.append( $( "<div></div>" ).html( "queuename    : " + structure.queuename     ))
+               idiv.append( $( "<div></div>" ).html( "stderr       : " + structure.stderr        ))
+               idiv.append( $( "<div></div>" ).html( "taskname     : " + structure.taskname      ))
+               idiv.append( $( "<div></div>" ).html( "user_id      : " + structure.user_id       ))
+               idiv.append( $( "<div></div>" ).html( "workerinfo   : " + structure.workerinfo    ))
                sdiv.append(idiv)
                $("#joblist").append( sdiv )
              }
@@ -310,7 +310,7 @@ var ServerRequests = (function($) {
       $.ajax({
           type: "GET",
           dataType: 'json',
-          url: url, 
+          url: url,
           success: function (json_reply) {
               // Ok, check contents of json reply and, if it contains a valid structure, load it into view
 
@@ -329,8 +329,8 @@ var ServerRequests = (function($) {
 
               // also load up energies into energy view
               obj = jQuery.parseJSON(my.current_loaded_structure.energies)
-              
-              // make a quick table displaying the data 
+
+              // make a quick table displaying the data
               enehtml = "<table>"
               keylist = []
               for (var key in obj) {
@@ -357,7 +357,8 @@ var ServerRequests = (function($) {
     updateTaskList()
     updateStructureList()
     updateOperationsView()
-    
+
+
     // register the button events on the page
     $("button#updateStructureList").click(function(){updateStructureList()})
     $("button#deleteAllStructures").click(function(){deleteAllStructures()})

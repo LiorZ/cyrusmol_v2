@@ -1,5 +1,35 @@
 var NewJobWizard = (function($) {
 
+  //FORM PROCESSING:
+
+  var FormJobProcessor = {
+
+    'backend_loophash': function(data){
+      data.parameters = {
+        loopstart:$('#loopstart').val(),
+        loopend: $('#loopend').val()
+      };
+
+    },
+
+    'backend_rscripts' : function(data) {
+
+      data.xmlscript = $('#rscripts_text').val();
+    },
+
+    'backend_diagrams': function(data){
+      var id = $('#wizard_rosetta_diagrams a.active').attr('data-id');
+      var diagram = _.find(RosettaDiagrams.DiagramsCollection, function(d) {
+        return d.get('id') == id;
+      });
+
+      var xml = RosettaDiagrams.get_rosetta_scripts(diagram);
+      data.xmlscript["content"] = xml;
+    }
+
+  }
+
+
 
   //First Card:
   ///////////////////////////////////////////////////////////////////////////////////////////
@@ -72,8 +102,13 @@ var NewJobWizard = (function($) {
 
     replication = wizard.el.find('#numjobs').val();
 
+    // UGLY ALERT:
 
     data_pack = data
+    var job_protocol = $('.current-protocol').attr('id');
+    if ( FormJobProcessor[job_protocol] != undefined ) {
+      FormJobProcessor[job_protocol](data)
+    }
     data_pack["flags_file"] = wizard.el.find('#flags_file_field').val()
     data_pack["operation_info"] = {
       "short": data.jobname,
@@ -81,9 +116,9 @@ var NewJobWizard = (function($) {
     }
     data_pack["pdbdata"] = $('#pdb_src').val()
 
-    if (data.xmlscript !== undefined) {
-      data_pack["xmlscript"]["content"] = wizard.el.find("#xmlscript").val()
-    }
+    // if (data.xmlscript !== undefined) {
+    //   data_pack["xmlscript"]["content"] = data.xmlscript;
+    // }
 
     console.log(data_pack)
 
@@ -154,6 +189,8 @@ var NewJobWizard = (function($) {
     contentWidth: 700
   });
 
+  //clearing the current protocol flag:
+
   //Setting toggle behavior off for error containers
   $('.error_container').collapse({
     toggle: false
@@ -212,6 +249,30 @@ var NewJobWizard = (function($) {
     var next_card = $(ev.target).data('protocol');
     var protocol_url = $(ev.target).data('protocol-data');
     $('#protocol_data_url').val(protocol_url);
+
+    $('.current-protocol').removeClass('current-protocol');
+    $(next_card).addClass('current-protocol'); //in order to fetch when submitting ...
+
+    if ( $(next_card).attr('id') == "backend_diagrams" ){
+      $("#wizard_rosetta_diagrams").html('');
+
+      _.each(RosettaDiagrams.DiagramsCollection,function(diagram){
+
+        var diagram_name = diagram.get('name') || "Untitled Diagram";
+        var row_string = "<a href='#demo4' class='list-group-item' data-id='" + diagram.get('id') + "'>" + diagram_name + "</a>"
+        $("#wizard_rosetta_diagrams").append(row_string);
+
+
+      });
+
+      $("#wizard_rosetta_diagrams a").click(function(ev){
+
+        $(ev.target).addClass('active');
+
+      })
+
+    }
+
     $(next_card).show();
   });
 

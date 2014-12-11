@@ -33,6 +33,13 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
   <style type="text/css">
+    #floating_menu {
+      position: absolute;
+    }
+    #floating_menu .btn {
+      display: block;
+      margin-bottom: 5px;
+    }
     #page-wrapper {
       margin: 0px;
       border-size: 0px;
@@ -42,6 +49,9 @@
     }
     .protocol-configuration-card {
       display: none;
+    }
+    .wizard-card-container {
+      overflow: auto;
     }
     .equal-row {} .equal-col {} @media (min-width: 992px) {
       .equal-row {
@@ -100,6 +110,12 @@
     }
   </style>
 
+  <!-- Rosetta Diagrams CSS -->
+  <link rel="stylesheet" href="/js/RosettaDiagrams/bower_components/joint/dist/joint.nojquery.min.css" />
+  <link rel="stylesheet" href="/js/RosettaDiagrams/bower_components/bootstrap-toggle/css/bootstrap-toggle.min.css" />
+  <link rel="stylesheet" href="/js/RosettaDiagrams/bower_components/bootstrap3-editable-1.5.1/bootstrap3-editable/css/bootstrap-editable.css" />
+  <link rel="stylesheet" href="/js/RosettaDiagrams/bower_components/google-code-prettify/prettify.css" />
+
 </head>
 
 <body>
@@ -122,10 +138,10 @@
         </div>
       </div>
       <!-- /.row -->
-      <div class='row' style="margin-bottom:0.5em;">
+      <div class='row row-equal' style="margin-bottom:0.5em;">
         <div class='col-md-12'>
-          <button type="button" class="btn btn-default btn-lg btn-primary pull-right" id="btn_new_job">
-            <span class="glyphicon glyphicon-upload"></span> Submit New Job
+          <button type="button" class="btn btn-default btn-lg btn-primary" id="btn_new_job">
+            <span class="glyphicon glyphicon-cloud-upload"></span> Submit New Job
           </button>
         </div>
       </div>
@@ -197,12 +213,15 @@
           </div>
 
           <div class="col-md-3 equal-col">
-            <div class="panel panel-default" style="min-height:300px;">
-              <div class="panel-heading">
-                <i class="fa fa-list fa-fw"></i> List of energies
-              </div>
-              <!-- /.panel-heading -->
-              <div class="panel-body">
+            <div class="row">
+              <div class="panel panel-default" style="height:300px; overflow:auto;">
+                <div class="panel-heading">
+                  <i class="fa fa-list fa-fw"></i> List of energies
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                </div>
+                <!-- /.panel-body -->
                 <table class="table" id="energy_table">
                   <tr id="energy_table_header">
                     <th>Energy Term</th>
@@ -210,9 +229,34 @@
                   </tr>
                 </table>
               </div>
-              <!-- /.panel-body -->
+            </div>
+            <div class="row">
+              <div class="panel panel-default" style="height:300px; overflow:auto;">
+                <div class="panel-heading">
+                  <i class="fa fa-list fa-archive"></i> Rosetta Diagrams
+
+                  <div class="pull-right">
+                    <div class="btn-group">
+                      <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                        Actions
+                        <span class="caret"></span>
+                      </button>
+                      <ul class="dropdown-menu pull-right" role="menu">
+                        <li><a href="#" id="btn_new_diagram">New Diagram</a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="panel-body">
+                </div>
+                <table id="tbl_rosetta_diagrams" class="table">
+
+                </table>
+              </div>
             </div>
           </div>
+
         </div>
 
 
@@ -261,11 +305,11 @@
           <div class="collapse" id="demo3">
             <a href="#SubMenu1" class="list-group-item" data-protocol="#backend_relax" data-protocol-data="/data/jobdefs/relax.json">Relax</a>
             <a href="javascript:;" class="list-group-item" data-protocol="#backend_score">Score</a>
-            <a href="javascript:;" class="list-group-item" data-protocol="#backend_loophash">Loophash</a>
+            <a href="javascript:;" class="list-group-item" data-protocol="#backend_loophash" data-protocol-data="/data/jobdefs/loophash.json">Loophash</a>
             <a href="javascript:;" class="list-group-item" data-protocol="#backend_enzdes">Enzdes</a>
           </div>
-          <a href="#demo4" class="list-group-item" data-parent="#MainMenu" data-protocol="#rosetta_scripts">Rosetta XML Script</a>
-          <a href="#demo4" class="list-group-item" data-parent="#MainMenu" data-protocol="#rosetta_diagrams">Rosetta Diagram</a>
+          <a href="#demo4" class="list-group-item" data-parent="#MainMenu" data-protocol="#backend_rscripts" data-protocol-data="/data/jobdefs/xmlscript_generic.json">Rosetta XML Script</a>
+          <a href="#demo4" class="list-group-item" data-parent="#MainMenu" data-protocol="#backend_diagrams" data-protocol-data="/data/jobdefs/xmlscript_generic.json">Rosetta Diagram</a>
         </div>
       </div>
       <div class="collapse error_container" id="protocol_selection_error_container">
@@ -289,21 +333,58 @@
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="wizard-card" data-cardname="finalize_submit">
-      <h3>Finalize Job</h3>
-      <input type="text" class="form-control" placeholder="Job Name" id="job_name" />
-      <div style="margin-top:1em;">
-        <label for="numjobs">Number of Jobs:</label>
-        <input type="text" class="form-control" name="numjobs" id="numjobs" style="width:4em; display:inline;">
+      <div class="protocol-configuration-card" id="backend_rscripts">
+        <div id="jobdialog">
+          <textarea class="form-control" rows="20" id="rscripts_text"></textarea>
+        </div>
       </div>
-      <div class="well" style="margin-top:1em;">
-        <h4>Job Details Overview</h4>
-      </div>
-      <input type="hidden" id="protocol_data_url" />
-    </div>
 
+      <div class="protocol-configuration-card" id="backend_loophash">
+        <div id="jobdialog">
+          <div id="loop_start_end" class="well">
+            <div>Loop start:
+              <input type="text" id="loopstart" name="loopstart" class="form-control form-inline" placeholder="PDB residue number (start)" />
+            </div>
+            <div>Loop end:
+              <input type="text" id="loopend" name="loopend" class="form-control form-inline" placeholder="PDB residue number (end)" />
+            </div>
+          </div>
+          <div class="well">
+            <h4>Additional Input Data</h4>
+            <button class="btn btn-primary">Add file</button>
+          </div>
+          <div class="well">
+            <h4>Additional flags</h4>
+            <textarea id="flags_file_field" style="width: 100%;"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="protocol-configuration-card" id="backend_diagrams">
+        <div id="jobdialog">
+          <div class="list-group panel" id="wizard_rosetta_diagrams">
+
+          </div>
+        </div>
+      </div>
+
+      <div class="wizard-card" data-cardname="finalize_submit">
+        <h3>Finalize Job</h3>
+        <input type="text" class="form-control" placeholder="Job Name" id="job_name" />
+        <div style="margin-top:1em;">
+          <label for="numjobs">Number of Jobs:</label>
+          <input type="text" class="form-control" name="numjobs" id="numjobs" style="width:4em; display:inline;">
+        </div>
+        <div class="well" style="margin-top:1em;">
+          <h4>Job Details Overview</h4>
+        </div>
+        <input type="hidden" id="protocol_data_url" />
+      </div>
+
+
+
+    </div>
   </div>
 
 
@@ -331,6 +412,135 @@
       </li>
     </ul>
   </div>
+
+
+
+
+  <div class="modal fade" id="rosetta_diagrams_view">
+    <div class="modal-dialog" style="width:1280px; height:800px;">
+      <div class="modal-content" style="height:100%;">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+          </button>
+          <h4 class="modal-title" id="rosetta_diagrams_view_title">Rosetta Diagram</h4>
+        </div>
+        <div class="modal-body">
+          <nav class="navbar navbar-default" role="navigation">
+            <div class="container-fluid">
+              <div class="navbar-header">
+                <input type="text" class="form-control" style="display:inline; width:20em;" id="txt_elem_name" />
+                <button type="button" class="btn btn-primary" id="btn_add_element">
+                  <span class="glyphicon glyphicon-plus"></span>
+                </button>
+                <input type="checkbox" data-toggle="toggle" id="connection_checkbox"> Connection mode
+                <button type="button" class="btn btn-primary" id="btn_generate_rs">
+                  <span class="glyphicon glyphicon-cog"></span> Generate RosettaScripts
+                </button>
+              </div>
+            </div>
+          </nav>
+          <div id="paper">
+
+            <div id="floating_menu">
+              <button type="button" class="btn btn-primary btn-xs" id="btn_delete_element">
+                <span class="glyphicon glyphicon-remove"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" id="btn_diagram_close">Close</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+
+  <!-- Rosetta Diagrams HTML -->
+  <div class="modal" id="rosetta_scripts_view">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+          </button>
+          <h4 class="modal-title" id="rosetta_scripts_view_title">Rosetta Script</h4>
+        </div>
+        <div class="modal-body">
+          <pre id="code_view" class="prettyprint">
+
+    </pre>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" id="btn_submit_job">Submit Job</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" id="btn_close">Close</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- Rosetta Diagrams templates -->
+  <div id="code_template" style="display:none;">
+    &lt;ROSETTASCRIPTS&gt; &lt;SCOREFXNS&gt; &lt;/SCOREFXNS&gt; &lt;TASKOPERATIONS&gt;
+    <span id=xml_task_operation class="rscripts_elements">
+
+</span> &lt;/TASKOPERATIONS&gt; &lt;FILTERS&gt;
+    <span id=xml_filter class="rscripts_elements">
+
+</span> &lt;/FILTERS&gt; &lt;MOVERS&gt;
+
+    <span id=xml_mover class="rscripts_elements"> </span> &lt;/MOVERS&gt; &lt;APPLY_TO_POSE&gt; &lt;/APPLY_TO_POSE&gt; &lt;PROTOCOLS&gt;
+    <span id=xml_protocols class="rscripts_elements">
+
+</span> &lt;/PROTOCOLS&gt; &lt;/ROSETTASCRIPTS&gt;
+  </div>
+
+  <script type="text/template" id="attribute_view_template">
+    <div class="modal fade" id="attribute_view">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+            </button>
+            <h4 class="modal-title" id="attributes_view_title"><%=name%></h4>
+          </div>
+          <div class="modal-body">
+            <div>
+              <button type="button" class="btn btn-primary" id="btn_add_attribute">
+                <span class="glyphicon glyphicon-plus"></span> New Attribue
+              </button>
+            </div>
+            <table id="attributes_table" class="table table-striped">
+
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal" id="btn_close">Close</button>
+          </div>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+  </script>
+
+  <script type="text/template" id="single_attribute_view">
+    <tr>
+      <td class='td_key_class'>
+        <%=key%>
+      </td>
+      <td class='td_value_class'>
+        <%=value%>
+      </td>
+      <td>
+        <button type="button" class="btn btn-primary" id="btn_delete_attribute">
+          <span class="glyphicon glyphicon-minus"></span>
+        </button>
+      </td>
+    </tr>
+  </script>
 
   <!-- jQuery Version 1.11.0 -->
   <script src="/template/js/jquery-1.11.0.js"></script>
@@ -361,7 +571,7 @@
 
   <script type="text/javascript" src="/template/js/plugins/context_menu/bootstrap-contextmenu.js"></script>
   <!-- GLMol -->
-  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/three.js/r52/three.min.js"></script>
+  <script type="text/javascript" src="/js/three.min.js"></script>
   <script type="text/javascript" src="/js/GLmol.js"></script>
 
   <!-- CyrusMol JS -->
@@ -369,6 +579,20 @@
   <script type="text/javascript" src="/js/jobs.js"></script>
   <script type="text/javascript" src="/js/new_job_wizard.js"></script>
   <script type="text/javascript" src="/js/glmol_bootstrap.js"></script>
+
+  <!-- Rosetta Diagrams JS -->
+  <script src="/js/RosettaDiagrams/bower_components/bootstrap3-editable-1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+  <script src="/js/RosettaDiagrams/bower_components/bootstrap3-typeahead/bootstrap3-typeahead.min.js"></script>
+  <script src="/js/RosettaDiagrams/bower_components/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
+
+  <script src="/js/RosettaDiagrams/bower_components/vkbeautify/index.js"></script>
+  <script src="/js/RosettaDiagrams/bower_components/joint/dist/joint.nojquery.js"></script>
+  <script src="/js/RosettaDiagrams/bower_components/Backbone.localStorage/backbone.localStorage.js"></script>
+
+  <script src="/js/RosettaDiagrams/bower_components/google-code-prettify/prettify.js"></script>
+  <script src="/js/RosettaDiagrams/js/joint.shapes.rosetta_diagrams.js"></script>
+  <script src="/js/RosettaDiagrams/js/diagrams.js"></script>
+  <script type="text/javascript" src="/js/diagrams_integration.js"></script>
 </body>
 
 </html>

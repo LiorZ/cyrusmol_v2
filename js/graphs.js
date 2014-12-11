@@ -33,8 +33,16 @@ var GraphPlotting = (function($) {
 
     $(".table_energy_term").remove();
     var json_energies = JSON.parse(data.energies);
+
+    var keys =[];
     for (var key in json_energies) {
-      var row = "<tr class='table_energy_term'><td>"+key+"</td><td>"+Math.round(json_energies[key]*1000)/1000+"</td></tr>";
+      keys.push(key);
+    }
+
+    keys.sort().reverse();
+
+    for (var i=0; i<keys.length; ++i) {
+      var row = "<tr class='table_energy_term'><td>"+keys[i]+"</td><td>"+Math.round(json_energies[keys[i]]*1000)/1000+"</td></tr>";
       $("#energy_table_header").after(row);
     }
 

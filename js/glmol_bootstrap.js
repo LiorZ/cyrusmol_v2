@@ -1,4 +1,4 @@
-var glmol_bootstrap = (function($) {
+(function($) {
   $('#glmol01_src').change(function(ev) {
     glmol01.loadMolecule();
   });
@@ -8,16 +8,17 @@ var glmol_bootstrap = (function($) {
     $('#glmol01').contextmenu({
       target:'#glmol-context',
       onItem:function(context,e){
-        
+
       }
 
-    })
+    });
 
   }
 
+
   try{
-    init_glmol();
     var glmol01 = new GLmol('glmol01', true);
+    init_glmol();
   }
   catch(e){
     setTimeout(function(){

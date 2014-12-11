@@ -1852,9 +1852,9 @@ GLmol.prototype.enableMouse = function() {
       console.log(ev.originalEvent.wheelDelta, ev.originalEvent.detail, me.rotationGroup.position.z);
       me.show();
    });
-   glDOM.bind("contextmenu", function(ev) {
-      ev.preventDefault();
-   });
+  //  glDOM.bind("contextmenu", function(ev) {
+  //     ev.preventDefault();
+  //  });
    $("body").bind('mouseup touchend', function(ev) {
       me.isDragging = false;
    });
