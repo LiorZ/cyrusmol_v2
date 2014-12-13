@@ -30,7 +30,7 @@ import diagrams
 
 
 class MainPageHandler(common.RequestHandler):
-  ROUTE = '/'
+  ROUTE = '/old'
 
   @classmethod
   def Routes(cls):
@@ -48,7 +48,7 @@ class MainPageHandler(common.RequestHandler):
     self.response.out.write(template.render(template_values))
 
 class TempBootstrapHandler(common.RequestHandler):
-  ROUTE = '/bootstrap'
+  ROUTE = '/'
 
   @classmethod
   def Routes(cls):
