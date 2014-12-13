@@ -1,0 +1,3 @@
+[submodule "js/RosettaDiagrams"]
+	path = js/RosettaDiagrams
+	url = https://github.com/LiorZ/RosettaDiagrams
