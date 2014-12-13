@@ -1,0 +1,12 @@
+{
+   "title":"Rebuild a loop",
+   "jobname": "Job Name",
+   "command":"loophash",
+   "parameters": { 
+    "loopstart" : { "value": "10" },
+    "loopend" : { "value": "20" }
+   },
+   "user_files":[ ],
+   "forced_flags":[ ],
+   "user_flags":{ }
+}

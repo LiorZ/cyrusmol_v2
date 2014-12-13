@@ -1,0 +1,16 @@
+<dock_design>
+  <SCOREFXNS>
+  </SCOREFXNS>
+  <FILTERS>
+  </FILTERS>
+  <MOVERS>
+    <FastRelax name=relax repeats=2>
+    </FastRelax>
+  </MOVERS>
+  <APPLY_TO_POSE>
+  </APPLY_TO_POSE>
+  <PROTOCOLS>
+    <Add mover=relax/>
+  </PROTOCOLS>
+</dock_design>
+
