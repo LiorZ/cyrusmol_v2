@@ -15,6 +15,11 @@ indexes:
   properties:
   - name: name
 
+- kind: Diagram
+  properties:
+  - name: user_id
+  - name: created_time
+
 - kind: Job
   ancestor: yes
   properties:

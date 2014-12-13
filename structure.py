@@ -19,7 +19,7 @@
 
 """
 import hashlib
-import urllib 
+import urllib
 import httplib
 import json
 import webapp2
@@ -150,32 +150,32 @@ class Get(common.RequestHandler):
     return
 
 class StructureQuery:
-    
+
     def get_structures_for_user(self,asDict=True,include_pdbdata=False):
         user = users.get_current_user()
         parental_hash = self.request.get('parental_hash')
         parental_key = self.request.get('parental_key')
-    
+
         structure_query = Structure.all()
         structure_query.ancestor(Structure.Key(structure_list_name))
-    
+
         # if client wants only a particular parental hash - make it so
         if parental_hash:
           structure_query.filter('parental_hash =', parental_hash)
-    
+
         # if client wants only a particular parental_key - make it so
         if parental_key:
           structure_query.filter('parental_key =', parental_key)
-    
+
         # always filter by user of course
         structure_query.filter('user_id =', user.user_id())
         structure_arr = structure_query.run()
-        
+
         if asDict:
             return [structure.AsDict(include_pdbdata) for structure in structure_arr]
-        
+
         return structure_arr
-            
+
 
 class Query(common.RequestHandler,StructureQuery):
   ROUTE = '/structure/query'
@@ -214,14 +214,14 @@ class GetPDBs(common.RequestHandler,StructureQuery):
     #Create a zip file from all the pdbs
     zip_stream = StringIO.StringIO()
     zip_file = zipfile.ZipFile(zip_stream, "w")
-    
+
     for i in range(0,len(structures_pdbs)):
         zip_file.writestr("out"+str(i)+".pdb", structures_pdbs[i])
-        
+
     zip_file.close()
     zip_bytes = zip_stream.getvalue()
     zip_stream.close()
-    
+
     self.response.headers['Content-Type'] = '"application/zip"'
     self.response.headers['Content-Disposition'] = 'attachment; filename=output_pdbs.zip'
     self.response.out.write(zip_bytes)
@@ -250,8 +250,8 @@ class Put(common.RequestHandler):
     self.response.out.write("Success" );
 
     newstructure = Structure(Structure.Key(structure_list_name))
-    
-    
+
+
     newstructure.user_id        = str(payload_data["user_id"])
     newstructure.error          = int(payload_data["error"])
     newstructure.workerinfo     = str(payload_data["workerinfo"])
@@ -277,7 +277,7 @@ class Put(common.RequestHandler):
     if str(payload_data["stderr"]) != "":
       operation.last_stderr      = str( payload_data["stderr"] )
     operation.put()
-    
+
 
 
 
@@ -340,4 +340,3 @@ all_routes = [List.Routes(), Get.Routes(), Put.Routes(), Query.Routes(), GetPDBs
 
 def Routes():
   return sum(all_routes, [])
-

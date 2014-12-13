@@ -26,6 +26,7 @@ import common
 import operation
 import structure
 import task
+import diagrams
 
 
 class MainPageHandler(common.RequestHandler):
@@ -73,5 +74,6 @@ app = webapp2.WSGIApplication(sum([MainPageHandler.Routes(),
                                    operation.Routes(),
                                    task.Routes(),
                                    structure.Routes(),
+                                   diagrams.Routes()
                                   ],
                                   []), debug=True)
