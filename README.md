@@ -9,14 +9,20 @@ How to use CyrusMol?
 --------------------
 
 To start a new job , simply click the button on the top left corner of the dashboard.
+
 ![dashboard](https://cloud.githubusercontent.com/assets/1312830/5439401/213ea3aa-8488-11e4-8ffa-6802832fa36c.png)
 
 In the wizard that opens you'll enter the pdb you are going to model/design, choose a protocol/Rosetta Diagram/Enter a Rosetta Script
+
 ![wizard](https://cloud.githubusercontent.com/assets/1312830/5439526/1f7668ae-8489-11e4-84ac-99d38836b252.png)
 
 Enter the number of jobs and submit to the cluster.
+The section below the submit button contains all the simulation that were submitted by the user.
+The gray badge describes the total number of jobs submitted, the green one - the number of jobs completed and the red one contains the number of jobs that were ended in error.
+
 
 The section below shows results obtained from modeling simulation, ordered in a 2 dimensional plot, with axes that can be easily modified. In the example below, the axes are total score and irms:
+
 ![graph](https://cloud.githubusercontent.com/assets/1312830/5439581/902485fe-8489-11e4-9974-fc504ac4fb93.png)
 
 Clicking on a point in the graph will load the respective structure and its energy table on the top right corner of the dashboard. Right clicking the structure brings up a context menu that is used to modify the view of the structure.
