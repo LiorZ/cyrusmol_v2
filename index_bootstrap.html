@@ -164,7 +164,13 @@
                         <ul class="dropdown-menu pull-right" role="menu">
                           <li><a href="#" id="btn_update_op_list">Update List</a>
                           </li>
-                          <li><a href="#">Purge All</a>
+                          <li><a href="#" id="btn_purge_jobs">Purge All</a>
+                          </li>
+                          <li>
+                            <a href="#" id="btn_download_pdb">Download PDBs</a>
+                          </li>
+                          <li>
+                            <a href="#" id="show_latest_stderr">Show Rosetta Output log</a>
                           </li>
                         </ul>
                       </div>
@@ -304,9 +310,7 @@
           <a href="#demo3" class="list-group-item" data-toggle="collapse" data-parent="#MainMenu">Rosetta Backend Job <i class="fa fa-caret-down"></i></a>
           <div class="collapse" id="demo3">
             <a href="#SubMenu1" class="list-group-item" data-protocol="#backend_relax" data-protocol-data="/data/jobdefs/relax.json">Relax</a>
-            <a href="javascript:;" class="list-group-item" data-protocol="#backend_score">Score</a>
             <a href="javascript:;" class="list-group-item" data-protocol="#backend_loophash" data-protocol-data="/data/jobdefs/loophash.json">Loophash</a>
-            <a href="javascript:;" class="list-group-item" data-protocol="#backend_enzdes">Enzdes</a>
           </div>
           <a href="#demo4" class="list-group-item" data-parent="#MainMenu" data-protocol="#backend_rscripts" data-protocol-data="/data/jobdefs/xmlscript_generic.json">Rosetta XML Script</a>
           <a href="#demo4" class="list-group-item" data-parent="#MainMenu" data-protocol="#backend_diagrams" data-protocol-data="/data/jobdefs/xmlscript_generic.json">Rosetta Diagram</a>
@@ -414,6 +418,24 @@
   </div>
 
 
+<div class="modal fade" id="stderr_view">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+        </button>
+        <h4 class="modal-title">Standard Error</h4>
+      </div>
+
+      <div class="modal-body" >
+        <pre id="standard_error_pre" style="overflow:auto; max-height:500px;">
+
+        </pre>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 
   <div class="modal fade" id="rosetta_diagrams_view">
@@ -449,7 +471,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal" id="btn_diagram_close">Close</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" id="btn_diagram_close">Save</button>
         </div>
       </div>
       <!-- /.modal-content -->
@@ -541,6 +563,7 @@
       </td>
     </tr>
   </script>
+  <img src="/images/indicator.gif" id="indicator" style="display:none" />
 
   <!-- jQuery Version 1.11.0 -->
   <script src="/template/js/jquery-1.11.0.js"></script>

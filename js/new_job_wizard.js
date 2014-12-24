@@ -19,7 +19,7 @@ var NewJobWizard = (function($) {
 
     'backend_diagrams': function(data){
       var id = $('#wizard_rosetta_diagrams a.active').attr('data-id');
-      var diagram = _.find(RosettaDiagrams.DiagramsCollection, function(d) {
+      var diagram = RosettaDiagrams.DiagramsCollection.find(function(d) {
         return d.get('id') == id;
       });
 
@@ -27,7 +27,7 @@ var NewJobWizard = (function($) {
       data.xmlscript["content"] = xml;
     }
 
-  }
+  };
 
 
 
@@ -256,7 +256,7 @@ var NewJobWizard = (function($) {
     if ( $(next_card).attr('id') == "backend_diagrams" ){
       $("#wizard_rosetta_diagrams").html('');
 
-      _.each(RosettaDiagrams.DiagramsCollection,function(diagram){
+      RosettaDiagrams.DiagramsCollection.each(function(diagram){
 
         var diagram_name = diagram.get('name') || "Untitled Diagram";
         var row_string = "<a href='#demo4' class='list-group-item' data-id='" + diagram.get('id') + "'>" + diagram_name + "</a>"

@@ -13,8 +13,8 @@
 # limitations under the Licenses.
 #
 
-application: cyrusmol
-version: 3
+application: red-tide-793
+version: 1
 runtime: python27
 api_version: 1
 threadsafe: true

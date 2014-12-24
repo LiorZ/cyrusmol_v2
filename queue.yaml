@@ -13,11 +13,10 @@
 # limitations under the Licenses.
 
 queue:
-- name: slow-tasks 
+- name: slow-tasks
   mode: pull
   acl:
-  - user_email: mtyka@google.com        # can list, get, lease, and delete tasks
-  - user_email: mike.tyka@gmail.com     # can list, get, lease, and delete tasks
-  - writer_email: mtyka@google.com      # can insert and update tasks
-  - writer_email: mike.tyka@gmail.com   # can do all
-
+  - user_email: liorz1984@gmail.com        # can list, get, lease, and delete tasks
+  - user_email: liorz1984@gmail.com     # can list, get, lease, and delete tasks
+  - writer_email: liorz1984@gmail.com      # can insert and update tasks
+  - writer_email: liorz1984@gmail.com   # can do all
