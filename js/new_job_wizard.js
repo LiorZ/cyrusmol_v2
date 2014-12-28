@@ -109,7 +109,7 @@ var NewJobWizard = (function($) {
     if ( FormJobProcessor[job_protocol] != undefined ) {
       FormJobProcessor[job_protocol](data)
     }
-    data_pack["flags_file"] = wizard.el.find('#flags_file_field').val()
+    data_pack["flags_file"] = wizard.el.find('#txt_flag_file').val()
     data_pack["operation_info"] = {
       "short": data.jobname,
       "long": data.jobname

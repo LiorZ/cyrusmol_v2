@@ -375,13 +375,13 @@
 
       <div class="wizard-card" data-cardname="finalize_submit">
         <h3>Finalize Job</h3>
-        <input type="text" class="form-control" placeholder="Job Name" id="job_name" />
-        <div style="margin-top:1em;">
-          <label for="numjobs">Number of Jobs:</label>
-          <input type="text" class="form-control" name="numjobs" id="numjobs" style="width:4em; display:inline;">
-        </div>
-        <div class="well" style="margin-top:1em;">
-          <h4>Job Details Overview</h4>
+        <div class="well">
+          <h4>Job Details</h4>
+          <input type="text" class="form-control" placeholder="Job Name" id="job_name" />
+          <div style="margin-top:1em;">
+            <input type="text" class="form-control" name="numjobs" id="numjobs" style="width:7em; display:inline;" placeholder="# Jobs">
+          </div>
+          <textarea id="txt_flag_file" name="txt_flag_file" rows="3" cols="60" placeholder="Flag File" style="margin-top:1em;"></textarea>
         </div>
         <input type="hidden" id="protocol_data_url" />
       </div>
@@ -418,23 +418,23 @@
   </div>
 
 
-<div class="modal fade" id="stderr_view">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
-        </button>
-        <h4 class="modal-title">Standard Error</h4>
-      </div>
+  <div class="modal fade" id="stderr_view">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+          </button>
+          <h4 class="modal-title">Standard Error</h4>
+        </div>
 
-      <div class="modal-body" >
-        <pre id="standard_error_pre" style="overflow:auto; max-height:500px;">
+        <div class="modal-body">
+          <pre id="standard_error_pre" style="overflow:auto; max-height:500px;">
 
         </pre>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
 
 
