@@ -24,8 +24,8 @@ handlers:
   static_dir: stylesheets
 - url: /template
   static_dir: template
-- url: /images
-  static_dir: images
+- url: /img
+  static_dir: img
 - url: /nacl
   static_dir: nacl
 - url: /data
@@ -36,10 +36,14 @@ handlers:
   script: cyrusmol.app
 - url: /structure/put
   script: cyrusmol.app
-- url: /.*
+- url: /dashboard
   login: required
   script: cyrusmol.app
-
+- url: /
+  script: cyrusmol.app
+- url: /.*
+  script: cyrusmol.app
+  login: required
 libraries:
 - name: jinja2
   version: latest

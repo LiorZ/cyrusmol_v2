@@ -65,13 +65,29 @@ $(function($) {
   });
 
   var diagram_view = new DiagramListView();
-  RosettaDiagrams.DiagramsCollection.fetch(
-    {
-      success: function() {
-      },
-      error:function(){
+  // RosettaDiagrams.DiagramsCollection.fetch(
+  //   {
+  //     success: function() {
+  //     },
+  //     error:function(){
+  //
+  //     }
+  // });
 
+  $.get('/diagrams').done(function(data){
+    if ( data != undefined && data.length > 0 ){
+      var arr = [];
+      for (var i=0; i<data.length; ++i) {
+        var g = new joint.dia.Graph();
+        if ( data[i].cells === undefined ){
+          data[i].cells = [];
+        }
+        g.fromJSON(data[i]);
+        arr.push(g);
       }
+      RosettaDiagrams.DiagramsCollection.reset(arr);
+      diagram_view.render();
+    }
   });
 
 

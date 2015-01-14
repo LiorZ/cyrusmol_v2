@@ -97,6 +97,7 @@ class New(common.RequestHandler):
     user = users.get_current_user()
 
     json_data = json.loads(str(self.request.body))
+
     key = Diagram.Key(diagram_list_name)
     new_diagram = Diagram(key)
 

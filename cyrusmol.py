@@ -29,7 +29,7 @@ import task
 import diagrams
 
 
-class MainPageHandler(common.RequestHandler):
+class OldCyrusMolHandler(common.RequestHandler):
   ROUTE = '/old'
 
   @classmethod
@@ -47,8 +47,8 @@ class MainPageHandler(common.RequestHandler):
                        ("user_id",user.user_id())]
     self.response.out.write(template.render(template_values))
 
-class TempBootstrapHandler(common.RequestHandler):
-  ROUTE = '/'
+class DashboardHandler(common.RequestHandler):
+  ROUTE = '/dashboard'
 
   @classmethod
   def Routes(cls):
@@ -65,12 +65,28 @@ class TempBootstrapHandler(common.RequestHandler):
                        ("user_id",user.user_id())]
     self.response.out.write(template.render(template_values))
 
+class FirstPageHandler(common.RequestHandler):
+  ROUTE = '/'
+
+  @classmethod
+  def Routes(cls):
+    return [webapp2.Route(cls.ROUTE, cls, methods=['GET'])]
+
+  def get(self):  # pylint:disable=g-bad-name
+    user = users.get_current_user()
+    print user
+    if ( user != None ):
+        self.redirect('/dashboard')
+    else:
+        template = self.JinjaEnv().get_template('main.html')
+        self.response.out.write(template.render())
 
 
 
 # Main WSGI app as specified in app.yaml
-app = webapp2.WSGIApplication(sum([MainPageHandler.Routes(),
-                                   TempBootstrapHandler.Routes(),
+app = webapp2.WSGIApplication(sum([OldCyrusMolHandler.Routes(),
+                                   FirstPageHandler.Routes(),
+                                   DashboardHandler.Routes(),
                                    operation.Routes(),
                                    task.Routes(),
                                    structure.Routes(),
