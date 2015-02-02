@@ -168,7 +168,7 @@ class Import(common.RequestHandler):
 
     @common.RequestHandler.LoginRequired
     def post(self,key):   # pylint: disable=g-bad-name
-        diagram = Common.valid_diagram_by_key(key)
+        diagram = Diagram.get(key)
         user = users.get_current_user()
 
         if ( diagram == None or not diagram.is_public):
