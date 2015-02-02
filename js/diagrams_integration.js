@@ -164,7 +164,7 @@ $(function($) {
     var id = $('#import-diagram-share-code').val();
     $.post("/import/"+id).done(function(data){
       var g = new RosettaDiagrams.RosettaDiagramsGraph();
-      g.fromJSON(data);
+      g.fromJSON(data,{graph:g});
 
       RosettaDiagrams.DiagramsCollection.add(g);
       $("#import-diagram-dialog").modal("hide");
