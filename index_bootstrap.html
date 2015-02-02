@@ -9,7 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>CyrusMol</title>
+  <title>Rosetta Diagrams</title>
 
   <!-- Bootstrap Core CSS -->
   <link href="/js/RosettaDiagrams/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -124,7 +124,7 @@
     <div id="page-wrapper" style="min-height: 887px;">
       <div class="row">
         <div class="col-md-12">
-          <h1 class="page-header" style="text-align:center;">CyrusMol</h1>
+          <h1 class="page-header" style="text-align:center;">Rosetta Diagrams</h1>
         </div>
         <!-- /.col-md-12 -->
       </div>
@@ -250,6 +250,7 @@
                       <ul class="dropdown-menu pull-right" role="menu">
                         <li><a href="#" id="btn_new_diagram">New Diagram</a>
                         </li>
+                        <li><a href="#" id="btn_import_diagram">Import Diagram</a></li>
                       </ul>
                     </div>
                   </div>
@@ -444,7 +445,7 @@
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
           </button>
-          <h4 class="modal-title" id="rosetta_diagrams_view_title">Rosetta Diagram</h4>
+          <h4 class="modal-title" id="rosetta_diagrams_view_title"></h4>
         </div>
         <div class="modal-body">
           <nav class="navbar navbar-default" role="navigation">
@@ -494,7 +495,6 @@
     </pre>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal" id="btn_submit_job">Submit Job</button>
           <button type="button" class="btn btn-primary" data-dismiss="modal" id="btn_close">Close</button>
         </div>
       </div>
@@ -503,6 +503,44 @@
     <!-- /.modal-dialog -->
   </div>
   <!-- Rosetta Diagrams templates -->
+
+  <div class="modal fade" id="share-code-modal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Share code</h4>
+        </div>
+        <div class="modal-body">
+          <p>Make sure your diagram is public, copy this code to share your diagram:</p>
+          <p style="font-weight:bold;" id="code-placeholder"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+  <div class="modal fade" id="import-diagram-dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Import Diagram</h4>
+        </div>
+        <div class="modal-body">
+          <p>Paste the share code in the text box below:</p>
+          <input type="text" class="form-control" id="import-diagram-share-code"/>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="btn_dialog_import_diagram">Import</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
   <div id="code_template" style="display:none;">
     &lt;ROSETTASCRIPTS&gt; &lt;SCOREFXNS&gt; &lt;/SCOREFXNS&gt; &lt;TASKOPERATIONS&gt;
     <span id=xml_task_operation class="rscripts_elements">

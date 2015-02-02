@@ -42,7 +42,7 @@ class Diagram(db.Model):
   user_id = db.StringProperty()
   created_time = db.DateTimeProperty(auto_now_add=True)
   json = db.BlobProperty()
-  is_public = db.BooleanProperty()
+  is_public = db.BooleanProperty(default=False)
 
   @classmethod
   def Key(cls, diagram_name):
@@ -76,8 +76,14 @@ class List(common.RequestHandler):
     diagram_query.filter('user_id =', user.user_id())
     diagram_query.order('created_time')
     diagram_arr = diagram_query.run()
-    diagram_jsons = [d.AsDict()['json'] for d
-                  in diagram_arr]
+    diagram_jsons = []
+    for d in diagram_arr:
+        d_json = d.AsDict()['json']
+        d_json["is_public"] = d.is_public
+        diagram_jsons.append(d_json)
+
+    #diagram_jsons = [d.AsDict()['json'] for d
+    #              in diagram_arr]
 
 
     self.response.headers['Content-Type'] = 'application/json; charset=utf-8'
@@ -127,10 +133,14 @@ class Update(common.RequestHandler):
             self.abort(httplib.FORBIDDEN)
             return
         json_data = self.request.body
-
+        json_dict = json.loads(json_data)
         diagram.json = json_data
+        print json_dict
+
+        diagram.is_public = json_dict['is_public']
+        print "DIAGRAM IS NOW " + str(diagram.is_public)
         diagram.put()
-        self.response.set_status(200)
+        self.response.out.write("{}")
 
 class Delete(common.RequestHandler):
     ROUTE = r"/diagrams/<:([^/]+)?>"
@@ -149,6 +159,38 @@ class Delete(common.RequestHandler):
 
         self.response.set_status(200)
 
+class Import(common.RequestHandler):
+    ROUTE = r"/import/<:([^/]+)?>"
+
+    @classmethod
+    def Routes(cls):
+        return [webapp2.Route(cls.ROUTE, cls, methods=['POST'])]
+
+    @common.RequestHandler.LoginRequired
+    def post(self,key):   # pylint: disable=g-bad-name
+        diagram = Common.valid_diagram_by_key(key)
+        user = users.get_current_user()
+
+        if ( diagram == None or not diagram.is_public):
+            self.abort(httplib.FORBIDDEN)
+            return
+
+        print diagram.json
+        d_json = json.loads(diagram.json)
+        new_key = Diagram.Key(diagram_list_name)
+        my_diagram = Diagram(new_key)
+        my_diagram.put()
+
+        d_json['id'] = str(my_diagram.key())
+        d_json['is_public'] = False
+
+        my_diagram.json = json.dumps(d_json);
+        my_diagram.user_id = user.user_id()
+        my_diagram.put()
+
+        self.response.headers['Content-Type'] = 'application/json; charset=utf-8'
+        self.response.headers['Content-Disposition'] = 'attachment'
+        self.response.out.write(my_diagram.json)
 class Common(object):
 
     @staticmethod
@@ -167,7 +209,7 @@ class Common(object):
 
         return diagram
 
-all_routes = [List.Routes(), New.Routes(), Update.Routes(), Delete.Routes()]
+all_routes = [List.Routes(), New.Routes(), Update.Routes(), Delete.Routes(), Import.Routes()]
 
 
 def Routes():
