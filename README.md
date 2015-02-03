@@ -1,12 +1,12 @@
-Cyrusmol 2
-========
+Rosetta Diagrams
+=================
 
-CyrusMol 2 is a framework for running Rosetta modeling jobs on the cloud via a web interface.
+RosettaDiagrams is a framework for running Rosetta modeling jobs on the cloud via a web interface.
 It contains RosettaDiagrams as one of its modeling tools, allowing users to create modeling trajectories by drawing a diagram.
 
 
-How to use CyrusMol?
---------------------
+How to use RosettaDiagrams?
+----------------------------
 
 To start a new job , simply click the button on the top left corner of the dashboard.
 
@@ -39,3 +39,8 @@ To change the attributes of each mover/filter - double click the element in the 
 ![attributes](https://cloud.githubusercontent.com/assets/1312830/5439857/efc859a2-848b-11e4-8531-11d64f545b91.png)
 
 and click the value of the attribute to modify it.
+
+
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">Rosetta Diagrams</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="http://www.rosettadiagrams.org" property="cc:attributionName" rel="cc:attributionURL">Lior Zimmerman</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
+
