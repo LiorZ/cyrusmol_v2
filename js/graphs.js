@@ -126,7 +126,10 @@ var GraphPlotting = (function($) {
         ENERGIES = [];
         DATA = data;
         for (var i = 0; i < data.length; ++i) {
-          ENERGIES.push(JSON.parse(data[i].energies));
+          var energy_entry = JSON.parse(data[i].energies);
+          if ( _.keys(energy_entry).length > 0){
+            ENERGIES.push(energy_entry);
+          }
         }
 
         draw_graph('irms', 'score', data);
