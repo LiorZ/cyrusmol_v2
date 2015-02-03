@@ -130,11 +130,10 @@ var GraphPlotting = (function($) {
             ENERGIES.push(energy_entry);
           }
         }
-        $('#select_x_axis').val("irms");
-        $('#select_y_axis').val("score");
         draw_graph('irms', 'score', data);
         populateAxisSelectBoxes();
-
+        $('#select_x_axis').val("irms");
+        $('#select_y_axis').val("score");
       });
 
   }
