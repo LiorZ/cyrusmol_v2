@@ -110,7 +110,6 @@ var GraphPlotting = (function($) {
     $("#graph_body").bind("plothover", function(event, pos, item) {
       $("#tooltip").remove();
       if (item) {
-        console.log(item);
         var x = item.datapoint[0].toFixed(2),
           y = item.datapoint[1].toFixed(2);
         showTooltip(item.pageX, item.pageY, "Decoy " + item.dataIndex + " " + x + " , " + y);
@@ -131,7 +130,8 @@ var GraphPlotting = (function($) {
             ENERGIES.push(energy_entry);
           }
         }
-
+        $('#select_x_axis').val("irms");
+        $('#select_y_axis').val("score");
         draw_graph('irms', 'score', data);
         populateAxisSelectBoxes();
 
