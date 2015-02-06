@@ -162,6 +162,11 @@ $(function($) {
 
   $("#btn_dialog_import_diagram").click(function() {
     var id = $('#import-diagram-share-code').val();
+    if ( id == undefined ) {
+      return;
+    }
+    id = id.replace(" ","");
+    console.log(id);
     $.post("/import/"+id).done(function(data){
       var g = new RosettaDiagrams.RosettaDiagramsGraph();
       g.fromJSON(data,{graph:g});
