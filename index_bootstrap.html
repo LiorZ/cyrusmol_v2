@@ -108,6 +108,13 @@
       -moz-border-radius: 6px 0 6px 6px;
       border-radius: 6px 0 6px 6px;
     }
+
+    //Used for mover types in the autocomplete text box
+    #multiple-datasets .mover-type {
+      margin: 0 20px 5px 20px;
+      padding: 3px 0;
+      border-bottom: 1px solid #ccc;
+    }
   </style>
 
   <!-- Rosetta Diagrams CSS -->
@@ -453,7 +460,10 @@
           <nav class="navbar navbar-default" role="navigation">
             <div class="container-fluid">
               <div class="navbar-header">
-                <input type="text" class="form-control" style="display:inline; width:20em;" id="txt_elem_name" />
+                <div id="multiple-datasets">
+                <input type="text" class="form-control" style="display:inline; width:20em;" id="txt_elem_name" placeholder="Type element name"/>
+                </div>
+
                 <button type="button" class="btn btn-primary" id="btn_add_element">
                   <span class="glyphicon glyphicon-plus"></span>
                 </button>
@@ -466,11 +476,15 @@
           </nav>
           <div id="paper">
 
-            <div id="floating_menu">
+            <div id="floating_menu" style="">
               <button type="button" class="btn btn-primary btn-xs" id="btn_delete_element">
                 <span class="glyphicon glyphicon-remove"></span>
               </button>
+              <button type="button" class="btn btn-primary btn-xs" id="btn_info_element">
+                  <span class="glyphicon glyphicon-info-sign"></span>
+              </button>
             </div>
+
           </div>
         </div>
         <div class="modal-footer">
@@ -481,7 +495,26 @@
     </div>
     <!-- /.modal-dialog -->
   </div>
+  <div class="modal" id="rosetta_info_view">
+      <div class="modal-dialog" style="width:60%; height:80%;">
+          <div class="modal-content">
+              <div class="modal-header">
 
+                  <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                  </button>
+                  <h4 class="modal-title">Mover Documentation</h4>
+              </div>
+              <div class="modal-body"  style="width:100%; height:100%; overflow:hidden;">
+                  <iframe id="rosetta_doc" frameborder="0"></iframe>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" data-dismiss="modal" id="btn_close">Close</button>
+              </div>
+          </div>
+          <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+  </div>
   <!-- Rosetta Diagrams HTML -->
   <div class="modal" id="rosetta_scripts_view">
     <div class="modal-dialog">
@@ -504,6 +537,9 @@
     </div>
     <!-- /.modal-dialog -->
   </div>
+
+  <!-- Rosetta Diagrams HTML -->
+
   <!-- Rosetta Diagrams templates -->
 
   <div class="modal fade" id="share-code-modal">
@@ -654,6 +690,7 @@
   <script src="/js/RosettaDiagrams/js/joint.shapes.rosetta_diagrams.js"></script>
   <script src="/js/RosettaDiagrams/js/diagrams.js"></script>
   <script type="text/javascript" src="/js/diagrams_integration.js"></script>
+  <script type="text/javascript" src="/js/RosettaDiagrams/bower_components/bloodhound/index.js"></script>
 
 </body>
 
