@@ -5,18 +5,6 @@
 <meta name="KEYWORDS" content="Movers (RosettaScripts),TaskOperations (RosettaScripts),FeaturesScientificBenchmark,FeaturesDatabaseSchema,FeaturesTutorialSQLBasics,MetropolisHastingsMover,MetropolisHastings Documentation,DatabaseSupport">
 
 <meta name="robots" content="index,follow">
-<link rel="shortcut icon" href="https://wiki.rosettacommons.org/favicon.ico">
-<link rel="stylesheet" type="text/css" media="print" href="./movers_files/wikiprintable.css">
-<script type="text/javascript" src="./movers_files/wikibits.js"></script>
-<style type="text/css">
-/*/*/
-@import "/stylesheets/wikistandard.css";
-a.new, #quickbar a.new { color: #CC2200; }
-#quickbar { position: absolute; top: 4px; left: 4px; border-right: 1px solid gray; }
-#article { margin-left: 152px; margin-right: 4px; }
-
-/* */
-</style>
 </head>
 
 <body bgcolor="#FFFFFF" onload="">
@@ -31,7 +19,7 @@ a.new, #quickbar a.new { color: #CC2200; }
 <p>where "mover_name" belongs to a predefined set of possible movers that the parser recognizes and are listed below, name is a unique identifier for this mover definition and then any number of parameters that the mover needs to be defined.
 </p>
 <table border="0" id="toc"><tbody><tr id="toctitle"><td align="center">
-<b>Table of contents</b> 
+<b>Table of contents</b>
 </td></tr><tr id="tocinside"><td>
 <div class="tocline"><a href="http://www.rosettacommons.org/manuals/archive/rosetta3.4_user_guide/Movers_%28RosettaScripts%29#Mover_Documentation_Guide">1 Mover Documentation Guide</a><br></div>
 <div class="tocline"><a href="http://www.rosettacommons.org/manuals/archive/rosetta3.4_user_guide/Movers_%28RosettaScripts%29#Predefined_Movers">2 Predefined Movers</a><br></div>
@@ -256,7 +244,7 @@ a.new, #quickbar a.new { color: #CC2200; }
 <ul><li> <strong>bool_option</strong> describes how a boolean tag is made.  Default is true.
 </li><li> <strong>int_option</strong> describes how an integer tag is made.  Let's say this represents # of cycles of a loop to run, so the range would have to be &gt; 0.
 </li><li> <strong>real_option</strong> describes how to a Real option tag is made.
-</li><li> <strong>string_option</strong> is an example of how a string tag is made. 
+</li><li> <strong>string_option</strong> is an example of how a string tag is made.
 </li></ul>
 </li><li> What options must be provided?
 <ul><li>For example let's say that we need to pass a value to string_option or the protocol will not not run, you would include something like this:
@@ -274,7 +262,7 @@ a.new, #quickbar a.new { color: #CC2200; }
 </li><li> If the mover can change the length of the pose say so.
 </li></ul>
 <a name="Predefined_Movers"></a><h2>Predefined Movers</h2>
-<p>The following are defined internally in the parser, and the protocol can use them without defining them explicitly. 
+<p>The following are defined internally in the parser, and the protocol can use them without defining them explicitly.
 </p>
 <a name="NullMover"></a><h4>NullMover</h4>
 <p>Has an empty apply. Will be used as the default mover in &lt;PROTOCOLS&gt; if no mover_name is specified. Can be explicitly specified, with the name "null".
@@ -285,13 +273,13 @@ a.new, #quickbar a.new { color: #CC2200; }
 <p>This is a special mover that allows making a single compound mover and filter vector (just like protocols). The optional option mode changes the order of operations within the protocol, as defined by the option. If undefined, mode defaults to the historical functionality, which is operation of the Mover/Filter pairs in the defined order.
 </p>
 <pre style="white-space:pre-wrap">&lt;ParsedProtocol name=( &amp;string) mode=( &amp;string)&gt;
-	&lt;Add mover_name=( null &amp;string) filter_name=( true_filter &amp;string) apply_probabilities=(see below &amp;Real/&gt;
-	...
+    &lt;Add mover_name=( null &amp;string) filter_name=( true_filter &amp;string) apply_probabilities=(see below &amp;Real/&gt;
+    ...
 &lt;/ParsedProtocol&gt;
 </pre>
 <ul>
 <li>mode: "sequence" - (default) perform the Mover/Filter pair in the specified sequence; "random_order" - perform EACH of the defined Mover/Filter pairs one time in a random order; "single_random" - randomly pick a SINGLE Mover/Filter pair from the list.
-</li><li> apply_probabilities: This only works in mode single_random. You can set the probability that an individual submover will be called 0-1. The probabilities must sum to 1.0, or you'll get an error message. Notice that this is used by GenericMonteCarlo in its adaptive_movers mode to adjust the probabilities of movers dynamically during a sampling trajectory. 
+</li><li> apply_probabilities: This only works in mode single_random. You can set the probability that an individual submover will be called 0-1. The probabilities must sum to 1.0, or you'll get an error message. Notice that this is used by GenericMonteCarlo in its adaptive_movers mode to adjust the probabilities of movers dynamically during a sampling trajectory.
 </li></ul>
 <a name="Subroutine"></a><h4>Subroutine</h4>
 <p>Calling another RosettaScript from within a RosettaScript
@@ -300,22 +288,22 @@ a.new, #quickbar a.new { color: #CC2200; }
 <ul>
 <li> xml_fname: the name of the RosettaScript to call.
 </li></ul>
-<p>This definition in effect generates a Mover that can then be incorporated into the RosettaScripts PROTOCOLS section. This allows a simplification and modularization of RosettaScripts. 
+<p>This definition in effect generates a Mover that can then be incorporated into the RosettaScripts PROTOCOLS section. This allows a simplification and modularization of RosettaScripts.
 </p><p>Recursions are allowed but will cause havoc.
 </p>
 <a name="IfMover"></a><h4>IfMover</h4>
-<p>Implements a simple IF (filter(pose)) THEN true_mover(pose) ELSE false_mover(pose). <em>true_mover</em> is required, <em>false_mover</em> is not. 
+<p>Implements a simple IF (filter(pose)) THEN true_mover(pose) ELSE false_mover(pose). <em>true_mover</em> is required, <em>false_mover</em> is not.
 </p>
 <pre style="white-space:pre-wrap">&lt;If name=( &amp;string) filter_name=(&amp;string) true_mover_name=(&amp;string) false_mover_name=(null &amp;string)/&gt;
 </pre>
 <a name="Looping.2FMonte_Carlo_Movers"></a><h3>Looping/Monte Carlo Movers</h3>
 <a name="LoopOver"></a><h4>LoopOver</h4>
-<p>Allows looping over a mover using either iterations or a filter as a stopping condition (the first turns true). By using DockDesign mover above with loop can be useful, e.g., if making certain moves is expensive and then we want to exhaust other, shorter moves. 
+<p>Allows looping over a mover using either iterations or a filter as a stopping condition (the first turns true). By using DockDesign mover above with loop can be useful, e.g., if making certain moves is expensive and then we want to exhaust other, shorter moves.
 </p>
 <pre style="white-space:pre-wrap">&lt;LoopOver name=(&amp;string) mover_name=(&amp;string) filter_name=( false_filter &amp;string) iterations=(10 &amp;Integer) drift=(true &amp;bool)/&gt;</pre>
 <p>drift: true- the state of the pose at the end of the previous iteration will be the starting state for the next iteration.
-false- the state of the pose at the start of each iteration will be reset to the state when the mover is first called. 
-Note that "falling off the end" of the iteration will revert to the original input pose, even if drift is set to true. 
+false- the state of the pose at the start of each iteration will be reset to the state when the mover is first called.
+Note that "falling off the end" of the iteration will revert to the original input pose, even if drift is set to true.
 </p><p>This mover is somewhat deprecated in favor of the more general GenericMonteCarlo mover.
 </p>
 <a name="GenericMonteCarlo"></a><h4>GenericMonteCarlo</h4>
@@ -335,14 +323,14 @@ You can choose either format:
 <pre style="white-space:pre-wrap">&lt;GenericMonteCarlo name=(&amp;string) mover_name=(&amp;string) scorefxn_name=(&amp;string) trials=(10 &amp;integer) sample_type=(low, &amp;string) temperature=(0, &amp;Real) drift=(1 &amp;bool) recover_low=(1 &amp;bool) stopping_condition=(FalseFilter &amp;string) preapply=(1 &amp;bool)/&gt;</pre>
 <ul>
 <li><em>stopping_condition</em>: stops before trials are done if a filter evaluates to true.<br>
-</li><li><em>sample_type</em>: low - sampling structures having lower scores; high - sampling structures having higher scores<br> 
+</li><li><em>sample_type</em>: low - sampling structures having lower scores; high - sampling structures having higher scores<br>
 </li><li><em>drift</em>: true - the state of the pose at the end of the previous iteration will be the starting state for the next iteration; false - the state of the pose at the start of each iteration will be reset to the state when the mover is first called ( Of course, this is not MC ).<br>
 </li><li><em>recover_low</em>: true - at the end of application, the pose is set to the lowest (or highest if sample_type="high") scoring pose; false - the pose after apply completes is the last accepted pose<br>
 </li><li><em>preapply</em>: true - Automatically accept the first application of the sub-mover, ignoring the Boltzmann criterion. false - apply Boltzmann accept/reject to all applications of the mover. Though defaulting to true for historical reasons, it is highly recommended to set this to false unless you know you need it to be true.<br>
 </li><li> adaptive_movers: If the mover you call or a submover of that mover is of type ParsedProtocol with mode single-random, then GenericMonteCarlo can 'learn' the best sampling strategy by adapting the apply probabilities of individual movers within that ParsedProtocol. For each adaptation period (say 20 mover applies) the number of accepts of each submover is recorded (with pseudocounts of 1 for each mover) and during the next adaptation period the apply probabilities of the submovers in the ParsedProtocol are adjusted according in proportion to the acceptance probabilities of the previous stage. Due to the pseudocounts, all movers have at least some chance of being called.
 </li><li> adaptation_period: goes together with adaptive_movers, defined above. Defaults to max( max_trials/10, 10 ) but can be set to any integer.
 </li></ul>
-<p>Multiple filters can be defined for an MC mover. These filters are then applied sequentially in the order listed and only if the pose passes the Metropolis criterion for all filters is it accepted. This allows the extension of MC to a multicriterion framework where more than one criterion is optimized, say the total score and the binding energy. See demos/rosetta_scripts/experimental/computational_affinity_maturation_strategy2 for an example. It's recommended to list the computationally expensive filters last, as later filters will only be calculated if the earlier filters all pass. 
+<p>Multiple filters can be defined for an MC mover. These filters are then applied sequentially in the order listed and only if the pose passes the Metropolis criterion for all filters is it accepted. This allows the extension of MC to a multicriterion framework where more than one criterion is optimized, say the total score and the binding energy. See demos/rosetta_scripts/experimental/computational_affinity_maturation_strategy2 for an example. It's recommended to list the computationally expensive filters last, as later filters will only be calculated if the earlier filters all pass.
 </p><p>In the multiple filter case, the filter to be used for the official score of the pose (e.g. for recover_low purposes) can be specified with the <em>rank</em> parameter (this has no effect on the MC accept/reject). If no sub-filters are set with rank=1, the first filter is used for ranking. As a special case, if <em>boltz_rank</em> is set to true, the ranking score is a temperature-weighted sum of all filter values. (This value is equivalent to the effective value optimized by the MC protocol.)
 </p><p>A task can optionally be included for automatic setting of the number of trials in a GenericMonteCarlo run. Without a task input the number of trials is set by the Trials integer input. If a task is included, the number of designable residues will be calculated and the number of trials will be automatically set as task_scaling * (number designable residues). For example, if there are 10 designable residues and task_scaling is 5 (the default) the number of trials will be 50. The task_scaling is set to 5 by default and can be adjusted in the xml with the task_scaling flag. Giving an input task will override any value set by the Trials input. This allows for automation over a number of different input files. Input the task as for any other move, see example xml line below. Note that the input task does not alter the movers/filters contained within the GenericMonteCarlo, it is only used for calculating the number of designable residues.
 </p>
@@ -420,7 +408,7 @@ You can choose either format:
 </li><li> maxcycles - exit regardless if filter doesn't converge within this many applications of the mover - intended mainly as a safety check to prevent infinite recursion.
 </li></ul>
 <a name="RampMover"></a><h4>RampMover</h4>
-<p>Repeatedly applies a given mover while ramping the score from a low value to a high value.  
+<p>Repeatedly applies a given mover while ramping the score from a low value to a high value.
 </p>
 <pre style="white-space:pre-wrap">&lt;RampingMover name=(&amp;string) start_weight=(&amp;real) end_weight=(&amp;real) outer_cycles=(&amp;real) inner_cycles=(&amp;real) score_type=(&amp;string) ramp_func=(&amp;string) montecarlo=(&amp;string) mover=(&amp;string)/&gt;</pre>
 <ul>
@@ -451,7 +439,7 @@ You can choose either format:
     <li><em>pose_hash</em>: Create a string representation of the conformation using the BinaryProteinSilentStruct and then create a 64bit hash of the from the string.
     </li><li><em>auto_increment</em>: Allow the database to auto increment the the <em>struct_id</em> key.
     </li><li><em>manual_increment</em>: Starting from <em>first_struct_id</em>, increment the <em>struct_id</em>. In MPI compatible mode, increment so that the <em>struct_id</em> on node <em>i</em> is congruent to <em>i</em>.
-  </li></ul> 
+  </li></ul>
   </li><li><strong>first_struct_id</strong> <em>(1 &amp;integer)</em>: Manually specify the <em>struct_id</em> for the first structure. Note: This requires specifying <em>struct_id_type</em> to be <em>manual_increment</em>.
 
   </li><li><strong>use_transactions</strong> <em>(1 &amp;bool)</em>: Group together writing to the database in to transactions.
@@ -511,7 +499,7 @@ You can choose either format:
 </li><li> cumulate_jobs=1 cumulate_replicas=1: default_traj.out
 </li></ul>
 <a name="MetricRecorder"></a><h4>MetricRecorder</h4>
-<p>Record numeric metrics to a tab-delimited text file. Only record metrics every n times using stride. Append ".gz" to filename to use compression. 
+<p>Record numeric metrics to a tab-delimited text file. Only record metrics every n times using stride. Append ".gz" to filename to use compression.
 </p><p>Currently only torsion angles can be recorded, specified using the TorsionID. The residue can be indicated using absolute Rosetta number (integer) or with the PDB number and chain (integer followed by character).
 </p>
 <pre style="white-space:pre-wrap">&lt;MetricRecorder stride=(100 &amp;Size) filename=(metrics.txt &amp;string) cumulate_jobs=(0 &amp;bool) cumulate_replicas=(0 &amp;bool) prepend_output_name=(0 &amp;bool) &gt;
@@ -557,7 +545,7 @@ You can choose either format:
 </li><li>chi: minimize sidechains?
 </li><li>bb: minimize backbone?
 </li><li>jump: comma-separated list of jumps to minimize over (be sure this jump exists!)
-</li><li>type: minimizer type. linmin, dfpmin, dfpmin_armijo, dfpmin_armijo_nomonotone. dfpmin minimzers can also be used with absolute tolerance (add "atol" to the minimizer type). See <a href="https://www.rosettacommons.org/internal/doc/mini/all_else/minimization_overview.html" class="external" title="https://www.rosettacommons.org/internal/doc/mini/all_else/minimization_overview.html">https://www.rosettacommons.org/internal/doc/mini/all_else/minimization_overview.html</a> for details. 
+</li><li>type: minimizer type. linmin, dfpmin, dfpmin_armijo, dfpmin_armijo_nomonotone. dfpmin minimzers can also be used with absolute tolerance (add "atol" to the minimizer type). See <a href="https://www.rosettacommons.org/internal/doc/mini/all_else/minimization_overview.html" class="external" title="https://www.rosettacommons.org/internal/doc/mini/all_else/minimization_overview.html">https://www.rosettacommons.org/internal/doc/mini/all_else/minimization_overview.html</a> for details.
 </li><li>tolerance: criteria for convergence of minimization. <b>The default is very loose, it's recommended to specify something less than 0.01.</b>
 </li><li>MoveMap: The movemap can be programmed down to individual degrees of freedom. See FastRelax for more details.
 </li></ul>
@@ -569,7 +557,7 @@ You can choose either format:
 </p>
 <pre>chi=(&amp;bool) and bb=(&amp;bool)</pre> control sidechain or backbone freedom. Defaults to sidechain minimization. Options scorefxn, jump, type, and tolerance are passed to the underlying MinMover
 <a name="MinPackMover"></a><h4>MinPackMover</h4>
-<p>Packs then minimizes a sidechain before calling MonteCarlo on the change. It can be modified with user supplied ScoreFunction or TaskOperation. It does not do backbone, ridged body minimization. 
+<p>Packs then minimizes a sidechain before calling MonteCarlo on the change. It can be modified with user supplied ScoreFunction or TaskOperation. It does not do backbone, ridged body minimization.
 </p>
 <pre style="white-space:pre-wrap">&lt;MinPackMover name="&amp;string" scorefxn=("score12" &amp;string) task_operations=(&amp;string,&amp;string,&amp;string)/&gt;</pre>
 <p>It is reccomended to change the weights you are using to the <strong>score12minpack</strong> weights. These are the standard score12 weights with the reference energies refit for sequence recovery profile when using the MinPackMover. Without these weights you will see a lot of Tryptophan residues on the surface of a protein.
@@ -581,7 +569,7 @@ You can choose either format:
 <ul><li> The mover itself is not FoldTree sensitive, however the TaskOperations might be. This mover does not modify the fold tree.
 </li><li>Does it take and output a default FoldTree or does it need/output a modified fold tree.
 </li></ul>
-</li><li> Does it take a pose with a certain chemical or topological property? 
+</li><li> Does it take a pose with a certain chemical or topological property?
 <ul><li> Does not require a special type of Pose.
 </li></ul>
 </li><li> Does it change the length of the Pose?
@@ -634,8 +622,8 @@ You can choose either format:
 </p>
 <pre style="white-space:pre-wrap">&lt;RotamerTrialsMinMover name="&amp;string" scorefxn=(&amp;string) task_operations=(&amp;string,&amp;string,&amp;string)/&gt;</pre>
 <a name="ConsensusDesignMover"></a><h4>ConsensusDesignMover</h4>
-<p>This mover will mutate residues to the most-frequently occuring residues in a multiple sequence alignment, while making sure that the new residue scores well in rosetta. 
-It takes a position specific scoring matrix (pssm) as input to determine the most frequently occuring residues at each position. The user defines a packer task of the residues which will be designed. At each of these positions only residues which appear as often or more often (same pssm score or higher) will be allowed in subsequent design. Design is then carried out with the desired score function, optionally adding a residues identity constraint proportional to the pssm score (more frequent residues get a better energy). 
+<p>This mover will mutate residues to the most-frequently occuring residues in a multiple sequence alignment, while making sure that the new residue scores well in rosetta.
+It takes a position specific scoring matrix (pssm) as input to determine the most frequently occuring residues at each position. The user defines a packer task of the residues which will be designed. At each of these positions only residues which appear as often or more often (same pssm score or higher) will be allowed in subsequent design. Design is then carried out with the desired score function, optionally adding a residues identity constraint proportional to the pssm score (more frequent residues get a better energy).
 </p>
 <pre style="white-space:pre-wrap">&lt;ConsensusDesignMover name="&amp;string" scorefxn=(&amp;string) invert_task=(&amp;bool) sasa_cutoff=(&amp;float) use_seqprof_constraints=(&amp;bool) task_operations=(&amp;string)/&gt;</pre>
 <ul>
@@ -643,7 +631,7 @@ It takes a position specific scoring matrix (pssm) as input to determine the mos
 </li><li>taskoperations: Hand in a task operation defining the residues you want to design (or their inverse). Without a task_operation and with invert_task=0 everything will be designed.
 </li><li>use_seqprof_constraints: Only residues which appear more often in the pssm than the wild-type residue at position i are allowed in the packer task as position i. If use_seqprof_constraints = 0 all of those are allowed with equal probability -- that is, no extra constraint energy is added. If use_seqprof_constraints = 1 the more frequent residues are added to the packer task at residue i and each is granted a sequence constraint roughly proportional to the pssm score. In effect the more-frequent residues are included in proportion to their frequency of occurence in the pssm.
 </li><li>sasa_cutoff: Buried residues (with sasa &lt; sasa_cutoff) will not be designed. Surface residues (with sasa &gt; sasa_cutoff) will be designed. To carry out consensus design on all residues in the task simply don't enter a sasa_cutoff or set it to 0.
-</li><li>invert_task: A common usage case is to take an interface/ligand packer task and then do consensus design for everything outside of that design (which is presumably optimized by rosetta for binding). That use requires a task that is the opposite of the original task. This flag turns on that inverted task. 
+</li><li>invert_task: A common usage case is to take an interface/ligand packer task and then do consensus design for everything outside of that design (which is presumably optimized by rosetta for binding). That use requires a task that is the opposite of the original task. This flag turns on that inverted task.
 </li></ul>
 <a name="Idealize.2FRelax"></a><h3>Idealize/Relax</h3>
 <a name="Idealize"></a><h4>Idealize</h4>
@@ -670,7 +658,7 @@ It takes a position specific scoring matrix (pssm) as input to determine the mos
 <p>Options include:
 </p>
 <ul>
-<li>scorefxn  (default "score12") 
+<li>scorefxn  (default "score12")
 </li><li>repeats  (default 8)
 </li><li>task_operations ( default implicitly defined as InitializeFromCommandline, IncludeCurrent, and RestrictToRepacking  )
 </li><li> MoveMap name: this is optional and would actually not work with all movers, including FastRelax. The name allows the user to specify a movemap that can later be called by another mover without specifying all of the options. Movers that do not support this functionality will exit with an error message.
@@ -686,7 +674,7 @@ It takes a position specific scoring matrix (pssm) as input to determine the mos
 <li> docking_score_low: score function used in centroid mode of the docking steps
 </li><li> docking_score_high: score function used in full atom mode of docking
 </li><li> low_res_protocol_only: if true, only do centroid level docking
-</li><li> docking_local_refine: if true skip the centroid level and only do full atom docking 
+</li><li> docking_local_refine: if true skip the centroid level and only do full atom docking
 </li><li> dock_min: if true minimize the final full atom structure
 </li><li> partners: allows fold tree modifications to dock across multiple chains (example: docking chains L+H with A is partners="LH_A")
 </li><li> ignore_default_docking_task: allows you to ignore the default DockingTaskFactory set by docking and give it your own definition of an interface. Not suggested.
@@ -716,7 +704,7 @@ It takes a position specific scoring matrix (pssm) as input to determine the mos
 <p>Note that only one of the 5 can exist in a tag: extra_scoring,ppk_only,pep_refine,lowres_abinitio,min_only.
 </p>
 <pre>&lt;FlexPepDock name=(&amp;string) min_only=(&amp;boolean) pep_refine=(&amp;boolean)
- lowres_abinitio=(&amp;boolean) peptide_chain=(&amp;string) receptor_chain=(&amp;string) 
+ lowres_abinitio=(&amp;boolean) peptide_chain=(&amp;string) receptor_chain=(&amp;string)
 ppk_only=(&amp;boolean) scorefxn=(&amp;string) extra_scoring=(&amp;boolean)/&gt;</pre>
 <a name="Backbone_Movement"></a><h3>Backbone Movement</h3>
 <a name="SetTorsion"></a><h4>SetTorsion</h4>
@@ -829,53 +817,53 @@ CoordinateConstraint CA 1 CA 381   24.211  36.849  50.154 HARMONIC 0 1
 <p>The following RosettaScript runs a protocol similar to Rosetta's symmetric fast relax using the symmetric pack rotamers and symmetric min mover (note that the fastrelax mover respects symmetric poses, this example is merely done to illustrate the symmetric movers).
 </p>
 <pre style="white-space:pre-wrap">&lt;dock_design&gt;
-	&lt;TASKOPERATIONS&gt;
-		&lt;InitializeFromCommandline name=init/&gt;
-		&lt;RestrictToRepacking name=restrict/&gt;
-		&lt;IncludeCurrent name=keep_curr/&gt;
-	&lt;/TASKOPERATIONS&gt;
-	&lt;SCOREFXNS&gt;
-		&lt;ramp_rep1 weights=score12_full symmetric=1&gt;
-			&lt;Reweight scoretype=fa_rep weight=0.0088/&gt;
-		&lt;/ramp_rep1&gt;
-		&lt;ramp_rep2 weights=score12_full symmetric=1&gt;
-			&lt;Reweight scoretype=fa_rep weight=0.11/&gt;
-		&lt;/ramp_rep2&gt;
-		&lt;ramp_rep3 weights=score12_full symmetric=1&gt;
-			&lt;Reweight scoretype=fa_rep weight=0.22/&gt;
-		&lt;/ramp_rep3&gt;
-		&lt;ramp_rep4 weights=score12_full symmetric=1/&gt;
-	&lt;/SCOREFXNS&gt;
-	&lt;FILTERS&gt;
-	&lt;/FILTERS&gt;
-	&lt;MOVERS&gt;
-		&lt;SetupForSymmetry   name=setup_symm definition=C2.symm/&gt;
-		&lt;SymPackRotamersMover name=repack1 scorefxn=ramp_rep1 task_operations=init,restrict,keep_curr/&gt;
-		&lt;SymPackRotamersMover name=repack2 scorefxn=ramp_rep2 task_operations=init,restrict,keep_curr/&gt;
-		&lt;SymPackRotamersMover name=repack3 scorefxn=ramp_rep3 task_operations=init,restrict,keep_curr/&gt;
-		&lt;SymPackRotamersMover name=repack4 scorefxn=ramp_rep4 task_operations=init,restrict,keep_curr/&gt;
-		&lt;SymMinMover name=min1 scorefxn=ramp_rep1 type=lbfgs_armijo_nonmonotone tolerance=0.01 bb=1 chi=1 jump=ALL/&gt;
-		&lt;SymMinMover name=min2 scorefxn=ramp_rep2 type=lbfgs_armijo_nonmonotone tolerance=0.01 bb=1 chi=1 jump=ALL/&gt;
-		&lt;SymMinMover name=min3 scorefxn=ramp_rep3 type=lbfgs_armijo_nonmonotone tolerance=0.01 bb=1 chi=1 jump=ALL/&gt;
-		&lt;SymMinMover name=min4 scorefxn=ramp_rep4 type=lbfgs_armijo_nonmonotone tolerance=0.00001 bb=1 chi=1 jump=ALL/&gt;
-		&lt;ParsedProtocol name=ramp_rep_cycle&gt;
-			&lt;Add mover=repack1/&gt;
-			&lt;Add mover=min1/&gt;
-			&lt;Add mover=repack2/&gt;
-			&lt;Add mover=min2/&gt;
-			&lt;Add mover=repack3/&gt;
-			&lt;Add mover=min3/&gt;
-			&lt;Add mover=repack4/&gt;
-			&lt;Add mover=min4/&gt;
-		&lt;/ParsedProtocol&gt;
-		&lt;GenericMonteCarlo name=genericMC mover_name=ramp_rep_cycle scorefxn_name=ramp_rep4 temperature=100.0 trials=4/&gt; 
-	&lt;/MOVERS&gt;
-	&lt;APPLY_TO_POSE&gt;
-	&lt;/APPLY_TO_POSE&gt;
-	&lt;PROTOCOLS&gt;
-		&lt;Add mover=setup_symm/&gt;
-		&lt;Add mover=genericMC/&gt;
-	&lt;/PROTOCOLS&gt;
+    &lt;TASKOPERATIONS&gt;
+        &lt;InitializeFromCommandline name=init/&gt;
+        &lt;RestrictToRepacking name=restrict/&gt;
+        &lt;IncludeCurrent name=keep_curr/&gt;
+    &lt;/TASKOPERATIONS&gt;
+    &lt;SCOREFXNS&gt;
+        &lt;ramp_rep1 weights=score12_full symmetric=1&gt;
+            &lt;Reweight scoretype=fa_rep weight=0.0088/&gt;
+        &lt;/ramp_rep1&gt;
+        &lt;ramp_rep2 weights=score12_full symmetric=1&gt;
+            &lt;Reweight scoretype=fa_rep weight=0.11/&gt;
+        &lt;/ramp_rep2&gt;
+        &lt;ramp_rep3 weights=score12_full symmetric=1&gt;
+            &lt;Reweight scoretype=fa_rep weight=0.22/&gt;
+        &lt;/ramp_rep3&gt;
+        &lt;ramp_rep4 weights=score12_full symmetric=1/&gt;
+    &lt;/SCOREFXNS&gt;
+    &lt;FILTERS&gt;
+    &lt;/FILTERS&gt;
+    &lt;MOVERS&gt;
+        &lt;SetupForSymmetry   name=setup_symm definition=C2.symm/&gt;
+        &lt;SymPackRotamersMover name=repack1 scorefxn=ramp_rep1 task_operations=init,restrict,keep_curr/&gt;
+        &lt;SymPackRotamersMover name=repack2 scorefxn=ramp_rep2 task_operations=init,restrict,keep_curr/&gt;
+        &lt;SymPackRotamersMover name=repack3 scorefxn=ramp_rep3 task_operations=init,restrict,keep_curr/&gt;
+        &lt;SymPackRotamersMover name=repack4 scorefxn=ramp_rep4 task_operations=init,restrict,keep_curr/&gt;
+        &lt;SymMinMover name=min1 scorefxn=ramp_rep1 type=lbfgs_armijo_nonmonotone tolerance=0.01 bb=1 chi=1 jump=ALL/&gt;
+        &lt;SymMinMover name=min2 scorefxn=ramp_rep2 type=lbfgs_armijo_nonmonotone tolerance=0.01 bb=1 chi=1 jump=ALL/&gt;
+        &lt;SymMinMover name=min3 scorefxn=ramp_rep3 type=lbfgs_armijo_nonmonotone tolerance=0.01 bb=1 chi=1 jump=ALL/&gt;
+        &lt;SymMinMover name=min4 scorefxn=ramp_rep4 type=lbfgs_armijo_nonmonotone tolerance=0.00001 bb=1 chi=1 jump=ALL/&gt;
+        &lt;ParsedProtocol name=ramp_rep_cycle&gt;
+            &lt;Add mover=repack1/&gt;
+            &lt;Add mover=min1/&gt;
+            &lt;Add mover=repack2/&gt;
+            &lt;Add mover=min2/&gt;
+            &lt;Add mover=repack3/&gt;
+            &lt;Add mover=min3/&gt;
+            &lt;Add mover=repack4/&gt;
+            &lt;Add mover=min4/&gt;
+        &lt;/ParsedProtocol&gt;
+        &lt;GenericMonteCarlo name=genericMC mover_name=ramp_rep_cycle scorefxn_name=ramp_rep4 temperature=100.0 trials=4/&gt;
+    &lt;/MOVERS&gt;
+    &lt;APPLY_TO_POSE&gt;
+    &lt;/APPLY_TO_POSE&gt;
+    &lt;PROTOCOLS&gt;
+        &lt;Add mover=setup_symm/&gt;
+        &lt;Add mover=genericMC/&gt;
+    &lt;/PROTOCOLS&gt;
 &lt;/dock_design&gt;
 </pre>
 <a name="Issues_with_Symmetry_and_Rosetta_Scripts"></a><h4>Issues with Symmetry and Rosetta Scripts</h4>
@@ -926,7 +914,7 @@ ERROR:: Exit from: src/core/scoring/ScoreFunction.cc line: 547
 <p>Options include:
 </p>
 <ul>
-<li> aa ( default "ALA" ) using amino acid type for converting 
+<li> aa ( default "ALA" ) using amino acid type for converting
 </li><li> keep_pro ( default 0 ) Pro is not converted to XXX
 </li><li> keep_gly ( default 1 )  Gly is not converted to XXX
 </li><li> keep_disulfide_cys ( default 0 ) disulfide CYS is not converted to XXX
@@ -971,11 +959,11 @@ Set one (and only one) of the following:
 </li><li> pdbname - use the structure specified by the filename as the reference
 </li></ul>
 <p>You can set how to scale the given values with the "scaling" settings. The default value of "prob" does a per-residue Boltzmann-weighted probability based on the profile score (the unweighted scores for all 20 amino acid identities at any given position sum to -1.0). A setting of "global" does a global linear fixed-zero rescaling such that all (pre-weighted) values fall in the range of -1.0 to 1.0. A setting of "none" does no adjustment of values.
-</p><p>The parameter "weight" can be used to adjust the post-scaling strength of the constraints. (e.g. at a weight=0.2, global-scaled constraint energies fall in the range of -0.2 to 0.2 and prob-weighted IDENTITY-based constraint energies are in the range of -0.2 to 0, both assuming a res_type_constraint=1) 
+</p><p>The parameter "weight" can be used to adjust the post-scaling strength of the constraints. (e.g. at a weight=0.2, global-scaled constraint energies fall in the range of -0.2 to 0.2 and prob-weighted IDENTITY-based constraint energies are in the range of -0.2 to 0, both assuming a res_type_constraint=1)
 </p><p>Note that the weight parameter does not affect the value of res_type_constraint in the scorefunction. As the constraints will only be visible with non-zero res_type_constraint values, the parameter scorefxns is a convenience feature to automatically set res_type_constraint to 1 in the listed functions where it is currently turned off.
 </p><p>If a structure is used for input instead of a PSSM, the profile weights used are based off of the given substitution matrix in the database. Current options include:
 </p>
-<ul><li> MATCH: unscaled/unweighted scores of -1 for an amino acid match and 1 for a mismatch 
+<ul><li> MATCH: unscaled/unweighted scores of -1 for an amino acid match and 1 for a mismatch
 </li><li> IDENTITY: unscaled/unweighted scores of -1 for a match and +10000 for a mismatch. Most useful with prob-scaling, giving a prob-scaled/unweighted score of -1.0 for an amino acid match, and 0 for a mismatch.
 </li><li> BLOSUM62: Values vary based on aa and substitution. Unnscaled/unweighted scores are mostly in the range of -2 to +4, but range up to -11 and +4.
 </li></ul>
@@ -990,13 +978,13 @@ Set one (and only one) of the following:
 </li><li> scaling: Values reported by the filter will be multiplied by this factor.
 </li></ul>
 <a name="RollMover"></a><h4>RollMover</h4>
-<p>Rotate pose over a given axis.  
+<p>Rotate pose over a given axis.
 </p>
-<pre style="white-space:pre-wrap">		&lt;RollMover name=(&amp;string) start_res=(&amp;int) stop_res=(&amp;int) min_angle=(&amp;Real) max_angle=(&amp;Real) &gt; 
-		       &lt;axis x=(&amp;Real) y=(&amp;Real) z=(&amp;Real) /&gt; 
-		       &lt;translate x=(&amp;Real) y=(&amp;Real) z=(&amp;Real) /&gt; 
+<pre style="white-space:pre-wrap">		&lt;RollMover name=(&amp;string) start_res=(&amp;int) stop_res=(&amp;int) min_angle=(&amp;Real) max_angle=(&amp;Real) &gt;
+               &lt;axis x=(&amp;Real) y=(&amp;Real) z=(&amp;Real) /&gt;
+               &lt;translate x=(&amp;Real) y=(&amp;Real) z=(&amp;Real) /&gt;
 
-		&lt;/RollMover&gt;
+        &lt;/RollMover&gt;
 </pre>
 <ul>
 <li> start_res: first residue id of object to roll
@@ -1007,10 +995,10 @@ Set one (and only one) of the following:
 </li><li> translate: point to translate axis to
 </li></ul>
 <a name="RemodelMover"></a><h4>RemodelMover</h4>
-<p>Remodel and rebuild a protein chain  
+<p>Remodel and rebuild a protein chain
 </p><p>IMPORTANT NOTE!!!!: Remodel uses an internal system of trajectories controlled by the option -num_trajectory [integer, &gt;= 1]. If num_trajectory &gt; 1 each result is scored with score12 and the pose with lowest energy is handed to the next mover or filter.  -num_trajectory 1 is recommended for rosetta_scripts.
 </p>
-<pre style="white-space:pre-wrap">		&lt;RemodelMover name=(&amp;string)/&gt; 
+<pre style="white-space:pre-wrap">		&lt;RemodelMover name=(&amp;string)/&gt;
 </pre>
 <ul>
 <li> tags coming soon, use flags for now as described in Remodel page <a href="https://wiki.rosettacommons.org/index.php/Remodel" class="external" title="https://wiki.rosettacommons.org/index.php/Remodel">https://wiki.rosettacommons.org/index.php/Remodel</a>
@@ -1061,13 +1049,13 @@ In this case FITNESS simplifies to:
 <pre style="white-space:pre-wrap">&lt;InterfaceAnalyzerMover name="&amp;string" scorefxn=(&amp;string) packstat=(&amp;bool) pack_input=(&amp;bool) pack_separated=(0, &amp;bool) jump=(&amp;int) tracer=(&amp;bool) use_jobname=(&amp;bool) resfile=(&amp;bool) /&gt;
 </pre>
 <ul>
-<li> packstat: activates packstat calculation; can be slow so it defaults to off. See the paper on RosettaHoles to find out more about this statistic (Protein Sci. 2009 Jan;18(1):229-39.) 
+<li> packstat: activates packstat calculation; can be slow so it defaults to off. See the paper on RosettaHoles to find out more about this statistic (Protein Sci. 2009 Jan;18(1):229-39.)
 </li><li> jump: which jump number should be used to determine across which chains to make the interface? NOT RECOMMENDED - use -fixedchains instead.
 </li><li> tracer: print to a tracer (true) or a scorefile (false)? Combine the true version with -out:jd2:no_output and the false with out:file:score_only (scorefile).
 </li><li> use_jobname: use_jobname (bool) - if using tracer output, this turns the tracer name into the name of the job. If you run this code on 50 inputs, the tracer name will change to match the input, labeling each line of output with the input to which it applies. Not relevant if not using tracer output.
-</li><li> pack_separated: repack the exposed interfaces when calculating binding energy? Usually a good idea. 
+</li><li> pack_separated: repack the exposed interfaces when calculating binding energy? Usually a good idea.
 </li><li> resfile: warns the protocol to watch for the existence of a resfile if it is supposed to do any packing steps. (This is normally signealed by the existance of the -resfile flag, but here the underlying InterfaceAnalyzerMover is not intended to use -resfile under normal circumstances, so a separate flag is needed. You can still pass the resfile with -resfile.)
-</li><li> pack_input: prepack before separating chains when calculating binding energy? Useful if these are non-Rosetta inputs 
+</li><li> pack_input: prepack before separating chains when calculating binding energy? Useful if these are non-Rosetta inputs
 </li></ul>
 <a name="Docking"></a><h4>Docking</h4>
 <p>Does both centroid and full-atom docking
@@ -1100,7 +1088,7 @@ In this case FITNESS simplifies to:
 </li></ul>
 <a name="RepackMinimize"></a><h4>RepackMinimize</h4>
 <p>RepackMinimize does the design/repack and minimization steps using different score functions as defined by the protocol. For most purposes, the combination of PackRotamersMover with MinMover provide more flexibility and transparency than RepackMinimize, and are advised.
-</p><p>repack_partner1 (and 2) defines which of the partners to design. If no particular residues are defined, the interface is repacked/designs. If specific residues are defined, then a shell of residues around those target residues are repacked/designed and minimized. repack_non_ala decides whether or not to change positions that are not ala. Useful for designing an ala_pose so that positions that have been changed in previous steps are not redesigned. min_rigid_body minimize rigid body orientation. (as in docking) 
+</p><p>repack_partner1 (and 2) defines which of the partners to design. If no particular residues are defined, the interface is repacked/designs. If specific residues are defined, then a shell of residues around those target residues are repacked/designed and minimized. repack_non_ala decides whether or not to change positions that are not ala. Useful for designing an ala_pose so that positions that have been changed in previous steps are not redesigned. min_rigid_body minimize rigid body orientation. (as in docking)
 </p>
 <pre style="white-space:pre-wrap">&lt;RepackMinimize name="&amp;string" scorefxn_repack=(score12 &amp;string) scorefxn_minimize=(score12 &amp;string) repack_partner1=(1 &amp;bool) repack_partner2=(1 &amp;bool) design_partner1=(0 &amp;bool) design_partner2=(1 &amp;bool) interface_cutoff_distance=(8.0 &amp;Real) repack_non_ala=(1 &amp;bool) minimize_bb=(1 &amp;bool * see below for more details) minimize_rb=(1 &amp;bool) minimize_sc=(1 &amp;bool) optimize_fold_tree=(1 &amp; bool) task_operations=("" &amp;string)&gt;
     &lt;residue pdb_num/res_num, see below/&gt;
@@ -1109,7 +1097,7 @@ In this case FITNESS simplifies to:
 <li>scorefxn_repack
 </li><li>scorefxn_minimize
 </li><li>interface_cutoff_distance: Residues farther away from the interface than this cutoff will not be designed or minimized.
-</li><li>repack_non_ala: if true, change positions that are not ala. if false, leave non-ala positions alone. Useful for designing an ala_pose so that positions that have been changed in previous steps are not redesigned. 
+</li><li>repack_non_ala: if true, change positions that are not ala. if false, leave non-ala positions alone. Useful for designing an ala_pose so that positions that have been changed in previous steps are not redesigned.
 </li><li>minimize_bb*: minimize back bone conformation? (*see line below)
 </li><li>minimize_bb_ch1 and/or minimize_bb_ch2: allows to specify which chain(s)' backbone will be minimized
 </li><li>minimize_rb: minimize rigid body orientation? (as in docking)
@@ -1120,7 +1108,7 @@ In this case FITNESS simplifies to:
 <p>If no repack_partner1/2 options are set, you can specify repack=0/1 to control both. Similarly with design_partner1/2 and design=0/1
 </p>
 <a name="DesignMinimizeHBonds"></a><h4>DesignMinimizeHBonds</h4>
-<p>Same as for RepackMinimize with the addition that a list of target residues to be hbonded can be defined. Within a sphere of 'interface_cutoff_distance' of the target residues,the residues will be set to be designed.The residues that are allowed for design are restricted to hbonding residues according to whether donors (STRKWYQN) or acceptors (EDQNSTY) or both are defined. If residues have been designed that do not, after design, form hbonds to the target residues with energies lower than the hbond_energy, then those are turned to Ala. 
+<p>Same as for RepackMinimize with the addition that a list of target residues to be hbonded can be defined. Within a sphere of 'interface_cutoff_distance' of the target residues,the residues will be set to be designed.The residues that are allowed for design are restricted to hbonding residues according to whether donors (STRKWYQN) or acceptors (EDQNSTY) or both are defined. If residues have been designed that do not, after design, form hbonds to the target residues with energies lower than the hbond_energy, then those are turned to Ala.
 </p>
 <pre style="white-space:pre-wrap">&lt;DesignMinimizeHbonds name=(design_minimize_hbonds &amp;string) hbond_weight=(3.0 &amp;float) scorefxn_design=(score12 &amp;string) scorefxn_minimize=score12) donors="design donors? &amp;bool" acceptors="design acceptors? &amp;bool" bb_hbond=(0 &amp;bool) sc_hbond=(1 &amp;bool) hbond_energy=(-0.5 &amp;float) interface_cutoff_distance=(8.0 &amp;float) repack_partner1=(1 &amp;bool) repack_partner2=(1 &amp;bool) design_partner1=(0 &amp;bool) design_partner2=(1 &amp;bool) repack_non_ala=(1 &amp;bool) min_rigid_body=(1 &amp;bool) task_operations=("" &amp;string)&gt;
         &lt;residue pdb_num="pdb residue and chain, e.g., 31B &amp;string"/&gt;
@@ -1164,13 +1152,13 @@ Simple preset versions for a foldtree:
 </li><li> simple_ft: set a simple ft going from 1-&gt;chain1_end; 1-&gt;chain2_begin; chain2_begin-&gt;chain2_end; etc.
 <br><br>
 Detailed settings for a foldtree:
-<br> 
-These options specify the actual jump atoms. anchor_res (this is the residue) and connect_from (the actual atom) are a pair and are used for the first chain, whereas pdb_num (residue) and connect_to (atom) are a pair on chain 2 (the one that typically moves)  
+<br>
+These options specify the actual jump atoms. anchor_res (this is the residue) and connect_from (the actual atom) are a pair and are used for the first chain, whereas pdb_num (residue) and connect_to (atom) are a pair on chain 2 (the one that typically moves)
 </li><li> connect_to: Defaults to using the farthest carbon atom from the mainchain for each residue, e.g., CB, Cdelta for Gln etc.
 </li><li> connect_from: user can specify which atom the jump should start from. Currently only the pdb naming works. If not specified, the "optimal" atomic connection for anchor residue is chosen (that is to their functional groups).
 </li></ul>
 <a name="SpinMover"></a><h4>SpinMover</h4>
-<p>Allows random spin around an axis that is defined by the jump. Works preferentially good in combination with a loopOver or best a GenericMonteCarlo and other movers together. Use SetAtomTree to define the jump atoms. 
+<p>Allows random spin around an axis that is defined by the jump. Works preferentially good in combination with a loopOver or best a GenericMonteCarlo and other movers together. Use SetAtomTree to define the jump atoms.
 </p>
 <pre style="white-space:pre-wrap">&lt;SpinMover name=(&amp;string) jump_num=(1 &amp;integer)/&gt;</pre>
 <a name="TryRotamers"></a><h4>TryRotamers</h4>
@@ -1229,14 +1217,14 @@ Note that small moves and bbg_moves introduce motions that, unlike backrub, are 
 <p>Finds loops in the current pose and loads them into the DataMap for use by subsequent movers (eg - LoopRemodel)
 </p>
 <pre>&lt;LoopFinder name="&amp;string" interface=(1 &amp;Size) ch1=(0 &amp;bool) ch2=(1 &amp;bool) min_length=(3 &amp;Integer)
- max_length=(1000 &amp;Integer) iface_cutoff=(8.0 &amp;Real) resnum/pdb_num=(see above) 
+ max_length=(1000 &amp;Integer) iface_cutoff=(8.0 &amp;Real) resnum/pdb_num=(see above)
 CA_CA_distance=(15.0 &amp;Real) mingap=(1 &amp;Size)/&gt;</pre>
 <ul>
 <li>interface: only keep loops at the interface? value = jump number to use (0 = keep all loops)
 </li><li>ch1: keep loops on partner 1
 </li><li>ch2: keep loops on partner 2
 </li><li>resnum/pdb_num: if specified, loop finder only takes the loops that are within the defined CA_CA_distance. If this option is occluded, it extracts loops given by chain1, chain2 and interface options.So occlude if you don't know the residue.
-</li><li>CA_CA_distance: cutoff for CA distances between defined residue and any interface loop residue 
+</li><li>CA_CA_distance: cutoff for CA distances between defined residue and any interface loop residue
 </li><li>iface_cutoff: distance cutoff for interface
 </li><li>min_length: minimum loop length (inclusive)
 </li><li>max_length: maximum loop length (inclusive)
@@ -1262,7 +1250,7 @@ CA_CA_distance=(15.0 &amp;Real) mingap=(1 &amp;Size)/&gt;</pre>
 </li><li>design: perform design during loop modeling?
 </li></ul>
 <a name="LoopMoverFromCommandLine"></a><h4>LoopMoverFromCommandLine</h4>
-<p>Perturbs and/or refines a set of loops from a loop file. Also takes in fragment libraries from command line (-loops:frag_sizes , -loops:frag_files). Has kinematic, ccd and automatic protocols. 
+<p>Perturbs and/or refines a set of loops from a loop file. Also takes in fragment libraries from command line (-loops:frag_sizes , -loops:frag_files). Has kinematic, ccd and automatic protocols.
 </p>
 <pre style="white-space:pre-wrap">&lt;LoopMoverFromCommandLine name="&amp;string" loop_file=("loop.loops" &amp;string) protocol=(ccd &amp;string) perturb_score=(score4L &amp;string) refine_score=(score12 &amp;string) perturb=(0 &amp;bool) refine=(1 &amp;bool)/&gt;
 </pre>
@@ -1306,7 +1294,7 @@ CA_CA_distance=(15.0 &amp;Real) mingap=(1 &amp;Size)/&gt;</pre>
 <p>The specified mover needs to be derived from either DesignRepackMover or PackRotamersMover base class and to to have the packer task show which residues have been designed. The mover then computes how many residues were allowed to be designed and the number of residues that have changed and produces the sequence recapitulation rate. The pose at parse-time is used for the comparison.
 </p>
 <a name="VLB_.28aka_Variable_Length_Build.29"></a><h4>VLB (aka Variable Length Build) </h4>
-<p>Under development! All kudos to Andrew Ban of the Schief lab for making the 
+<p>Under development! All kudos to Andrew Ban of the Schief lab for making the
 Insert, delete, and rebuild segments of variable length.
 This mover will ONLY work with non-overlapping segments!
 </p><p><b>IMPORTANT NOTE!!!!</b>: VLB uses its own internal tracking of ntrials! This allows VLB to cache fragments between ntrials, saving a very significant amount of time. But each ntrial trajectory will also get ntrials extra internal VLB apply calls. For example, "-jd2:ntrials 5" will cause a maximum of 25 VLB runs (5 for each ntrial). Success of a VLB move will break out of this internal loop, allowing the trajectory to proceed as normal.
@@ -1320,11 +1308,11 @@ Default scorefxn is score4L. If you use another scorefxn, make sure the chainbre
 The most popular movers will probably be SegmentRebuild and SegmentInsert.
 </p>
 <pre style="white-space:pre-wrap">
-&lt;SegmentInsert left=(&amp;integer) right=(&amp;integer) ss=(&amp;string) aa=(&amp;string) pdb=(&amp;string) side=(&amp;string) keep_bb_torsions=(&amp;bool)/&gt; 
+&lt;SegmentInsert left=(&amp;integer) right=(&amp;integer) ss=(&amp;string) aa=(&amp;string) pdb=(&amp;string) side=(&amp;string) keep_bb_torsions=(&amp;bool)/&gt;
 
 Insert a pdb into an existing pose. To perform a pure insertion without replacing any residues within a region, use an interval with a zero as the left endpoint.
 e.g. [0, insert_after_this_residue].
-If inserting before the first residue the Pose then interval = [0,0].  If inserting after the last residue of the Pose then interval = [0, last_residue]. 
+If inserting before the first residue the Pose then interval = [0,0].  If inserting after the last residue of the Pose then interval = [0, last_residue].
 
 *ss = secondary structure specifying the flanking regions, with a character '^' specifying where the insert is to be placed. Default is L^L.
 *aa = amino acids specifying the flanking regions, with a character '^' specifying insert.
@@ -1333,7 +1321,7 @@ If inserting before the first residue the Pose then interval = [0,0].  If insert
 
 </pre>
 <pre style="white-space:pre-wrap">
-&lt;SegmentRebuild left=(&amp;integer) right=(&amp;integer) ss=(&amp;string) aa=(&amp;string)/&gt; 
+&lt;SegmentRebuild left=(&amp;integer) right=(&amp;integer) ss=(&amp;string) aa=(&amp;string)/&gt;
 Instruction to rebuild a segment. Can also be used to insert a segment, by specifying secondary structure longer than the original segment.
 </pre>
 <pre style="white-space:pre-wrap">Very touchy. Watch out.
@@ -1345,11 +1333,11 @@ Instruction to rebuild a segment. Can also be used to insert a segment, by speci
 <pre style="white-space:pre-wrap">&lt;ConnectRight left=(&amp;integer) right=(&amp;integer) pdb=(&amp;string)/&gt; instruction to connect one PDB onto the right side of another
 </pre>
 <pre style="white-space:pre-wrap">&lt;GrowLeft pos=(&amp;integer) ss=(&amp;string) aa=(&amp;string)/&gt; Use this for n-side insertions, but typically not n-terminal
-			extensions unless necessary.  It does not automatically cover the
-			additional residue on the right endpoint that needs to move during
-			n-terminal extensions due to invalid phi torsion.  For that case,
-			use the SegmentRebuild class replacing the n-terminal residue with
-			desired length+1.
+            extensions unless necessary.  It does not automatically cover the
+            additional residue on the right endpoint that needs to move during
+            n-terminal extensions due to invalid phi torsion.  For that case,
+            use the SegmentRebuild class replacing the n-terminal residue with
+            desired length+1.
 </pre>
 <pre style="white-space:pre-wrap">&lt;GrowRight pos=(&amp;integer) ss=(&amp;string) aa=(&amp;string)/&gt; instruction to create a c-side extension
 </pre>
@@ -1365,7 +1353,7 @@ Instruction to rebuild a segment. Can also be used to insert a segment, by speci
 </p>
 <pre style="white-space:pre-wrap">&lt;RandomMutation name=(&amp;string) task_operations=(&amp;string comma-separated taskoperations) scorefxn=(score12 &amp;string)/&gt;</pre>
 <a name="GreedyOptMutationMover"></a><h4>GreedyOptMutationMover</h4>
-<p>This mover will first attempt isolated/independent mutations defined in the input task operation, score/filter them all, rank them by score, then attempt to combine them, starting with the best scoring single mutation, accepting the mutation only if the filter score decreases, and working down the list to the end. 
+<p>This mover will first attempt isolated/independent mutations defined in the input task operation, score/filter them all, rank them by score, then attempt to combine them, starting with the best scoring single mutation, accepting the mutation only if the filter score decreases, and working down the list to the end.
 </p><p>Necessary:
 </p>
 <ul>
@@ -1510,7 +1498,7 @@ shorten_by, lengthen_by: by how many residues to change the loop. No change is a
 </li></ul>
 <p><strong>Submovers:</strong>
 Submovers are used to determine what moves are used following stub placement. For example, once a stub has been selected, a StubMinimize mover can try to optimize the current pose towards that stub. A DesignMover can be used to design the pose around that stub. Using DesignMover submovers within PlaceStub (instead of RepackMinimize movers outside PlaceStub) allows one to have a "memory" of which stub has been used. In this way, a DesignMover can fail a filter without causing the trajectory to completely reset. Instead, the outer PlaceStub mover will select another stub, and the trajectory will continue.
-<br>There are two types of sub movers that can be called within the mover. 
+<br>There are two types of sub movers that can be called within the mover.
 </p><ol>
 <p></p>
 <li><b>StubMinimize</b>
@@ -1588,7 +1576,7 @@ Otherwise, a series of previously defined movers can be added, such as backrub, 
 <p>Note that none of the flags of this filter need to be set if PlaceSimultaneously is notified of it. In that case, PlaceSimultaneously will set this StubScore filter's internal data to match its own.
 </p>
 <a name="ddG"></a><h4>ddG</h4>
-<p>This mover is useful for reporting the total or per-residue ddgs in cases where you don't want to use the ddG filter for some reason.  (also, the ddg filter can't currently do per-residue ddgs).  Ddg scores are reported as string-real pairs in the job.  The total ddg score has the tag "ddg" and the each pre residue ddg has the tag "residue_ddg_n" where n is the residue number. 
+<p>This mover is useful for reporting the total or per-residue ddgs in cases where you don't want to use the ddG filter for some reason.  (also, the ddg filter can't currently do per-residue ddgs).  Ddg scores are reported as string-real pairs in the job.  The total ddg score has the tag "ddg" and the each pre residue ddg has the tag "residue_ddg_n" where n is the residue number.
 </p>
 <pre style="white-space:pre-wrap">&lt;ddG name=(&amp;string) jump=(1 &amp;integer) symmetry=(0 &amp;bool) per_residue_ddg=(0 &amp;bool) repack=(0 bool&amp;) scorefxn=("score12" &amp;string) /&gt;
 </pre>
@@ -1639,7 +1627,7 @@ Otherwise, a series of previously defined movers can be added, such as backrub, 
 </p>
 <a name="InterfaceScoreCalculator"></a><h4>InterfaceScoreCalculator</h4>
 <pre style="white-space:pre-wrap">&lt;InterfaceScoreCalculator name=(string) chains=(comma separated chars) scorefxn=(string) native=(string)/&gt;</pre>
-<p>InterfaceScoreCalculator calculates a myriad of ligand specific scores and appends them to the output file.  After scoring the complex the ligand is moved 1000 Å away from the protein.  The model is then scored again.  An interface score is calculated for each score term by subtracting separated energy from complex energy.  If a native structure is specified, 4 additional score terms are calculated: 
+<p>InterfaceScoreCalculator calculates a myriad of ligand specific scores and appends them to the output file.  After scoring the complex the ligand is moved 1000 Å away from the protein.  The model is then scored again.  An interface score is calculated for each score term by subtracting separated energy from complex energy.  If a native structure is specified, 4 additional score terms are calculated:
 </p>
 <ol><li> ligand_centroid_travel.  The distance between the native ligand and the ligand in our docked model.
 </li><li> ligand_radious_of_gyration.  An outstretched conformation would have a high radius of gyration.  Ligands tend to bind in outstretched conformations.
@@ -1664,17 +1652,17 @@ Otherwise, a series of previously defined movers can be added, such as backrub, 
 </li><li>min_in_stages: first minimize non-backbone dofs, followed by backbone dofs only, and then everything together (default=0)
 </li><li>fix_catalytic: fix catalytic residues during repack/minimization (default =0)
 </li><li>cycles: number of cycles of repack-minimize (default=1 cycle) (Note: In contrast to the enzyme_design application, all cycles use the provided scorefunction.)
-</li><li>backrub:use backrub to minimize (default=0). 
+</li><li>backrub:use backrub to minimize (default=0).
 </li></ul>
 <a name="AddOrRemoveMatchCsts"></a><h4>AddOrRemoveMatchCsts</h4>
-<p>Add or remove enzyme-design style pairwise (residue-residue) geometric constraints to/from the pose.  A cstfile specifies these geometric constraints, which can be supplied in the flags file (-enzdes:cstfile) or in the mover tag (see below). 
+<p>Add or remove enzyme-design style pairwise (residue-residue) geometric constraints to/from the pose.  A cstfile specifies these geometric constraints, which can be supplied in the flags file (-enzdes:cstfile) or in the mover tag (see below).
 </p><p>The "-run:preserve_header" option should be supplied on the command line to allow the parser to read constraint specifications in the pdb's REMARK lines. (The "-enzdes:parser_read_cloud_pdb" also needs to be specified for the parser to read the matcher's CloudPDB default output format.)
 </p>
 <pre style="white-space:pre-wrap">&lt;AddOrRemoveMatchCsts name="&amp;string" cst_instruction=( "void", "&amp;string") cstfile="&amp;string" keep_covalent=(0 &amp;bool) accept_blocks_missing_header=(0 &amp;bool) fail_on_constraints_missing=(1 &amp;bool)/&gt;</pre>
 <ul>
-<li>cst_instruction: 1 of 3 choices - "add_new" (read from file), "remove", or "add_pregenerated" (i.e. if enz csts existed at any point previosuly in the protocol add them back) 
+<li>cst_instruction: 1 of 3 choices - "add_new" (read from file), "remove", or "add_pregenerated" (i.e. if enz csts existed at any point previosuly in the protocol add them back)
 </li><li>cstfile: name of file to get csts from (can be specified here if one wants to change the constraints, e.g. tighten or relax them, as the pose progresses down a protocol.)
-</li><li>keep_covalent: during removal, keep constraints corresponding to covalent bonds between protein and ligand intact (default=0). 
+</li><li>keep_covalent: during removal, keep constraints corresponding to covalent bonds between protein and ligand intact (default=0).
 </li><li>accept_blocks_missing_header: allow more blocks in the cstfile than specified in header REMARKs (see enzdes documentation for details, default=0)
 </li><li>fail_on_constraints_missing: When removing constraints, raise an error if the constraint blocks do not exist in the pose (default=1).
 </li></ul>

@@ -28,13 +28,12 @@ var NewJobWizard = (function($) {
     }
 
   };
-
-
-
   //First Card:
   ///////////////////////////////////////////////////////////////////////////////////////////
-  var loadFile = function() {
-    var file = $('#pdb_local_file').get(0);
+
+
+  var loadFile = function(filename, onload_callback) {
+    var file = filename
     if (file) file = file.files;
     if (!file || !window.FileReader || !file[0]) {
       alert("No file is selected. Or File API is not supported in your browser. Please try Firefox or Chrome.");
@@ -43,11 +42,8 @@ var NewJobWizard = (function($) {
     //$('#loading').show();
     var reader = new FileReader();
     reader.onload = function() {
-      //$('#glmol01_src').val(reader.result);
-      //glmol01.loadMolecule();
-      //$('#loading').hide();
-      $('#pdb_src').val(reader.result);
-    };
+        onload_callback(reader.result)
+    }
     reader.readAsText(file[0]);
   }
 
@@ -98,6 +94,7 @@ var NewJobWizard = (function($) {
     //     "help": ""
     //   }
     // })
+
     data.jobname = wizard.el.find('#job_name').val();
 
     replication = wizard.el.find('#numjobs').val();
@@ -120,7 +117,6 @@ var NewJobWizard = (function($) {
     //   data_pack["xmlscript"]["content"] = data.xmlscript;
     // }
 
-    console.log(data_pack)
 
     if (destination == "backend" || destination === undefined) {
       launch_tasks(data_pack, replication, callbacks)
@@ -135,7 +131,7 @@ var NewJobWizard = (function($) {
   }
 
 
-  function download(query) {
+  function download(query,callbacks) {
     var baseURL = '';
     if (query.substr(0, 4) == 'pdb:') {
       query = query.substr(4).toUpperCase();
@@ -163,7 +159,8 @@ var NewJobWizard = (function($) {
       // glmol01.loadMolecule();
       // $('#loading').hide();
       $('#pdb_src').val(ret);
-    });
+      callbacks.success();
+  }).error(callbacks.error).always(callbacks.always);
   }
 
   //Validation functions:
@@ -200,10 +197,30 @@ var NewJobWizard = (function($) {
 
   card_pdb_file.on("validate", validate_pdb_card);
 
-  $('#pdb_local_file').change(loadFile);
-  $('#text_pdb_id').focusout(function() {
-    download('pdb:' + $(this).val());
-  })
+  $('#pdb_local_file').change(function() {
+      loadFile($('#pdb_local_file').get(0),function() {
+          $('#pdb_src').val(result);
+      });
+  });
+
+  $('#btn_pdb_download').click(function(e) {
+      e.preventDefault();
+      $("#pdb_download_spinner").show();
+      $("#pdb_download_ok").hide();
+      $("#pdb_download_error").hide();
+      var pdb_id = $("#text_pdb_id").val()
+    download('pdb:' + pdb_id, {
+        success: function() {
+            $("#pdb_download_ok").show();
+        },
+        error: function() {
+            $("#pdb_download_error").show();
+        },
+        always: function() {
+            $("#pdb_download_spinner").hide();
+        }
+    });
+});
   $('#btn_new_job').click(function() {
     wizard.show();
   });
@@ -211,6 +228,7 @@ var NewJobWizard = (function($) {
   card_pdb_file.el.find('input:radio').click(function(ev) {
     $('#pdb_src').val('');
     $('input[name="' + $(this).attr('name') + '"]').not($(this)).trigger('deselect');
+    $(this).trigger('select');
     $(ev.target).closest('div.radio').find('input:text,input:file').prop('disabled', false);
   });
 
@@ -218,10 +236,12 @@ var NewJobWizard = (function($) {
     $(ev.target).closest('div.radio').find('input:text,input:file').prop('disabled', true);
   });
 
-
-
-
-
+  //Add ignore_unrecognized_res and ignore_zero_occupancy every time a structure from the pdb is selected
+  $("#radio_upload_pdborg").on("select",function(ev){
+      $("#txt_flag_file").val("-ignore_zero_occupancy 0\n-ignore_unrecognized_res 1\n")
+  }).on("deselect",function(ev){
+      $("#txt_flag_file").val("");
+  });
 
   //Second (Protocols) Card:
 
@@ -259,7 +279,7 @@ var NewJobWizard = (function($) {
       RosettaDiagrams.DiagramsCollection.each(function(diagram){
 
         var diagram_name = diagram.get('name') || "Untitled Diagram";
-        var row_string = "<a href='#demo4' class='list-group-item' data-id='" + diagram.get('id') + "'>" + diagram_name + "</a>"
+        var row_string = "<a href='#demo4' class='list-group-item diagram-list-item' data-id='" + diagram.get('id') + "'>" + diagram_name + "</a>"
         $("#wizard_rosetta_diagrams").append(row_string);
 
 
@@ -276,6 +296,77 @@ var NewJobWizard = (function($) {
     $(next_card).show();
   });
 
+  $('#wizard_add_file').click(function() {
+      $("#wizard_file_list").append(create_file_div({filename:"Filename"}));
+  });
+
+  // creates an input file section
+  function create_file_section(user_files) {
+      // --------- Inout File section -----------------------------------------------------------------
+
+      // create and set up the input data file section
+      fieldset = $('<fieldset><legend>Additional Input Data</legend></fieldset>')
+      // go through all the requested filenames and make a section in the form for each
+      for (i_user_files in user_files) {
+          (function () {
+              fieldset.append(create_file_div(user_files[i_user_files]))
+          })();
+      }
+
+      fieldset.append($('<button>Add file</button>').click(function () {
+          $(this).before(create_file_div({
+              filename: "filename",
+              default_from_url: false
+          }))
+      }))
+      file_section = $("<div></div>").append(fieldset)
+      file_section.append($("<p>"));
+      return file_section;
+  }
+
+
+  function create_file_div(user_file) {
+      var thediv = $('<div class="virtual_file"></div>');
+      thediv.append("<h5>Virtual File</h5>").append("<input value='" + user_file.filename + "' class='form-control' style='display:inline;'/> ");
+
+      // the textfield is where the file contents go into.
+      var textfield = $('<textarea></textarea>', {
+          'id': 'file_textfield'
+      }).css("width", "100%")
+      if (user_file.default_from_url === undefined) {
+          textfield.val(user_file.content)
+      } else {
+          $.get(user_file.default_from_url, function (ret) {
+              textfield.val(ret)
+          });
+      }
+
+      var filename_field = $('<input></input>', {
+          'id': 'file_filenamefield',
+          'class': 'filechooser form-control',
+          'type': 'file',
+          'size': '1'
+      }).hide()
+      filename_field.change(function () {
+          loadFile(filename_field.get(0),function(result) {
+              textfield.val(result)
+          });
+      })
+
+      var loadfile_button = $('<button>Upload...</button>').click(function () {
+          $(this).parent().find('#file_filenamefield').click()
+      })
+
+      thediv.append(filename_field)
+      thediv.append(loadfile_button)
+      .append($('<button>X</button>').click(function () {
+          $(this).parent().remove()
+      }))
+      .append(textfield)
+
+      return thediv;
+  }
+
   //Submission:
   var submit_function = function(wizard) {
     var url = $('#protocol_data_url').val();
@@ -283,12 +374,10 @@ var NewJobWizard = (function($) {
       submit_job(wizard, data, "backend", {
         success: function() {
           wizard.submitSuccess();
-          wizard.hideButtons();
           wizard.updateProgressBar(0);
         },
         error: function() {
           wizard.submitFailure();
-          wizard.hideButtons();
         }
       })
     });
@@ -298,6 +387,63 @@ var NewJobWizard = (function($) {
   wizard.on("submitSuccess", function(wizard) {
     wizard.reset();
     wizard.close();
+  });
+  $(wizard.el).on("hidden.bs.modal",function() {
+      wizard.submitFailure();
+      wizard.close();
+      wizard.reset();
+  });
+
+  wizard.cards['finalize_confirm'].on('selected',function(event,callback){
+      var xml_code = "";
+     if ( $('.diagram-list-item.active').length == 0) {
+
+         xml_code = $('#rscripts_text').val();
+
+     }
+     else {
+
+         var diagram_id = $('.diagram-list-item.active').data('id');
+
+         RosettaDiagrams.DiagramsCollection.each(function(diagram){
+             if ( diagram.get('id') == diagram_id ) {
+                 xml_code = RosettaDiagrams.get_rosetta_scripts(diagram)
+             }
+         });
+
+     }
+
+     var job_name = $('#job_name').val();
+     var numjobs = $('#numjobs').val();
+     var flags = $('#txt_flag_file').val();
+
+     $('#final_code').text(xml_code);
+     prettyPrint();
+     var job_name_elem = $('<p><b>'+job_name+"</b> (" +numjobs + " jobs)</p>");
+     $('#final_job_details').append(job_name_elem)
+     if ( flags.length > 0 ){
+         var flags_elem = $('<p style="display:block;">Flags: </p> <pre>'+flags+'</pre>');
+         $('#final_job_details').append(flags_elem);
+     }
+
+  });
+
+  wizard.on("closed",function(wizard) {
+      wizard.reset();
+  })
+
+  wizard.on("reset", function(wizard) {
+     wizard.updateProgressBar(0);
+     $("#pdb_download_ok").hide();
+     $("#pdb_download_error").hide();
+     $("#pdb_download_spinner").hide();
+     $("#wizard_file_list").html("");
+     $(wizard.el).find('input[type=text]').val("");
+     $('#pdb_src').val("");
+     $('#final_job_details').html('');
+     $('#final_code').text('').removeClass('prettyprinted');
+     $(wizard.el).find('.list-group-item').removeClass('active');
+     $(wizard.el).find('input[type=radio]').prop('checked',false);
   });
 
 })(jQuery);

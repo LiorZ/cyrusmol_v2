@@ -5,18 +5,6 @@
 <meta name="KEYWORDS" content="TaskOperations (RosettaScripts)">
 
 <meta name="robots" content="index,follow">
-<link rel="shortcut icon" href="https://wiki.rosettacommons.org/favicon.ico">
-<link rel="stylesheet" type="text/css" media="print" href="./TaskOperations_files/wikiprintable.css">
-<script type="text/javascript" src="./TaskOperations_files/wikibits.js"></script>
-<style type="text/css">
-/*/*/
-@import "/stylesheets/wikistandard.css";
-a.new, #quickbar a.new { color: #CC2200; }
-#quickbar { position: absolute; top: 4px; left: 4px; border-right: 1px solid gray; }
-#article { margin-left: 152px; margin-right: 4px; }
-
-/* */
-</style>
 </head>
 
 <body bgcolor="#FFFFFF" onload="">
@@ -26,10 +14,10 @@ a.new, #quickbar a.new { color: #CC2200; }
 <div id="article">
 <h1 class="pagetitle">TaskOperations (RosettaScripts)</h1>
 <p>This section defines instances of the TaskOperation class hierarchy when used in the context of the Parser/RosettaScripts. They become available in the DataMap.
-</p><p>TaskOperation classes are used by TaskFactory to configure the behavior of PackerTask when it is generated on-demand for routines that use the "packer" to reorganize/mutate sidechains. When used by certain Movers (at present, the PackRotamersMover and its subclasses), the TaskOperations control what happens during packing, usually by restriction "masks." 
+</p><p>TaskOperation classes are used by TaskFactory to configure the behavior of PackerTask when it is generated on-demand for routines that use the "packer" to reorganize/mutate sidechains. When used by certain Movers (at present, the PackRotamersMover and its subclasses), the TaskOperations control what happens during packing, usually by restriction "masks."
 </p>
 <table border="0" id="toc"><tbody><tr id="toctitle"><td align="center">
-<b>Table of contents</b> 
+<b>Table of contents</b>
 </td></tr><tr id="tocinside"><td>
 <div class="tocline"><a href="http://www.rosettacommons.org/manuals/archive/rosetta3.4_user_guide/TaskOperations_%28RosettaScripts%29#Example">1 Example</a><br></div>
 <div class="tocline"><a href="http://www.rosettacommons.org/manuals/archive/rosetta3.4_user_guide/TaskOperations_%28RosettaScripts%29#General_TaskOperations">2 General TaskOperations</a><br></div>
@@ -146,7 +134,7 @@ a.new, #quickbar a.new { color: #CC2200; }
 </p>
 <a name="Position.2FIdentity_Specification"></a><h2>Position/Identity Specification</h2>
 <a name="ReadResfile"></a><h3>ReadResfile</h3>
-<p>Read a resfile. If a filename is given, read from that file. Otherwise, read the file specified on the commandline with -packing:resfile. 
+<p>Read a resfile. If a filename is given, read from that file. Otherwise, read the file specified on the commandline with -packing:resfile.
 </p>
 <pre> &lt;ReadResfile name=(&amp;string) filename=(&amp;string) /&gt;
 </pre>
@@ -164,7 +152,7 @@ a.new, #quickbar a.new { color: #CC2200; }
 </pre>
 <p>This task operation takes the following parameters:
 </p>
-<ul><li>db=("resfiles.db3" &amp;string) 
+<ul><li>db=("resfiles.db3" &amp;string)
 </li><li>table=("resfiles" &amp;string)
 </li></ul>
 <p>When <em>db_mode</em> is "sqlite3", <em>db</em> is the name of the sqlite3 database file.  When <em>db_mode</em> is "mysql", then compile with extras=mysql and supply <em>-mysql:host</em>, <em>-mysql:password</em>, and <em>-mysql:port</em> to the command line, then <em>db</em> is the name of the database on the MySQL server.
@@ -180,23 +168,23 @@ a.new, #quickbar a.new { color: #CC2200; }
 <pre> &lt;RestrictToRepacking name=(&amp;string) /&gt;
 </pre>
 <a name="RestrictResidueToRepacking"></a><h3>RestrictResidueToRepacking</h3>
-<p>Restrict a single residue to repacking. No design. 
+<p>Restrict a single residue to repacking. No design.
 </p>
 <pre> &lt;RestrictResidueToRepacking name=(&amp;string) resnum=(0 &amp;integer)/&gt;
 </pre>
 <a name="RestrictResiduesToRepacking"></a><h3>RestrictResiduesToRepacking</h3>
-<p>Restrict a string of comma-delimited residues to repacking. No design. 
+<p>Restrict a string of comma-delimited residues to repacking. No design.
 </p>
 <pre> &lt;RestrictResiduesToRepacking name=(&amp;string) residues=(0 &amp;integer "," separated)/&gt;
 </pre>
 <a name="PreventRepacking"></a><h3>PreventRepacking</h3>
-<p>Do not allow repacking at all for the specified residue. Freezes residues. 
+<p>Do not allow repacking at all for the specified residue. Freezes residues.
 </p>
 <pre>&lt;PreventRepacking name=(&amp;string) resnum=(0 &amp;int) /&gt;
 </pre>
 <a name="PreventResiduesFromRepacking"></a><h3>PreventResiduesFromRepacking</h3>
 <p>Restrict a string of residues to repacking. No design.
-Use comma-delimited list of residues  
+Use comma-delimited list of residues
 </p>
 <pre> &lt;PreventResiduesFromRepacking name=(&amp;string) residues=(0 &amp;integer,"," separated)/&gt;
 </pre>
@@ -207,7 +195,7 @@ Use comma-delimited list of residues
 </pre>
 <a name="DesignAround"></a><h3>DesignAround</h3>
 <p>Designs in shells around a user-defined list of residues. Restricts all other residues to repacking.
-&lt;DesignAround name=(&amp;string) design_shell=(8.0 &amp;real) resnums=(comma-delimited list) repack_shell=(8.0&amp;Real) allow_design=(1 &amp;bool)/&gt; 
+&lt;DesignAround name=(&amp;string) design_shell=(8.0 &amp;real) resnums=(comma-delimited list) repack_shell=(8.0&amp;Real) allow_design=(1 &amp;bool)/&gt;
 </p>
 <ul>
 <li>resnums can be a list of pdb numbers, such as 291B,101A.
@@ -222,10 +210,10 @@ Use comma-delimited list of residues
 <p>Design residues with selected amino acids depending on the enviroment: layer.
 The layer of each residue is assigned as core, boundary, or surface, which are defined by
 accessible surface area of mainchain + CB. If resfile is read before calling this operation, this operation is not applied for the residues defined by PIKAA.
-Note that this task is not ligand compatible (remove ligand prior to use). 
+Note that this task is not ligand compatible (remove ligand prior to use).
 </p><p>Selected amino acid types for each layer:
 </p>
-<ul> 
+<ul>
 <li> Core </li>
 <ul>
 <li> Loop: AFILPVWY </li>
@@ -250,7 +238,7 @@ Note that this task is not ligand compatible (remove ligand prior to use).
 </ul>
 <p>Option list
 </p>
-<ul> 
+<ul>
 <li> layer ( default "core_boundary_surface" )&nbsp;: layer to be designed, other ex. core_surface means only design core and surface layer</li>
 <li> use_original_non_designed_layer ( default, 0 )&nbsp;: use original sequence for non designed layers, otherwise the residues on the layers turned into Ala </li>
 <li> pore_radius ( default 2.0)&nbsp;: pore radius for calculating accessible surface area </li>
@@ -263,7 +251,7 @@ Note that this task is not ligand compatible (remove ligand prior to use).
 <pre> &lt;RestrictToInterface name=(&amp;string) rb_jump=(&amp;integer, 1) distance=(&amp;Real, 8.0) /&gt;
 </pre>
 <a name="RestrictToInterfaceVector"></a><h3>RestrictToInterfaceVector</h3>
-<p>Restricts the task to residues defined as interface by 
+<p>Restricts the task to residues defined as interface by
 core/pack/task/operation/util/interface_vector_calculate.cc
 Calculates the residues at an interface between two protein chains or jump. The calculation is done in the following manner.  First the point graph is used to find all residues within some big cutoff(CB_dist_cutoff) of residues on the other chain. For these residues near the interface, two metrics are used to decide if they are actually possible interface residues.  The first metric is to itterate through all the side chain atoms in the residue of interest and check to see if their distance is less than the nearby atom cutoff (nearby_atom_cutoff), if so then they are an interface residue.  If a residue does not pass that check, then two vectors are drawn, a CA-CB vector and a vector from CB to a CB atom on the neighboring chain.  The dot product between these two vectors is then found and if the angle between them (vector_angle_cutoff) is less than some cutoff then they are classified as interface. The vector cannot be longer than some other distance (vector_dist_cutoff).
 </p><p>There are two ways of using this task, first way is to use jumps:
@@ -300,11 +288,11 @@ Calculates the residues at an interface between two protein chains or jump. The 
 </li><li> jump=(1&amp;integer) chains below, and above the jump are called chain1 and chain2 above.
 </li></ul>
 <a name="DetectProteinLigandInterface"></a><h3>DetectProteinLigandInterface</h3>
-<p>Setup packer task based on the detect design interface settings from enzyme design. 
+<p>Setup packer task based on the detect design interface settings from enzyme design.
 </p>
 <pre>&lt;DetectProteinLigandInterface name=(&amp;string) cut1=(6.0 &amp;Real) cut2=(8.0 &amp;Real) cut3=(10.0 &amp;Real) cut4=(12.0 &amp;Real) design=(1 &amp;bool) resfile=("" &amp;string)/&gt;
 </pre>
-<p>The task will set to design all residues with a Calpha within cut1 of the ligand (specifically the last ligand), or within cut2 of the ligand, where the Calpha-Cbeta vector points toward the ligand. Those residues within cut3 or within cut4 pointing toward the ligand will be set to repack. All others will be set to be fixed. Setting design to false will turn off design at all positions. 
+<p>The task will set to design all residues with a Calpha within cut1 of the ligand (specifically the last ligand), or within cut2 of the ligand, where the Calpha-Cbeta vector points toward the ligand. Those residues within cut3 or within cut4 pointing toward the ligand will be set to repack. All others will be set to be fixed. Setting design to false will turn off design at all positions.
 </p><p>If resfile is specified, the listed resfile will be read in the settings therein applied to the task. Any positions set to "AUTO" (and only those set to AUTO) will be subjected the detect design interface procedure as described above. Note that design=0 will turn off design even for positions where it is permitted in the resfile (use "cut1=0.0 cut2=0.0 design=1" to allow design at resfile-permitted positions while disabling design at all AUTO positions).
 </p>
 <a name="SetCatalyticResPackBehavior"></a><h3>SetCatalyticResPackBehavior</h3>
@@ -317,12 +305,12 @@ according to &lt;number&gt;, i.e. one can selectively oversample the catalytic
 residues
 </p>
 <a name="RestrictAbsentCanonicalAAS"></a><h3>RestrictAbsentCanonicalAAS</h3>
-<p>Restrict design to user-specified residues. If resnum is left as 0, the restriction will apply throughout the pose. 
+<p>Restrict design to user-specified residues. If resnum is left as 0, the restriction will apply throughout the pose.
 </p>
 <pre> &lt;RestrictAbsentCanonicalAAS name=(&amp;string) resnum=(0 &amp;integer) keep_aas=(&amp;string) /&gt;
 </pre>
 <a name="DisallowIfNonnative"></a><h3>DisallowIfNonnative</h3>
-<p>Restrict design to not include a residue as an possibility in the task at a position unless it is the starting residue. If resnum is left as 0, the restriction will apply throughout the pose. 
+<p>Restrict design to not include a residue as an possibility in the task at a position unless it is the starting residue. If resnum is left as 0, the restriction will apply throughout the pose.
 </p>
 <pre> &lt;DisallowIfNonnative name=(&amp;string) resnum=(0 &amp;integer) disallow_aas=(&amp;string) /&gt;
 </pre>
@@ -349,7 +337,7 @@ residues
 <p>If use_natro is true, the task operation also adds the rotamers from the native structures (use_native/native) in the rotamer library.
 </p>
 <a name="RestrictDesignToProteinDNAInterface"></a><h3>RestrictDesignToProteinDNAInterface</h3>
-<p>Restrict Design and repacking to protein residues around the defined DNA bases 
+<p>Restrict Design and repacking to protein residues around the defined DNA bases
 </p>
 <pre>&lt;RestrictDesignToProteinDNAInterface name=(&amp;string) dna_defs=(chain.pdb_num.base) base_only=(1, &amp;bool) z_cutoff=(0.0, &amp;real) /&gt;
 </pre>
@@ -377,12 +365,12 @@ See the Extra Rotamer Commands section on the  <a href="http://graylab.jhu.edu/R
 ex1=(0 &amp;boolean) ex2=(0 &amp;boolean) ex3=(0 &amp;boolean) ex4=(0 &amp;boolean)
 ex1aro=(0 &amp;boolean) ex2aro=(0 &amp;boolean) ex1aro_exposed=(0 &amp;boolean) ex2aro_exposed=(0 &amp;boolean)
 ex1_sample_level=(7 &amp;Size) ex2_sample_level=(7 &amp;Size) ex3_sample_level=(7 &amp;Size) ex4_sample_level=(7 &amp;Size)
-ex1aro_sample_level=(7 &amp;Size) ex2aro_sample_level=(7 &amp;Size) ex1aro_exposed_sample_level=(7 &amp;Size) ex2aro_exposed_sample_level=(7 &amp;Size) 
+ex1aro_sample_level=(7 &amp;Size) ex2aro_sample_level=(7 &amp;Size) ex1aro_exposed_sample_level=(7 &amp;Size) ex2aro_exposed_sample_level=(7 &amp;Size)
 exdna_sample_level=(7 &amp;Size)
-extrachi_cutoff=(18 &amp;Size)/&gt; 
+extrachi_cutoff=(18 &amp;Size)/&gt;
 </pre>
 <a name="RotamerExplosion"></a><h3>RotamerExplosion</h3>
-<p>Sample residue chi angles much more finely during packing. Currently hardcoded to use three 1/3 step standard deviation. 
+<p>Sample residue chi angles much more finely during packing. Currently hardcoded to use three 1/3 step standard deviation.
 </p><p><em>Note: This might actually need to be called as RotamerExplosionCreator in the xml</em>
 </p>
 <pre> &lt;RotamerExplosionCreator name=(&amp;string) resnum=(&amp;Integer) chi=(&amp;Integer) /&gt;
@@ -390,7 +378,7 @@ extrachi_cutoff=(18 &amp;Size)/&gt;
 <a name="LimitAromaChi2"></a><h3>LimitAromaChi2</h3>
 <p>Prevent to use the rotamers of  PHE, TYR and HIS that have chi2 far from 90.
 </p>
-<ul> 
+<ul>
 <li> chi2max ( default 110.0 )&nbsp;: max value of chi2 to be used </li>
 <li> chi2min ( default 70.0 ): min value of chi2 to be used  </li>
 </ul>
@@ -406,7 +394,7 @@ extrachi_cutoff=(18 &amp;Size)/&gt;
 </li><li>F
 </li><li>G
 </li></ul>
-<p>Example: 
+<p>Example:
 </p>
 <pre>&lt;AddLigandMotifRotamers name=(&amp;string)/&gt;
 </pre>

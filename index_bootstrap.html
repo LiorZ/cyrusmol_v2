@@ -26,6 +26,8 @@
   <!-- Custom Fonts -->
   <link href="/template/font-awesome-4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
+
+  <link href="/js/RosettaDiagrams/bower_components/typeahead.js-bootstrap3.less/typeahead.css" rel="stylesheet" type="text/css">
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
@@ -67,6 +69,8 @@
     #glmol01 {
       height: 600px;
     }
+
+    /*
     .dropdown-submenu {
       position: relative;
     }
@@ -107,7 +111,8 @@
       -webkit-border-radius: 6px 0 6px 6px;
       -moz-border-radius: 6px 0 6px 6px;
       border-radius: 6px 0 6px 6px;
-    }
+    }*/
+
 
     //Used for mover types in the autocomplete text box
     #multiple-datasets .mover-type {
@@ -150,7 +155,7 @@
       <div class='row row-equal' style="margin-bottom:0.5em;">
         <div class='col-md-12'>
           <button type="button" class="btn btn-default btn-lg btn-primary" id="btn_new_job">
-            <span class="glyphicon glyphicon-cloud-upload"></span> Submit New Job
+            <span class="glyphicon glyphicon-cloud-upload"></span> Create New Job
           </button>
         </div>
       </div>
@@ -282,9 +287,20 @@
   </div>
   <!-- wrapper -->
 
-  <div class="wizard" id="new_job_wizard" data-title="Submit a New Job">
+  <div class="wizard" id="new_job_wizard" data-title="Create a New Job">
 
-    <h1>Wizard Title</h1>
+    <h1>Create New Job</h1>
+
+    <div class="wizard-error">
+        submission had an error
+    </div>
+
+    <div class="wizard-error wizard-failure">
+        submission had an error
+    </div>
+    <div class="wizard-success">
+        submission succeeded!
+    </div>
 
     <div class="wizard-card" data-cardname="card_pdb_file">
       <h3>Upload a pdb</h3>
@@ -301,7 +317,12 @@
             <input type="radio" name="upload_options" id="radio_upload_pdborg" value="upload_pdborg"> From <a href="http://www.pdb.org/">PDB.org</a>
             <form class="form-inline" role="form">
               <input type="text" class="form-control form-inline" id="text_pdb_id" placeholder="Enter PDB id" style="width:10em;" disabled>
+              <button class="btn btn-primary" id="btn_pdb_download">Download</button>
+              <i class="glyphicon glyphicon-ok" style="color: #5CB85C; display:none;" id="pdb_download_ok"></i>
+              <span style="color: red; display:none;" id="pdb_download_error"><i class="glyphicon glyphicon-remove" ></i> PDB Download failed </span>
             </form>
+            <ul class="fa-ul" style="display:none;" id="pdb_download_spinner"><li><i class="fa-li fa fa-spinner fa-spin"></i> Downloading PDB...</li></ul>
+
           </label>
 
         </div>
@@ -314,14 +335,9 @@
     </div>
 
     <div class="wizard-card" data-cardname="card_protocol">
-      <h3>Choose a Protocol</h3>
+      <h3>Choose input method</h3>
       <div id="protocol_selection">
         <div class="list-group panel">
-          <a href="#demo3" class="list-group-item" data-toggle="collapse" data-parent="#MainMenu">Rosetta Backend Job <i class="fa fa-caret-down"></i></a>
-          <div class="collapse" id="demo3">
-            <a href="#SubMenu1" class="list-group-item" data-protocol="#backend_relax" data-protocol-data="/data/jobdefs/relax.json">Relax</a>
-            <a href="javascript:;" class="list-group-item" data-protocol="#backend_loophash" data-protocol-data="/data/jobdefs/loophash.json">Loophash</a>
-          </div>
           <a href="#demo4" class="list-group-item" data-parent="#MainMenu" data-protocol="#backend_rscripts" data-protocol-data="/data/jobdefs/xmlscript_generic.json">Rosetta XML Script</a>
           <a href="#demo4" class="list-group-item" data-parent="#MainMenu" data-protocol="#backend_diagrams" data-protocol-data="/data/jobdefs/xmlscript_generic.json">Rosetta Diagram</a>
         </div>
@@ -382,9 +398,10 @@
           </div>
         </div>
       </div>
+  </div>
 
       <div class="wizard-card" data-cardname="finalize_submit">
-        <h3>Finalize Job</h3>
+        <h3>Job Details</h3>
         <div class="well">
           <h4>Job Details</h4>
           <input type="text" class="form-control" placeholder="Job Name" id="job_name" />
@@ -393,8 +410,23 @@
           </div>
           <textarea id="txt_flag_file" name="txt_flag_file" rows="3" cols="30" placeholder="Flag File" style="margin-top:1em;"></textarea>
         </div>
-        <input type="hidden" id="protocol_data_url" />
-      </div>
+        <div class="well" id="well_additional_files">
+            <h4>Additional Files</h4>
+            <input type="button" value="Add File" id="wizard_add_file" class="btn btn-primary" style="display:block;" />
+            <div id="wizard_file_list"></div>
+        </div>
+
+     </div>
+
+     <div class="wizard-card" data-cardname="finalize_confirm">
+         <h3>Summary</h3>
+         <div id="final_job_details"></div>
+         <div id="final_code_container">
+             <p>Rosetta Scripts Code:</p>
+             <pre id="final_code" class="prettyprint"></pre>
+        </div>
+
+
 
 
 
@@ -460,28 +492,33 @@
           <nav class="navbar navbar-default" role="navigation">
             <div class="container-fluid">
               <div class="navbar-header">
-                <div id="multiple-datasets">
-                <input type="text" class="form-control" style="display:inline; width:20em;" id="txt_elem_name" placeholder="Type element name"/>
-                </div>
+                <div id="multiple-datasets" style="display:inline-block;">
+                <input type="text" class="form-control" style="display:inline; width:20em;" id="txt_elem_name" placeholder="Type element name" data-provide="typeahead"/>
 
-                <button type="button" class="btn btn-primary" id="btn_add_element">
-                  <span class="glyphicon glyphicon-plus"></span>
-                </button>
-                <input type="checkbox" data-toggle="toggle" id="connection_checkbox"> Connection mode
-                <button type="button" class="btn btn-primary" id="btn_generate_rs">
-                  <span class="glyphicon glyphicon-cog"></span> Generate RosettaScripts
-                </button>
+                </div>
+                <span id="tools">
+                    <button type="button" class="btn btn-primary" id="btn_add_element">
+                      <span class="glyphicon glyphicon-plus"></span>
+                    </button>
+                    <input type="checkbox" data-toggle="toggle" id="connection_checkbox"> Connection mode
+                    <button type="button" class="btn btn-primary" id="btn_generate_rs">
+                      <span class="glyphicon glyphicon-cog"></span> Generate RosettaScripts
+                    </button>
+                </span>
               </div>
             </div>
           </nav>
           <div id="paper">
 
             <div id="floating_menu" style="">
-              <button type="button" class="btn btn-primary btn-xs" id="btn_delete_element">
+              <button type="button" class="btn btn-primary btn-xs" id="btn_delete_element" alt="Delete element">
                 <span class="glyphicon glyphicon-remove"></span>
               </button>
-              <button type="button" class="btn btn-primary btn-xs" id="btn_info_element">
+              <button type="button" class="btn btn-primary btn-xs" id="btn_info_element" alt="Show Documentation for element">
                   <span class="glyphicon glyphicon-info-sign"></span>
+              </button>
+              <button type="button" class="btn btn-primary btn-xs" id="btn_show_attributes" alt="Show Element Attributes">
+                  <span class="glyphicon glyphicon-list-alt"></span>
               </button>
             </div>
 
@@ -495,8 +532,8 @@
     </div>
     <!-- /.modal-dialog -->
   </div>
-  <div class="modal" id="rosetta_info_view">
-      <div class="modal-dialog" style="width:60%; height:80%;">
+  <div class="modal" id="rosetta_info_view" style="height:800px;">
+      <div class="modal-dialog" style="width:60%; height:90%;">
           <div class="modal-content">
               <div class="modal-header">
 
@@ -605,9 +642,10 @@
           </div>
           <div class="modal-body">
             <div>
-              <button type="button" class="btn btn-primary" id="btn_add_attribute">
+              <button type="button" class="btn btn-primary" id="btn_add_attribute" style="margin-bottom:1em;">
                 <span class="glyphicon glyphicon-plus"></span> New Attribue
-              </button>
+            </button> <span style="font-style:italic; color:grey;"> An attribute that doesn't exist on the list</span>
+
             </div>
             <table id="attributes_table" class="table table-striped">
 
@@ -680,7 +718,7 @@
 
   <!-- Rosetta Diagrams JS -->
   <script src="/js/RosettaDiagrams/bower_components/bootstrap3-editable-1.5.1/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
-  <script src="/js/RosettaDiagrams/bower_components/bootstrap3-typeahead/bootstrap3-typeahead.min.js"></script>
+  <!-- <script src="/js/RosettaDiagrams/bower_components/bootstrap3-typeahead/bootstrap3-typeahead.js"></script> -->
   <script src="/js/RosettaDiagrams/bower_components/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
 
   <script src="/js/RosettaDiagrams/bower_components/vkbeautify/index.js"></script>
@@ -690,6 +728,7 @@
   <script src="/js/RosettaDiagrams/js/joint.shapes.rosetta_diagrams.js"></script>
   <script src="/js/RosettaDiagrams/js/diagrams.js"></script>
   <script type="text/javascript" src="/js/diagrams_integration.js"></script>
+  <script type="text/javascript" src="/js/RosettaDiagrams/bower_components/typeahead/typeahead.jquery.js"></script>
   <script type="text/javascript" src="/js/RosettaDiagrams/bower_components/bloodhound/index.js"></script>
 
 </body>

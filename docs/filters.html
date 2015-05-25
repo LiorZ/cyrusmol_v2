@@ -5,18 +5,6 @@
 <meta name="KEYWORDS" content="Filters (RosettaScripts),Movers (RosettaScripts)">
 
 <meta name="robots" content="index,follow">
-<link rel="shortcut icon" href="https://wiki.rosettacommons.org/favicon.ico">
-<link rel="stylesheet" type="text/css" media="print" href="./Filters (RosettaScripts) - RosettaWiki_files/wikiprintable.css">
-<script type="text/javascript" src="./Filters (RosettaScripts) - RosettaWiki_files/wikibits.js"></script>
-<style type="text/css">
-/*/*/
-@import "/stylesheets/wikistandard.css";
-a.new, #quickbar a.new { color: #CC2200; }
-#quickbar { position: absolute; top: 4px; left: 4px; border-right: 1px solid gray; }
-#article { margin-left: 152px; margin-right: 4px; }
-
-/* */
-</style>
 </head>
 
 <body bgcolor="#FFFFFF" onload="">
@@ -158,7 +146,7 @@ a.new, #quickbar a.new { color: #CC2200; }
 </td></tr></tbody></table>
 <a name="Predefined_Filters"></a><h2>Predefined Filters</h2>
 <a name="TrueFilter"></a><h4>TrueFilter</h4>
-<p>Returns true. Useful for defining a mover without using a filter. Can be explicitly specified with the name "true_filter". 
+<p>Returns true. Useful for defining a mover without using a filter. Can be explicitly specified with the name "true_filter".
 </p>
 <a name="FalseFilter"></a><h4>FalseFilter</h4>
 <p>Always returns false. Can be explicitly specified with the name "false_filter".
@@ -170,8 +158,8 @@ a.new, #quickbar a.new { color: #CC2200; }
 <p>This is a special filter that uses previously defined filters to construct a compound logical statement with AND, OR, XOR, NAND and NOR operations. By making compound statements of compound statements, esssentially all logical statements can be defined.
 </p>
 <pre style="white-space:pre-wrap">&lt;CompoundStatement name=(&amp;string)&gt;
-	&lt;OPERATION filter_name=(true_filter &amp;string)/&gt;
-	&lt;....
+    &lt;OPERATION filter_name=(true_filter &amp;string)/&gt;
+    &lt;....
 &lt;/CompoundStatement&gt;
 </pre>
 <p>where OPERATION is any of the operations defined in CAPS above.Note that the operations are performed in the order that they are defined. No precedence rules are enforced, so that any precedence has to be explicitly written by making compound statements of compound statements.Also note that the first OPERATION is ignored, and the value of the first filter is simply assigned to the filter's results.
@@ -180,15 +168,15 @@ a.new, #quickbar a.new { color: #CC2200; }
 <p>This is a special filter that calculates a weighted sum based on previously defined filters.
 </p>
 <pre style="white-space:pre-wrap">&lt;CombinedValue name=(&amp;string) threshold=(0.0 &amp;Real)&gt;
-	&lt;Add filter_name=(&amp;string) factor=(1.0 &amp;Real) temp=(&amp;Real)/&gt;
-	&lt;....
+    &lt;Add filter_name=(&amp;string) factor=(1.0 &amp;Real) temp=(&amp;Real)/&gt;
+    &lt;....
 &lt;/CombinedValue&gt;
 </pre>
 <p>By default, the value is a straight sum of the calculated values (not the logical results) of the listed filters. A multiplicative weighting factor for each filter can be specified with the <tt>factor</tt> parameter. (As a convenience, <tt>temp</tt> can be given instead of <tt>factor</tt>, which will divide the filter value, rather than multiply it.)
 </p><p>For truth value contexts, the filter evaluates to true if the weighted sum if less than or equal to the given <tt>threshold</tt>.
 </p>
 <a name="MoveBeforeFilter"></a><h4>MoveBeforeFilter</h4>
-<p>Apply a given mover to the pose before calculating the results from another filter 
+<p>Apply a given mover to the pose before calculating the results from another filter
 </p>
 <pre style="white-space:pre-wrap">&lt;MoveBeforeFilter name=(&amp;string) mover=(&amp;string) filter=(&amp;string)/&gt;
 </pre>
@@ -244,7 +232,7 @@ a.new, #quickbar a.new { color: #CC2200; }
 <p>Tests the energy of a particular residue.
 If whole_interface is set to 1, it computes all the energies for the interface residues defined by the jump_number and the interface_distance_cutoff. Helpful for post-design analyses. bb_bb needs to be turn to 1, if one wants to evaluate backbone - backbone hydrogen bonding energies (short and long range).
 </p>
-<pre style="white-space:pre-wrap">&lt;EnergyPerResidue name=(energy_per_res_filter &amp;string) scorefxn=(score12 &amp;string) 
+<pre style="white-space:pre-wrap">&lt;EnergyPerResidue name=(energy_per_res_filter &amp;string) scorefxn=(score12 &amp;string)
 score_type=(total_score &amp;string) pdb_num/res_num(see above) energy_cutoff=(0.0 &amp;float)
 whole_interface=(0 &amp;bool) jump_number=(1 &amp;int) interface_distance_cutoff=(8.0 &amp;float) bb_bb=(0, bool)/&gt;</pre>
 <a name="ScoreType"></a><h4>ScoreType</h4>
@@ -515,24 +503,24 @@ Note that #unsat for monomers is often much higher than 20. Notice that water is
 <a name="Ligand_docking_and_enzyme_design"></a><h3>Ligand docking and enzyme design</h3>
 <a name="DSasa"></a><h4>DSasa</h4>
 <p><em>(Formerly known as LigDSasa)</em>
-</p><p>Computes the fractional interface delta_sasa for a ligand on a ligand-protein interface and checks to see if it is *between* the lower and upper threshold. A DSasa of 1 means ligand is totally buried (loses all it's accessible surface area), 0 means totally accessible (loses none upon interface formation). 
+</p><p>Computes the fractional interface delta_sasa for a ligand on a ligand-protein interface and checks to see if it is *between* the lower and upper threshold. A DSasa of 1 means ligand is totally buried (loses all it's accessible surface area), 0 means totally accessible (loses none upon interface formation).
 </p>
 <pre style="white-space:pre-wrap">&lt;DSasa name=(&amp;string) lower_threshold=(0.0 &amp;float) upper_threshold=(1.0 &amp;float)/&gt;</pre>
 <a name="DiffAtomBurial"></a><h4>DiffAtomBurial</h4>
 <p>Compares the DSasa of two specified atoms and checks to see if one is greater or less than other. This is useful for figuring out whether a ligand is oritented in the correct way (i.e. whether in the designed interface one atom
-is more/less exposed than another)   
+is more/less exposed than another)
 </p>
 <pre style="white-space:pre-wrap">&lt;DiffAtomBurial name=(&amp;string)  res1_res_num/res1_pdb_num=(0, see res_num/pdb_num convention) res2_res_num/res2_pdb_num=(0, see convention) atomname1=(&amp;string) atomname2=(&amp;string) sample_type=(&amp;string)/&gt;</pre>
 <ul>
 <li>res1_res_num/res2_res_num: conventional pose numbering of rosetta, res_num=0 will mean ligand (Assuming there is only one ligand)
-</li><li>res1_pdb_num/res2_pdb_num: conventional pdb_numbering such as 100A (residue 100 chain A), 1X (residue 1 chain X e.g. of ligand) 
+</li><li>res1_pdb_num/res2_pdb_num: conventional pdb_numbering such as 100A (residue 100 chain A), 1X (residue 1 chain X e.g. of ligand)
 </li><li>atomname1/atomname2: atomnames of the respective atoms
 </li><li>sample_type: "more" or "less". "more" means Dsasa1&gt;Dsasa2 (atom1 is more buried than atom2); "less" means Dsasa1&lt;Dsasa2 (atom1 is less buried than atom2)
 </li></ul>
 <p><br>
 </p>
 <a name="LigInterfaceEnergy"></a><h4>LigInterfaceEnergy</h4>
-<p>Calculates interface energy across a ligand-protein interface taking into account (or not) enzdes style cst_energy.   
+<p>Calculates interface energy across a ligand-protein interface taking into account (or not) enzdes style cst_energy.
 </p>
 <pre style="white-space:pre-wrap">&lt;LigInterfaceEnergy name=(&amp;string)  scorefxn=(&amp;string) include_cstE=(0 &amp;bool) jump_number=(last_jump &amp;integer) energy_cutoff=(0.0 &amp;float)/&gt;</pre>
 <p>include_cstE=1 will *not* subtract out the cst energy from interface energy. jump_number defaults to last jump in the pose (assumed to be associated with ligand). energy should be less than energy_cutoff to pass.
@@ -543,7 +531,7 @@ is more/less exposed than another)
 </p>
 <pre style="white-space:pre-wrap">&lt;EnzScore name=(&amp;string)  scorefxn=(&amp;string, score12) whole_pose= (&amp;bool,0) score_type = (&amp;string) res_num/pdb_num = (see convetion) cstid =  (&amp;string) energy_cutoff=(0.0 &amp;float)/&gt;</pre>
 <ul>
-<li>cstid: string corresponding to cst_number+template (A or B, as in remarks and cstfile blocks). each enzdes cst is between two residues; A or B allows access to the corresponding residue in a given constraint e.g. cstid=1A means cst #1 template A (i.e. for the 1st constraint, the residue corresponding to the block that is described first in the cstfile and its corresponding REMARK line in header), cstid=4B (for the 4th constraint, the residue that is described second in the cstfile block and its REMARK line in header).  
+<li>cstid: string corresponding to cst_number+template (A or B, as in remarks and cstfile blocks). each enzdes cst is between two residues; A or B allows access to the corresponding residue in a given constraint e.g. cstid=1A means cst #1 template A (i.e. for the 1st constraint, the residue corresponding to the block that is described first in the cstfile and its corresponding REMARK line in header), cstid=4B (for the 4th constraint, the residue that is described second in the cstfile block and its REMARK line in header).
 </li><li>score_type: usual rosetta score_types; cstE will calculate enzdes style constraint energy
 </li><li>whole_pose: calculate total scores for whole pose
  </li></ul>
@@ -573,7 +561,7 @@ is more/less exposed than another)
 <p>See <a href="http://www.rosettacommons.org/manuals/archive/rosetta3.4_user_guide/Movers_%28RosettaScripts%29#StubScore" title="Movers (RosettaScripts)">Movers (RosettaScripts)#StubScore</a>
 </p>
 <a name="Currently_Undocumented"></a><h2>Currently Undocumented</h2>
-<p>The following Filters are available through RosettaScripts, but are not currently documented. See the code (particularly the respective parse_my_tag() and apply() functions) for details. (Some may be undocumented as they are experimental/not fully functional.) 
+<p>The following Filters are available through RosettaScripts, but are not currently documented. See the code (particularly the respective parse_my_tag() and apply() functions) for details. (Some may be undocumented as they are experimental/not fully functional.)
 </p>
 <ul><li> ConservedPosMutationFilter
 </li><li> CoreDunbrackFilter

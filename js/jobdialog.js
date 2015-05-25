@@ -13,7 +13,7 @@
 // limitations under the Licenses.
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// This module implements the generic job dialog 
+// This module implements the generic job dialog
 
 var JobDialogManager = (function ($) {
 
@@ -55,7 +55,7 @@ var JobDialogManager = (function ($) {
     }).hide()
     filename_field.change(function () {
       load_file_from_disk(filename_field, textfield)
-    })
+  });
 
     var loadfile_button = $('<button>Upload...</button>').click(function () {
       $(this).parent().find('#file_filenamefield').click()
@@ -85,7 +85,7 @@ var JobDialogManager = (function ($) {
   }
 
   function create_stderr_section(stderr) {
-    if (stderr === undefined) return; // return nothing if stderr field was not set 
+    if (stderr === undefined) return; // return nothing if stderr field was not set
     fieldset = $('<fieldset><legend>Last STDERR</legend></fieldset>')
       .append($('<pre></pre>', {
       'id': 'stderr'
@@ -311,8 +311,8 @@ var JobDialogManager = (function ($) {
     } else if( destination == "nacls" ){
       //console.log( JSON.stringify( data_pack ) )
       common.naclModule.postMessage(  JSON.stringify( data_pack ) )
-    
-    
+
+
     } else {
       alert("CODERROR");
     }
@@ -396,7 +396,7 @@ var JobDialogManager = (function ($) {
       open_job_dialog_from_server_json("/data/jobdefs/xmlscript_generic.json")
     })
   });
-   
+
   // public module functions:
 
   var my = {}
@@ -408,6 +408,3 @@ var JobDialogManager = (function ($) {
 
   return my;
 }(jQuery));
-
-
-
