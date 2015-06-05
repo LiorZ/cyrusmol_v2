@@ -65,6 +65,18 @@ class DashboardHandler(common.RequestHandler):
                        ("user_id",user.user_id())]
     self.response.out.write(template.render(template_values))
 
+class TutorialRedirectHandler(common.RequestHandler):
+  ROUTE = '/manual'
+
+  @classmethod
+  def Routes(cls):
+    return [webapp2.Route(cls.ROUTE, cls, methods=['GET'])]
+
+  def get(self):  # pylint:disable=g-bad-name
+    """Redirects to the manual"""
+
+    self.redirect('https://github.com/LiorZ/cyrusmol_v2/blob/master/README.md')
+
 class FirstPageHandler(common.RequestHandler):
   ROUTE = '/'
 
@@ -90,6 +102,7 @@ app = webapp2.WSGIApplication(sum([OldCyrusMolHandler.Routes(),
                                    operation.Routes(),
                                    task.Routes(),
                                    structure.Routes(),
-                                   diagrams.Routes()
+                                   diagrams.Routes(),
+                                   TutorialRedirectHandler.Routes()
                                   ],
                                   []), debug=True)

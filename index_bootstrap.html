@@ -70,6 +70,14 @@
       height: 600px;
     }
 
+    /*Used for mover types in the autocomplete text box*/
+    .mover-type {
+        margin: 0 20px 5px 20px;
+        border-bottom: 1px solid #ccc;
+    }
+    .tt-dataset {
+        margin-bottom:0.5em;
+    }
     /*
     .dropdown-submenu {
       position: relative;
@@ -113,12 +121,14 @@
       border-radius: 6px 0 6px 6px;
     }*/
 
-
-    //Used for mover types in the autocomplete text box
-    #multiple-datasets .mover-type {
-      margin: 0 20px 5px 20px;
-      padding: 3px 0;
-      border-bottom: 1px solid #ccc;
+    .label-as-badge {
+        border-radius: 1em;
+        padding:0.5em;
+        margin-left:0.2em
+    }
+    .tag_container {
+        margin-top:1em;
+        text-align:right;
     }
   </style>
 
@@ -415,7 +425,7 @@
             <input type="button" value="Add File" id="wizard_add_file" class="btn btn-primary" style="display:block;" />
             <div id="wizard_file_list"></div>
         </div>
-
+        <input type="hidden" id="protocol_data_url" />
      </div>
 
      <div class="wizard-card" data-cardname="finalize_confirm">
@@ -480,13 +490,13 @@
 
 
 
-  <div class="modal fade" id="rosetta_diagrams_view">
+  <div class="modal fade" id="rosetta_diagrams_view" style="overflow:hidden;">
     <div class="modal-dialog" style="width:1280px; height:800px;">
       <div class="modal-content" style="height:100%;">
-        <div class="modal-header">
+        <div class="modal-header" id="rosetta_diagrams_view_header">
           <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
           </button>
-          <h4 class="modal-title" id="rosetta_diagrams_view_title"></h4>
+          <h4 class="modal-title" id="rosetta_diagrams_view_title"><span id="title_text"></span></h4>
         </div>
         <div class="modal-body">
           <nav class="navbar navbar-default" role="navigation">
@@ -691,7 +701,7 @@
   <script src="/template/js/plugins/flot/jquery.flot.resize.js"></script>
   <script src="/template/js/plugins/flot/jquery.flot.tooltip.min.js"></script>
   <script src="/template/js/plugins/flot/jquery.flot.axislabels.js"></script>
-
+  <script src="/js/RosettaDiagrams/bower_components/jquery-ui/jquery-ui.min.js"></script>
   <!-- TreeView CSS -->
   <script src="/template/js/plugins/treeview/bootstrap-treeview.min.js"></script>
 
@@ -713,6 +723,7 @@
   <!-- CyrusMol JS -->
   <script type="text/javascript" src="/js/graphs.js"></script>
   <script type="text/javascript" src="/js/jobs.js"></script>
+  <script type="text/javascript" src="/js/utils.js"></script>
   <script type="text/javascript" src="/js/new_job_wizard.js"></script>
   <script type="text/javascript" src="/js/glmol_bootstrap.js"></script>
 

@@ -130,39 +130,6 @@ var NewJobWizard = (function($) {
     }
   }
 
-
-  function download(query,callbacks) {
-    var baseURL = '';
-    if (query.substr(0, 4) == 'pdb:') {
-      query = query.substr(4).toUpperCase();
-      if (!query.match(/^[1-9][A-Za-z0-9]{3}$/)) {
-        return;
-      }
-      uri = "http://www.pdb.org/pdb/files/" + query + ".pdb";
-    } else if (query.substr(0, 6) == 'local:') {
-      query = query.substr(6);
-      uri = "data/pdbs/" + query
-        //console.log("URI:" + uri);
-    } else if (query.substr(0, 4) == 'cid:') {
-      query = query.substr(4);
-      if (!query.match(/^[1-9]+$/)) {
-        alert("Wrong Compound ID");
-        return;
-      }
-      uri = "http://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/" + query +
-        "/SDF?record_type=3d";
-    }
-
-    // $('#loading').show();
-    $.get(uri, function(ret) {
-      // $("#glmol01_src").val(ret);
-      // glmol01.loadMolecule();
-      // $('#loading').hide();
-      $('#pdb_src').val(ret);
-      callbacks.success();
-  }).error(callbacks.error).always(callbacks.always);
-  }
-
   //Validation functions:
   var validate_pdb_card = function(card) {
     var pdb_src_len = $('#pdb_src').val().length;
@@ -198,7 +165,7 @@ var NewJobWizard = (function($) {
   card_pdb_file.on("validate", validate_pdb_card);
 
   $('#pdb_local_file').change(function() {
-      loadFile($('#pdb_local_file').get(0),function() {
+      loadFile($('#pdb_local_file').get(0),function(result) {
           $('#pdb_src').val(result);
       });
   });
@@ -209,8 +176,9 @@ var NewJobWizard = (function($) {
       $("#pdb_download_ok").hide();
       $("#pdb_download_error").hide();
       var pdb_id = $("#text_pdb_id").val()
-    download('pdb:' + pdb_id, {
-        success: function() {
+    _Utils_.download('pdb:' + pdb_id, {
+        success: function(ret) {
+            $('#pdb_src').val(ret);
             $("#pdb_download_ok").show();
         },
         error: function() {

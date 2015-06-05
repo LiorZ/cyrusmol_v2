@@ -1,4 +1,5 @@
 (function($) {
+
   $('#glmol01_src').change(function(ev) {
     glmol01.loadMolecule();
   });
@@ -12,6 +13,7 @@
       }
 
     });
+
 
   }
 
@@ -27,6 +29,13 @@
     },1000)
   }
 
-
+$(document).ready(function() {
+    _Utils_.download('pdb:2brr',{
+        success: function(ret) {
+            $('#glmol01_src').val(ret);
+            glmol01.loadMolecule();
+        }
+    });
+})
 
 })(jQuery);

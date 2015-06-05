@@ -43,6 +43,149 @@ function GLmol(id, suppressAutoload) {
    return true;
 }
 
+function defineRepFromController() {
+    colorscheme = {
+        "H": 0xffffff,
+        "C": 0x32cd32,
+        "N": 0x0000ff,
+        "O": 0xff0000,
+        "S": 0xffff00
+    }
+    var idHeader = "#" + this.id + '_';
+    var time = new Date();
+    var all = this.getAllAtoms();
+    var drawHydrogens = ($(idHeader + 'showHydrogens').attr('checked') == 'checked');
+    if (!drawHydrogens) {
+        var all_but_h = this.excludeElements(all, ["H"])
+        all = all_but_h
+    }
+    //if ($(idHeader + 'biomt').attr('checked') && this.protein.biomtChains != "") all = this.getChain(all, this.protein.biomtChains);
+    var allHet = this.getHetatms(all);
+    var hetatm = this.removeSolvents(allHet);
+    //console.log("selection " + (+new Date() - time));
+    time = new Date();
+    this.colorByAtom(all, {});
+    var colorMode = $(idHeader + 'color').val();
+    if (colorMode == 'ss') {
+        this.colorByStructure(all, 0xcc00cc, 0x00cccc);
+    } else if (colorMode == 'atomtype') {
+        this.colorByAtomElement(all, colorscheme)
+    } else if (colorMode == 'chain') {
+        this.colorByChain(all);
+    } else if (colorMode == 'chainbow') {
+        this.colorChainbow(all);
+    } else if (colorMode == 'b') {
+        this.colorByBFactor(all);
+    } else if (colorMode == 'polarity') {
+        this.colorByPolarity(all, 0xcc0000, 0xcccccc);
+    }
+    time = new Date();
+    var asu = new THREE.Object3D();
+    var mainchainMode = $(idHeader + 'mainchain').val();
+    var doNotSmoothen = ($(idHeader + 'doNotSmoothen').attr('checked') == 'checked');
+    if ($(idHeader + 'showMainchain').attr('checked')) {
+        if (mainchainMode == 'ribbon') {
+            this.drawCartoon(asu, all, doNotSmoothen);
+            this.drawCartoonNucleicAcid(asu, all);
+        } else if (mainchainMode == 'thickRibbon') {
+            this.drawCartoon(asu, all, doNotSmoothen, this.thickness);
+            this.drawCartoonNucleicAcid(asu, all, null, this.thickness);
+        } else if (mainchainMode == 'strand') {
+            this.drawStrand(asu, all, null, null, null, null, null, doNotSmoothen);
+            this.drawStrandNucleicAcid(asu, all);
+        } else if (mainchainMode == 'chain') {
+            this.drawMainchainCurve(asu, all, this.curveWidth, 'CA', 1);
+            this.drawMainchainCurve(asu, all, this.curveWidth, 'O3\'', 1);
+        } else if (mainchainMode == 'cylinderHelix') {
+            this.drawHelixAsCylinder(asu, all, 1.6);
+            this.drawCartoonNucleicAcid(asu, all);
+        } else if (mainchainMode == 'tube') {
+            this.drawMainchainTube(asu, all, 'CA', 0.3);
+            this.drawMainchainTube(asu, all, 'O3\'', 0.3); // FIXME: 5' end problem!
+        } else if (mainchainMode == 'btube') {
+            this.drawMainchainTube(asu, all, 'CA');
+            this.drawMainchainTube(asu, all, 'O3\''); // FIXME: 5' end problem!
+        } else if (mainchainMode == 'bonds') {
+            this.drawBondsAsStick(asu, all, this.cylinderRadius, this.cylinderRadius, true);
+        }
+    }
+    if ($(idHeader + 'showBases').attr('checked')) {
+        var hetatmMode = $(idHeader + 'base').val();
+        if (hetatmMode == 'nuclStick') {
+            this.drawNucleicAcidStick(this.modelGroup, all);
+        } else if (hetatmMode == 'nuclLine') {
+            this.drawNucleicAcidLine(this.modelGroup, all);
+        } else if (hetatmMode == 'nuclPolygon') {
+            this.drawNucleicAcidLadder(this.modelGroup, all);
+        }
+    }
+    var target = $(idHeader + 'symopHetatms').attr('checked') ? asu : this.modelGroup;
+    if ($(idHeader + 'showNonBonded').attr('checked')) {
+        var nonBonded = this.getNonbonded(allHet);
+        var nbMode = $(idHeader + 'nb').val();
+        if (nbMode == 'nb_sphere') {
+            this.drawAtomsAsIcosahedron(target, nonBonded, 0.3, true);
+        } else if (nbMode == 'nb_cross') {
+            this.drawAsCross(target, nonBonded, 0.3, true);
+        }
+    }
+    if ($(idHeader + 'showSidechains').attr('checked')) {
+        var hetatmMode = $(idHeader + 'sidechain').val();
+        if (hetatmMode == 'stick') {
+            this.drawBondsAsStick(this.modelGroup, this.getSidechains(all), this.cylinderRadius, this.cylinderRadius, true);
+        } else if (hetatmMode == 'sphere') {
+            this.drawAtomsAsSphere(this.modelGroup, this.getSidechains(all), this.sphereRadius);
+        } else if (hetatmMode == 'line') {
+            this.drawBondsAsLine(this.modelGroup, this.getSidechains(all), this.curveWidth);
+        } else if (hetatmMode == 'icosahedron') {
+            this.drawAtomsAsIcosahedron(this.modelGroup, this.getSidechains(all), this.sphereRadius);
+        } else if (hetatmMode == 'ballAndStick') {
+            this.drawBondsAsStick(this.modelGroup, this.getSidechains(all), this.cylinderRadius / 1.5, this.cylinderRadius * 2, true, false, 0.3);
+        } else if (hetatmMode == 'ballAndStick2') {
+            this.drawBondsAsStick(this.modelGroup, this.getSidechains(all), this.cylinderRadius / 1.0, this.cylinderRadius * 2, true, true, 0.3);
+        }
+    }
+    //this.drawAtomsAsSphere(this.modelGroup, this.getSelected(all), this.sphereRadius);
+    if ($(idHeader + 'showHetatms').attr('checked')) {
+        var hetatmMode = $(idHeader + 'hetatm').val();
+        if (hetatmMode == 'stick') {
+            this.drawBondsAsStick(target, hetatm, this.cylinderRadius, this.cylinderRadius, true);
+        } else if (hetatmMode == 'sphere') {
+            this.drawAtomsAsSphere(target, hetatm, this.sphereRadius);
+        } else if (hetatmMode == 'line') {
+            this.drawBondsAsLine(target, hetatm, this.curveWidth);
+        } else if (hetatmMode == 'icosahedron') {
+            this.drawAtomsAsIcosahedron(target, hetatm, this.sphereRadius);
+        } else if (hetatmMode == 'ballAndStick') {
+            this.drawBondsAsStick(target, hetatm, this.cylinderRadius / 2.0, this.cylinderRadius, true, false, 0.3);
+        } else if (hetatmMode == 'ballAndStick2') {
+            this.drawBondsAsStick(target, hetatm, this.cylinderRadius / 2.0, this.cylinderRadius, true, true, 0.3);
+        }
+    }
+    //console.log("hetatms " + (+new Date() - time));
+    time = new Date();
+    var projectionMode = $(idHeader + 'projection').val();
+    if (projectionMode == 'perspective') this.camera = this.perspectiveCamera;
+    else if (projectionMode == 'orthoscopic') this.camera = this.orthoscopicCamera;
+    this.setBackground(parseInt($(idHeader + 'bgcolor').val()));
+    if ($(idHeader + 'cell').attr('checked')) {
+        this.drawUnitcell(this.modelGroup);
+    }
+    if ($(idHeader + 'biomt').attr('checked')) {
+        this.drawSymmetryMates2(this.modelGroup, asu, this.protein.biomtMatrices);
+    }
+    if ($(idHeader + 'packing').attr('checked')) {
+        this.drawSymmetryMatesWithTranslation2(this.modelGroup, asu, this.protein.symMat);
+    }
+    this.modelGroup.add(asu);
+};
+
+function updateRepresentation() {
+    glmol01.defineRepresentation = defineRepFromController;
+    glmol01.rebuildScene();
+    glmol01.show();
+}
+
 GLmol.prototype.create = function(id, suppressAutoload) {
    this.Nucleotides = ['  G', '  A', '  T', '  C', '  U', ' DG', ' DA', ' DT', ' DC', ' DU'];
    this.ElementColors = {"H": 0xCCCCCC, "C": 0xAAAAAA, "O": 0xCC0000, "N": 0x0000CC, "S": 0xCCCC00, "P": 0x6622CC,
@@ -207,10 +350,10 @@ GLmol.prototype.parseXYZ = function(str) {
    for (var i = 1; i < atomCount; i++) // hopefully XYZ is small enough
       for (var j = i + 1; j <= atomCount; j++)
          if (this.isConnected(atoms[i], atoms[j])) {
-	    atoms[i].bonds.push(j);
-	    atoms[i].bondOrder.push(1);
-    	    atoms[j].bonds.push(i);
-     	    atoms[j].bondOrder.push(1);
+        atoms[i].bonds.push(j);
+        atoms[i].bondOrder.push(1);
+            atoms[j].bonds.push(i);
+             atoms[j].bondOrder.push(1);
          }
    protein.sdf = true;
 };

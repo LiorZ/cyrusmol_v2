@@ -140,7 +140,7 @@ class Add(webapp2.RequestHandler):
         }
 
     task.QueueTasks(taskdata, job_data['replication'])
-
+    self.response.set_status(200)
 
 class List(common.RequestHandler):
   ROUTE = '/operation/list'
@@ -198,6 +198,7 @@ class DeleteAll(common.RequestHandler):
     operations_query.filter('user_id =', user.user_id())
     for op in operations_query.run():
       op.delete()
+    self.response.set_status(200)
 
 
 class Delete(common.RequestHandler):
@@ -216,6 +217,7 @@ class Delete(common.RequestHandler):
       self.abort(httplib.FORBIDDEN)
       return
     op.delete()
+    self.response.set_status(200)
 
 
 all_routes = [Add.Routes(), List.Routes(),

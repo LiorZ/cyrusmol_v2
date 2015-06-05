@@ -43,6 +43,8 @@ handlers:
   script: cyrusmol.app
 - url: /
   script: cyrusmol.app
+- url: /manual
+  script: cyrusmol.app
 - url: /.*
   script: cyrusmol.app
   login: required

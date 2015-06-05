@@ -33,10 +33,10 @@ var ServerRequests = (function($) {
       if (replication < 1) replication = 1;
       // limit task replication to 10 for now. This is actually enforced on the server, but it's polite to
       // alert the user.
-      replication_limit = 100
+      replication_limit = 10
       if (replication > replication_limit) {
-          alert("Note: This trial version limits job to a size of " + replication_limit + " tasks. Thus only " + replication_limit + " tasks will be submitted.")
           replication = replication_limit;
+          alert("Note: This trial version limits job to a size of " + replication_limit + " tasks. Thus only " + replication_limit + " tasks will be submitted.")
       }
       data_pack["replication"] = replication
 
@@ -48,7 +48,7 @@ var ServerRequests = (function($) {
           dataType: 'json',
           success: function (msg) {
               // If we succeeded update the two debug tabs.
-              updateTaskList()
+              updateTaskList();
               updateOperationsView()
           },
           contentType: "application/json; charset=utf-8"
@@ -151,11 +151,11 @@ var ServerRequests = (function($) {
                   }
               },
               download_pdbs: {
-            	  label:"Download output PDBs",
-            	  action: function() {
-            		  var key = node.data("structure_key");
-            		  window.location = "/structure/get_pdbs?parental_key=" + key;
-            	  }
+                  label:"Download output PDBs",
+                  action: function() {
+                      var key = node.data("structure_key");
+                      window.location = "/structure/get_pdbs?parental_key=" + key;
+                  }
               }
           };
 
